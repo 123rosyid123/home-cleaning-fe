@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import './globals.css';
 import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({
@@ -7,7 +7,7 @@ const poppins = Poppins({
   display: 'swap',
 });
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={poppins.className}>{children}</body>

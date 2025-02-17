@@ -1,10 +1,20 @@
-import { useState, useMemo, useEffect } from "react";
+'use client';
+
+import { useMemo, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useBookingStore } from "@/store/bookingStore";
 
+// Add custom styles for the calendar
+const calendarStyles = `
+  .react-calendar__navigation__prev2-button,
+  .react-calendar__navigation__next2-button {
+    display: none;
+  }
+`;
+
 export default function SelectSlot() {
-  const { duration, date, time, updateBookingData, nextStep, prevStep } = useBookingStore();
+  const { duration, date, time, postalCode, updateBookingData, nextStep, prevStep } = useBookingStore();
 
   // Set default date to today when component mounts
   useEffect(() => {
@@ -12,6 +22,13 @@ export default function SelectSlot() {
       updateBookingData({ date: new Date() });
     }
   }, []);
+
+  const handlePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 6) {
+      updateBookingData({ postalCode: value });
+    }
+  };
 
   // Function to generate time slots based on duration
   const timeSlots = useMemo(() => {
@@ -58,10 +75,50 @@ export default function SelectSlot() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
         {/* Date Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">Appointment Date</h3>
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            </div>
+            <h3 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+              Appointment Date
+            </h3>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+            <div className="relative">
+              <input
+                type="text"
+                className="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-primary 
+                  focus:outline-none transition-colors duration-200 bg-gray-50"
+                placeholder="Enter your postal code"
+                maxLength={6}
+                pattern="[0-9]*"
+                inputMode="numeric"
+                value={postalCode || ''}
+                onChange={handlePostalCode}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">
+              Enter postal code to check service availability
+            </p>
+          </div>
+
           <div className="calendar-container max-w-[400px] mx-auto lg:max-w-none">
+            <style>{calendarStyles}</style>
             <Calendar
-              onChange={(newDate) => updateBookingData({ date: newDate })}
+              onChange={(newDate) => updateBookingData({ date: newDate as Date })}
               value={date || new Date()}
               minDate={new Date()}
               maxDate={new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)}
@@ -80,17 +137,27 @@ export default function SelectSlot() {
 
         {/* Time Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">Appointment Time</h3>
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </div>
+            <h3 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+              Appointment Time
+            </h3>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
             {timeSlots.map((slot) => (
               <button
                 key={slot.value}
                 className={`
                   px-2 sm:px-4 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-medium 
-                  transition-all duration-200 hover:scale-105 hover:shadow-md
+                  transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer
                   ${
                     time === slot.value
-                      ? "bg-blue-600 text-white shadow-lg ring-2 ring-blue-600 ring-offset-2"
+                      ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
                       : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                   }
                 `}
@@ -114,59 +181,14 @@ export default function SelectSlot() {
         <button 
           className="px-8 py-3 rounded-xl bg-primary text-white font-medium 
             hover:bg-primary/90 transition-all duration-200 shadow-lg 
-            hover:shadow-primary/30 flex items-center gap-2"
+            hover:shadow-primary/30 flex items-center gap-2
+            disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={nextStep}
-          disabled={!date || !time}
+          disabled={!date || !time || !postalCode || postalCode.length !== 6}
         >
           Book Appointment
         </button>
       </div>
-
-      <style jsx global>{`
-        .calendar-container .react-calendar {
-          border: none;
-          width: 100%;
-          background: transparent;
-          font-family: inherit;
-        }
-        .react-calendar__tile--active {
-          background: var(--primary-color, #2563eb) !important;
-          border-radius: 0.5rem;
-        }
-        .react-calendar__tile--now {
-          background: #f3f4f6;
-          border-radius: 0.5rem;
-        }
-        .react-calendar__tile:enabled:hover,
-        .react-calendar__tile:enabled:focus {
-          background-color: #e5e7eb;
-          border-radius: 0.5rem;
-        }
-        .react-calendar__tile {
-          padding: 0.6rem 0.5rem;
-          border-radius: 0.5rem;
-          font-size: 0.875rem;
-        }
-        @media (min-width: 640px) {
-          .react-calendar__tile {
-            padding: 0.75rem;
-            font-size: 1rem;
-          }
-        }
-        .react-calendar__navigation button:enabled:hover,
-        .react-calendar__navigation button:enabled:focus {
-          background-color: #f3f4f6;
-          border-radius: 0.5rem;
-        }
-        .react-calendar__navigation {
-          margin-bottom: 0.5rem;
-        }
-        @media (max-width: 640px) {
-          .react-calendar__navigation button {
-            padding: 0.5rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }

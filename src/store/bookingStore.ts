@@ -1,5 +1,24 @@
 import { create } from 'zustand';
 
+type BookingState = {
+  step: number;
+  frequency: string;
+  duration: string;
+  date: Date | null;
+  time: string;
+  contactName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+  postalCode: string;
+  additionalNotes: string;
+  setStep: (step: number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  updateBookingData: (data: Partial<BookingState>) => void;
+  resetBooking: () => void;
+}
+
 const initialState = {
   step: 1,
   frequency: '',
@@ -14,7 +33,7 @@ const initialState = {
   additionalNotes: '',
 };
 
-export const useBookingStore = create((set) => ({
+export const useBookingStore = create<BookingState>()((set) => ({
   ...initialState,
 
   setStep: (step) => set({ step }),

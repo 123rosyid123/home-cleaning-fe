@@ -1,3 +1,5 @@
+'use client';
+
 import { useBookingStore } from '@/store/bookingStore';
 import { motion } from 'framer-motion';
 
@@ -12,11 +14,8 @@ export default function ServiceInfo() {
     contactName, 
     phoneNumber, 
     email, 
-    address, 
-    postalCode, 
+    address,
     additionalNotes,
-    date,
-    time,
     updateBookingData, 
     nextStep, 
     prevStep 
@@ -65,7 +64,7 @@ export default function ServiceInfo() {
             </label>
             <input 
               type="tel" 
-              className="input input-bordered w-full bg-gray-50 border-2 focus:border-primary transition-all duration-200"
+              className="input input-bordered w-full input-primary"
               value={phoneNumber || ''}
               onChange={(e) => updateBookingData({ phoneNumber: e.target.value })}
               placeholder="+65 Phone Number"
@@ -79,19 +78,13 @@ export default function ServiceInfo() {
           </label>
           <input 
             type="email" 
-            className="input input-bordered w-full bg-gray-50 border-2 focus:border-primary transition-all duration-200"
+            className="input input-bordered w-full input-primary"
             value={email || ''}
             onChange={(e) => updateBookingData({ email: e.target.value })}
             placeholder="Enter your email"
           />
         </div>
 
-        <button className="text-primary hover:text-primary/80 flex items-center gap-2 transition-colors duration-200 font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Another Contact
-        </button>
       </motion.div>
 
       {/* Address Info Section */}
@@ -109,32 +102,16 @@ export default function ServiceInfo() {
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">Address Info</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="label font-medium text-gray-700">
-              <span className="label-text">Full Address</span>
-            </label>
-            <input 
-              type="text" 
-              className="input input-bordered w-full bg-gray-50 border-2 focus:border-primary transition-all duration-200"
-              value={address || ''}
-              onChange={(e) => updateBookingData({ address: e.target.value })}
-              placeholder="Enter full address"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="label font-medium text-gray-700">
-              <span className="label-text">Postal Code</span>
-            </label>
-            <input 
-              type="text" 
-              className="input input-bordered w-full bg-gray-50 border-2 focus:border-primary transition-all duration-200"
-              value={postalCode || ''}
-              onChange={(e) => updateBookingData({ postalCode: e.target.value })}
-              placeholder="Enter postal code"
-            />
-          </div>
+        <div className="space-y-2">
+          <label className="label font-medium text-gray-700">
+            <span className="label-text">Full Address</span>
+          </label>
+          <textarea 
+            className="textarea textarea-primary w-full"
+            value={address || ''}
+            onChange={(e) => updateBookingData({ address: e.target.value })}
+            placeholder="Enter full address"
+          />
         </div>
       </motion.div>
 
@@ -154,7 +131,7 @@ export default function ServiceInfo() {
 
         <div>
           <textarea 
-            className="textarea textarea-bordered w-full h-32 bg-gray-50 border-2 focus:border-primary transition-all duration-200"
+            className="textarea textarea-primary w-full h-3"
             value={additionalNotes || ''}
             onChange={(e) => updateBookingData({ additionalNotes: e.target.value })}
             placeholder="Enter additional notes. Please note that for hygiene reasons our cleaners do not bring equipment - imagine a mop that has mopped 50 bathrooms being used in your house! But fret not - a list of recommended equipment will be sent to you on booking confirmation"

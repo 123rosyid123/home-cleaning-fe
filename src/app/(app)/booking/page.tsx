@@ -1,4 +1,5 @@
 'use client';
+
 import { useBookingStore } from '@/store/bookingStore';
 import SelectService from './components/SelectService';
 import SelectSlot from './components/SelectSlot';
@@ -6,7 +7,7 @@ import ServiceInfo from './components/ServiceInfo';
 import Confirmation from './components/Confirmation';
 
 export default function Booking() {
-  const { step, nextStep, prevStep } = useBookingStore();
+  const { step } = useBookingStore();
 
   return (
     <div className="min-h-screen bg-base-100 p-4">

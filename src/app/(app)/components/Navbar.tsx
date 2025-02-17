@@ -7,15 +7,15 @@ export default function Navbar() {
   const developerName = "Developer"; // This could come from your auth context/state
   const initials = developerName.charAt(0).toUpperCase();
 
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     return pathname === path ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-white';
   };
 
   return (
-    <div className="navbar bg-sky-700 text-white">
+    <div className="navbar bg-blue-800 text-white">
       <div className="navbar-start">
         <Link href="/" className="btn btn-ghost text-xl">
-          <span className="text-white font-bold">luce</span>
+          <span className="text-white font-bold">HomeCleaningSG</span>
         </Link>
       </div>
       
