@@ -4,7 +4,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --color-primary: #1e40af;
+  --color-primary: #1447E6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,23 +28,23 @@ body {
 }
 
 /* Tailwind Primary Color Classes */
-.bg-primary { background-color: #1e40af !important; }
-.text-primary { color: #1e40af !important; }
-.border-primary { border-color: #1e40af !important; }
-.from-primary { --tw-gradient-from: #1e40af !important; }
-.via-primary { --tw-gradient-via: #1e40af !important; }
-.to-primary { --tw-gradient-to: #1e40af !important; }
-.ring-primary { --tw-ring-color: #1e40af !important; }
-.fill-primary { fill: #1e40af !important; }
-.caret-primary { caret-color: #1e40af !important; }
-.stroke-primary { stroke: #1e40af !important; }
-.divide-primary { border-color: #1e40af !important; }
-.accent-primary { accent-color: #1e40af !important; }
-.shadow-primary { --tw-shadow-color: #1e40af !important; }
-.outline-primary { outline-color: #1e40af !important; }
-.decoration-primary { text-decoration-color: #1e40af !important; }
-.placeholder-primary::placeholder { color: #1e40af !important; }
-.ring-offset-primary { --tw-ring-offset-color: #1e40af !important; }
+.bg-primary { background-color: #1447E6 !important; }
+.text-primary { color: #1447E6 !important; }
+.border-primary { border-color: #1447E6 !important; }
+.from-primary { --tw-gradient-from: #1447E6 !important; }
+.via-primary { --tw-gradient-via: #1447E6 !important; }
+.to-primary { --tw-gradient-to: #1447E6 !important; }
+.ring-primary { --tw-ring-color: #1447E6 !important; }
+.fill-primary { fill: #1447E6 !important; }
+.caret-primary { caret-color: #1447E6 !important; }
+.stroke-primary { stroke: #1447E6 !important; }
+.divide-primary { border-color: #1447E6 !important; }
+.accent-primary { accent-color: #1447E6 !important; }
+.shadow-primary { --tw-shadow-color: #1447E6 !important; }
+.outline-primary { outline-color: #1447E6 !important; }
+.decoration-primary { text-decoration-color: #1447E6 !important; }
+.placeholder-primary::placeholder { color: #1447E6 !important; }
+.ring-offset-primary { --tw-ring-offset-color: #1447E6 !important; }
 
 /* React Calendar */
 .calendar-container .react-calendar {
@@ -55,7 +55,7 @@ body {
 }
 
 .react-calendar__tile--active {
-  background: #1e40af !important;
+  background: #1447E6 !important;
   border-radius: 0.5rem;
 }
 .react-calendar__tile--now {

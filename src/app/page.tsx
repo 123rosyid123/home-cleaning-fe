@@ -4,7 +4,7 @@ import HeroSection from './components/HeroSection';
 import FeaturesSection from './components/FeaturesSection';
 import ServiceInclusionsSection from './components/ServiceInclusionsSection';
 import ServicesSection from './components/ServicesSection';
-import WhyChooseUsSection from './components/WhyChooseUsSection';
+import WhyChooseUsSection from './components/FAQ';
 import CTASection from './components/CTASection';
 
 export default function Home() {

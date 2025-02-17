@@ -65,27 +65,27 @@ export default function ServiceInclusionsSection() {
   const [activeService, setActiveService] = useState(0);
 
   return (
-    <section className="py-24 bg-gradient-to-b from-base-200 to-base-100">
+    <section className="py-12 sm:py-24 bg-gradient-to-b from-base-200 to-base-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-5xl font-bold mb-16 bg-gradient-to-r from-primary to-blue-700 bg-clip-text text-transparent">
+        <h2 className="text-3xl sm:text-5xl font-bold mb-8 sm:mb-16 text-blue-800">
           Home Cleaning Service Inclusions
         </h2>
 
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-6 sm:gap-12">
           {/* Service Navigation Icons */}
-          <div className="flex justify-start space-x-4">
+          <div className="flex pb-4 sm:pb-0 sm:justify-start space-x-4 hide-scrollbar">
             {services.map((service, index) => (
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
-                className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 ${
+                className={`flex-shrink-0 w-16 sm:w-20 h-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ${
                   activeService === index
                     ? 'bg-primary text-white shadow-lg scale-110'
                     : 'bg-white text-primary shadow hover:scale-105'
                 }`}
               >
                 {service.icon}
-                <span className="text-xs font-medium text-center">
+                <span className="text-[10px] sm:text-xs font-medium text-center">
                   {service.title.split(' ')[0]}
                 </span>
               </button>
@@ -103,27 +103,34 @@ export default function ServiceInclusionsSection() {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className="w-full flex-shrink-0 flex gap-8"
+                  className="w-full flex-shrink-0 flex flex-col lg:flex-row gap-4 sm:gap-8"
                 >
-                  <div className="w-1/2 bg-white rounded-3xl shadow-xl p-8">
-                    <h3 className="text-3xl font-bold text-gray-800 mb-6">
-                      {service.title}
-                    </h3>
-                    <ul className="space-y-4">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <FaCheck className="text-primary mt-1 flex-shrink-0" />
-                          <span className="text-gray-600">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="card w-full lg:w-1/2 bg-white shadow-xl">
+                    <div className="card-body p-4 sm:p-8">
+                      <h3 className="card-title text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
+                        {service.title}
+                      </h3>
+                      <ul className="space-y-3 sm:space-y-4">
+                        {service.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2 sm:gap-3">
+                            <FaCheck className="text-primary mt-1 flex-shrink-0" />
+                            <span className="text-sm sm:text-base text-gray-600">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                  <div className="w-1/2">
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="w-full h-[400px] object-cover rounded-3xl shadow-xl"
-                    />
+                  <div className="card w-full lg:w-1/2 bg-base-100 shadow-xl image-full h-[200px] sm:h-[300px] lg:h-[400px]">
+                    <figure>
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-full object-cover opacity-50"
+                      />
+                    </figure>
+                    <div className="card-body justify-end">
+                      <h2 className="card-title text-white">{service.title}</h2>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -131,14 +138,14 @@ export default function ServiceInclusionsSection() {
           </div>
 
           {/* Navigation Dots */}
-          <div className="flex justify-center space-x-2">
+          <div className="flex justify-center space-x-2 pt-4 sm:pt-0">
             {services.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full transition-all duration-300 ${
                   activeService === index
-                    ? 'bg-primary w-8'
+                    ? 'bg-primary w-6 sm:w-8'
                     : 'bg-primary/30'
                 }`}
               />
@@ -146,6 +153,16 @@ export default function ServiceInclusionsSection() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
-} 
+}
