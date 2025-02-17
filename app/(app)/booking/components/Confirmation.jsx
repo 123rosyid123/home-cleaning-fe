@@ -11,8 +11,13 @@ import {
   MapPin, 
   FileText 
 } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Confirmation() {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+  
   const { 
     frequency,
     duration,
@@ -40,10 +45,51 @@ export default function Confirmation() {
     '3hours': '3 Hours'
   };
 
-  const handleSubmit = () => {
-    // Here you would typically submit the booking data to your backend
-    alert('Booking submitted successfully!');
-    resetBooking();
+  const calculateAmount = () => {
+    // Calculate based on frequency and duration
+    const baseRate = frequency === 'oneTime' ? 25 : 22; // highest rate for one-time
+    const hours = duration === '4hours' ? 4 : 3;
+    return baseRate * hours;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setIsProcessing(true);
+      
+      // Create unique reference for the booking
+      const reference_number = `BOOKING-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create payment request
+      const response = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: calculateAmount(),
+          currency: 'SGD',
+          email,
+          name: contactName,
+          phone: phoneNumber,
+          reference_number,
+          redirect_url: `${window.location.origin}/booking/success?ref=${reference_number}`
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment creation failed');
+      }
+
+      const { url } = await response.json();
+      
+      // Redirect to HitPay payment page
+      window.location.href = url;
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Failed to process payment. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -190,16 +236,19 @@ export default function Confirmation() {
           className="px-8 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
             hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
           onClick={prevStep}
+          disabled={isProcessing}
         >
           Back
         </button>
         <button 
           className="px-8 py-3 rounded-xl bg-primary text-white font-medium 
             hover:bg-primary/90 transition-all duration-200 shadow-lg 
-            hover:shadow-primary/30 flex items-center gap-2"
+            hover:shadow-primary/30 flex items-center gap-2 disabled:opacity-50
+            disabled:cursor-not-allowed"
           onClick={handleSubmit}
+          disabled={isProcessing}
         >
-          Confirm Booking
+          {isProcessing ? 'Processing...' : 'Proceed to Payment'}
         </button>
       </div>
     </div>

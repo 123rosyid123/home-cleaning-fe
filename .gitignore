@@ -1,3 +1,5 @@
 .next
 node_modules
 .stackblitzrc
+.idea
+.DS_Store
