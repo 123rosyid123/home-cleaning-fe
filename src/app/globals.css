@@ -53,8 +53,9 @@ body {
   background: transparent;
   font-family: inherit;
 }
+
 .react-calendar__tile--active {
-  background: #1e40af;
+  background: #1e40af !important;
   border-radius: 0.5rem;
 }
 .react-calendar__tile--now {

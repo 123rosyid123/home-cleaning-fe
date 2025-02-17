@@ -8,7 +8,7 @@ export default function Navbar() {
   const initials = developerName.charAt(0).toUpperCase();
 
   const isActive = (path: string) => {
-    return pathname === path ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-white';
+    return pathname === path ? 'bg-white/20 text-white' : 'hover:bg-yellow-100/30 text-white';
   };
 
   return (
@@ -59,10 +59,10 @@ export default function Navbar() {
               </div>
               <span>{developerName}</span>
             </label>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-sky-700 rounded-box w-52">
-              <li><Link href="/profile" className="text-white hover:bg-white/10">Profile</Link></li>
-              <li><Link href="/settings" className="text-white hover:bg-white/10">Settings</Link></li>
-              <li><Link href="/logout" className="text-white hover:bg-white/10">Logout</Link></li>
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-blue-700 rounded-box w-52">
+              <li><Link href="/profile" className="text-white hover:bg-yellow-100/30">Profile</Link></li>
+              <li><Link href="/settings" className="text-white hover:bg-yellow-100/30">Settings</Link></li>
+              <li><Link href="/logout" className="text-white hover:bg-yellow-100/30">Logout</Link></li>
             </ul>
           </div>
         </div>
@@ -75,11 +75,11 @@ export default function Navbar() {
             </svg>
           </label>
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-sky-700 rounded-box w-52">
-            <li><Link href="/booking" className="text-white hover:bg-white/10">Booking</Link></li>
-            <li><Link href="/upcoming" className="text-white hover:bg-white/10">Upcoming</Link></li>
-            <li><Link href="/history" className="text-white hover:bg-white/10">History</Link></li>
-            <li><Link href="/rewards" className="text-white hover:bg-white/10">Rewards</Link></li>
-            <li><Link href="/invoices" className="text-white hover:bg-white/10">Invoices</Link></li>
+            <li><Link href="/booking" className="text-white hover:bg-yellow-100/30">Booking</Link></li>
+            <li><Link href="/upcoming" className="text-white hover:bg-yellow-100/30">Upcoming</Link></li>
+            <li><Link href="/history" className="text-white hover:bg-yellow-100/30">History</Link></li>
+            <li><Link href="/rewards" className="text-white hover:bg-yellow-100/30">Rewards</Link></li>
+            <li><Link href="/invoices" className="text-white hover:bg-yellow-100/30">Invoices</Link></li>
             <li className="divider"></li>
             <li>
               <div className="flex items-center gap-2">
@@ -89,9 +89,9 @@ export default function Navbar() {
                 <span>{developerName}</span>
               </div>
             </li>
-            <li><Link href="/profile" className="text-white hover:bg-white/10">Profile</Link></li>
-            <li><Link href="/settings" className="text-white hover:bg-white/10">Settings</Link></li>
-            <li><Link href="/logout" className="text-white hover:bg-white/10">Logout</Link></li>
+            <li><Link href="/profile" className="text-white hover:bg-yellow-100/30">Profile</Link></li>
+            <li><Link href="/settings" className="text-white hover:bg-yellow-100/30">Settings</Link></li>
+            <li><Link href="/logout" className="text-white hover:bg-yellow-100/30">Logout</Link></li>
           </ul>
         </div>
       </div>

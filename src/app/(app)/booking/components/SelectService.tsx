@@ -70,7 +70,7 @@ export default function SelectService() {
               <div className="border border-gray-100/50 rounded-[24px] p-5 sm:p-6 h-full flex flex-col">
                 <div className="h-8 mb-3">
                   {freq.badge && (
-                    <span className="inline-block bg-blue-100/70 backdrop-blur-sm text-blue-800 text-xs sm:text-sm px-4 py-1.5 rounded-full font-medium">
+                    <span className="inline-block bg-blue-100/70 backdrop-blur-sm text-blue-800 text-[10px] px-2 py-1 sm:text-sm sm:px-4 sm:py-1.5 rounded-full font-medium">
                       {freq.badge}
                     </span>
                   )}
@@ -115,7 +115,7 @@ export default function SelectService() {
               <div className="border border-gray-100/50 rounded-[24px] p-5 sm:p-6 h-full flex flex-col">
                 <div className="h-8 mb-3">
                   {dur.badge && (
-                    <span className="inline-block bg-blue-100/70 backdrop-blur-sm text-blue-800 text-xs sm:text-sm px-4 py-1.5 rounded-full font-medium">
+                    <span className="inline-block bg-blue-100/70 backdrop-blur-sm text-blue-800 text-[10px] px-2 py-1 sm:text-sm sm:px-4 sm:py-1.5 rounded-full font-medium">
                       {dur.badge}
                     </span>
                   )}
