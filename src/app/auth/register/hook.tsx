@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { actionRegister } from './action';
+import { useRouter } from 'next/navigation';
+
 const registerSchema = z
   .object({
     email: z.string().email('Please enter a valid email address'),
@@ -26,6 +28,9 @@ export type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const useRegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -40,8 +45,10 @@ export const useRegisterForm = () => {
       setIsLoading(true);
       
       const response = await actionRegister(data);
-      console.log(response);
-
+      
+      if (response.success) {
+        router.push('/booking');
+      }
     } catch (error) {
         console.error('Registration error:', error);
     } finally {
@@ -55,5 +62,9 @@ export const useRegisterForm = () => {
     errors,
     isLoading,
     onSubmit,
+    showPassword,
+    setShowPassword,
+    showConfirmPassword,
+    setShowConfirmPassword,
   };
 };

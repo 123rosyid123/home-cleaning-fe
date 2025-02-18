@@ -17,6 +17,7 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export const useLoginForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -48,5 +49,7 @@ export const useLoginForm = () => {
     errors,
     isLoading,
     onSubmit,
+    showPassword,
+    setShowPassword,
   };
 };
