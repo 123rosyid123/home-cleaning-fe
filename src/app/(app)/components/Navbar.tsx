@@ -14,8 +14,8 @@ export default function Navbar() {
   return (
     <div className="navbar bg-blue-800 text-white">
       <div className="navbar-start">
-        <Link href="/" className="btn btn-ghost text-xl">
-          <span className="text-white font-bold">HomeCleaningSG</span>
+        <Link href="/" className="btn btn-ghost text-xl hover:bg-gray-50/20 hover:border-transparent">
+          <span className="text-white font-bold">Home Cleaning SG</span>
         </Link>
       </div>
       
