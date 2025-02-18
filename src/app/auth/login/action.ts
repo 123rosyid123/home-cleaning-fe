@@ -11,8 +11,8 @@ export const actionLogin = async (formData: LoginFormData) => {
     const response = await apiLogin(formData.email, formData.password);
     await createSession(response.data.token);
 
-    return buildSuccessResponse('Login successful', response.data);
+    return buildSuccessResponse(response.message, response.data);
   } catch (error) {
-    return buildErrorResponse('Login failed', error as Error | AxiosError);
+    return buildErrorResponse(error as Error | AxiosError);
   }
 };

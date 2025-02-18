@@ -16,8 +16,8 @@ export const actionRegister = async (formData: RegisterFormData) => {
 
     await createSession(response.data.token);
 
-    return buildSuccessResponse('Registration successful', response.data);
+    return buildSuccessResponse(response.message, response.data);
   } catch (error) {
-    return buildErrorResponse('Registration failed', error as Error | AxiosError);
+    return buildErrorResponse(error as Error | AxiosError);
   }
 };
