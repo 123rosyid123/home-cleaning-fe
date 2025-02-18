@@ -1,6 +1,7 @@
 'use client';
 
 import { useBookingStore } from '@/store/bookingStore';
+import axios from 'axios';
 import {
   CalendarDays,
   Clock,
@@ -59,33 +60,21 @@ export default function Confirmation() {
       setIsProcessing(true);
 
       // Create unique reference for the booking
-      const reference_number = `BOOKING-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const reference_number = `BOOKING-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
-      // Create payment request
-      const response = await fetch('/api/create-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: calculateAmount(),
-          currency: 'SGD',
-          email,
-          name: contactName,
-          phone: phoneNumber,
-          reference_number,
-          redirect_url: `${window.location.origin}/booking/success?ref=${reference_number}`
-        }),
+      // Create payment request using axios
+      const { data } = await axios.post('/api/create-payment', {
+        amount: calculateAmount(),
+        currency: 'SGD',
+        email,
+        name: contactName,
+        phone: phoneNumber,
+        reference_number,
+        redirect_url: `${window.location.origin}/booking/success?ref=${reference_number}`
       });
 
-      if (!response.ok) {
-        throw new Error('Payment creation failed');
-      }
-
-      const { url } = await response.json();
-
       // Redirect to HitPay payment page
-      window.location.href = url;
+      window.location.href = data.url;
     } catch (error) {
       console.error('Payment error:', error);
       alert('Failed to process payment. Please try again.');
@@ -102,7 +91,7 @@ export default function Confirmation() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
           Confirm Your Booking
         </h2>
       </div>
@@ -114,7 +103,7 @@ export default function Confirmation() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
-          <h3 className="font-bold text-2xl bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+          <h3 className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
             Booking Summary
           </h3>
         </div>
@@ -122,16 +111,15 @@ export default function Confirmation() {
         <div className="grid gap-6">
           {/* Service Details Section */}
           <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-            <h4 className="font-semibold text-gray-700 mb-4">Service Details</h4>
-
-            <div className="grid grid-cols-2 gap-4">
+            <h4 className="font-semibold text-base sm:text-lg text-gray-700 mb-4">Service Details</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <RepeatIcon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Frequency</p>
-                  <p className="font-medium">{frequencies[frequency as FrequencyType]?.name}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Frequency</p>
+                  <p className="text-sm sm:text-base font-medium">{frequencies[frequency as FrequencyType]?.name}</p>
                 </div>
               </div>
 
@@ -140,8 +128,8 @@ export default function Confirmation() {
                   <Timer className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Duration</p>
-                  <p className="font-medium">{durations[duration as DurationType]}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Duration</p>
+                  <p className="text-sm sm:text-base font-medium">{durations[duration as DurationType]}</p>
                 </div>
               </div>
 
@@ -150,8 +138,8 @@ export default function Confirmation() {
                   <DollarSign className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Price</p>
-                  <p className="font-medium">{frequencies[frequency as FrequencyType]?.price}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Price</p>
+                  <p className="text-sm sm:text-base font-medium">{frequencies[frequency as FrequencyType]?.price}</p>
                 </div>
               </div>
 
@@ -160,8 +148,8 @@ export default function Confirmation() {
                   <CalendarDays className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Date</p>
-                  <p className="font-medium">{date?.toLocaleDateString()}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Date</p>
+                  <p className="text-sm sm:text-base font-medium">{date?.toLocaleDateString()}</p>
                 </div>
               </div>
 
@@ -170,8 +158,8 @@ export default function Confirmation() {
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Time</p>
-                  <p className="font-medium">{time}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Time</p>
+                  <p className="text-sm sm:text-base font-medium">{time}</p>
                 </div>
               </div>
             </div>
@@ -179,16 +167,15 @@ export default function Confirmation() {
 
           {/* Contact Information Section */}
           <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-            <h4 className="font-semibold text-gray-700 mb-4">Contact Information</h4>
-
-            <div className="grid grid-cols-2 gap-4">
+            <h4 className="font-semibold text-base sm:text-lg text-gray-700 mb-4">Contact Information</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <User className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Name</p>
-                  <p className="font-medium">{contactName}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Name</p>
+                  <p className="text-sm sm:text-base font-medium">{contactName}</p>
                 </div>
               </div>
 
@@ -197,18 +184,18 @@ export default function Confirmation() {
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="font-medium">{phoneNumber}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Phone</p>
+                  <p className="text-sm sm:text-base font-medium">{phoneNumber}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 col-span-2">
+              <div className="flex items-center gap-3 col-span-1 sm:col-span-2">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{email}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Email</p>
+                  <p className="text-sm sm:text-base font-medium">{email}</p>
                 </div>
               </div>
             </div>
@@ -221,9 +208,9 @@ export default function Confirmation() {
                 <MapPin className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Service Location</p>
-                <p className="font-medium mt-1">{address}</p>
-                <p className="font-medium">Postal Code: {postalCode}</p>
+                <p className="text-xs sm:text-sm text-gray-500">Service Location</p>
+                <p className="text-sm sm:text-base font-medium mt-1">{address}</p>
+                <p className="text-sm sm:text-base font-medium">Postal Code: {postalCode}</p>
               </div>
             </div>
           </div>
@@ -236,8 +223,8 @@ export default function Confirmation() {
                   <FileText className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Additional Notes</p>
-                  <p className="font-medium mt-1">{additionalNotes}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Additional Notes</p>
+                  <p className="text-sm sm:text-base font-medium mt-1">{additionalNotes}</p>
                 </div>
               </div>
             </div>
@@ -245,9 +232,9 @@ export default function Confirmation() {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-between">
+      <div className="mt-8 flex justify-between gap-4">
         <button
-          className="px-8 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 text-sm sm:text-base font-medium 
             hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
           onClick={prevStep}
           disabled={isProcessing}
@@ -255,7 +242,7 @@ export default function Confirmation() {
           Back
         </button>
         <button
-          className="px-8 py-3 rounded-xl bg-primary text-white font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white text-sm sm:text-base font-medium 
             hover:bg-primary/90 transition-all duration-200 shadow-lg 
             hover:shadow-primary/30 flex items-center gap-2 disabled:opacity-50
             disabled:cursor-not-allowed"

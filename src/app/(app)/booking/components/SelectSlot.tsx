@@ -71,7 +71,7 @@ export default function SelectSlot() {
   }, [duration]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <div className="w-full max-w-7xl mx-auto sm:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
         {/* Date Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
@@ -170,16 +170,16 @@ export default function SelectSlot() {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-between">
+      <div className="mt-8 flex justify-between gap-4">
         <button 
-          className="px-8 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 text-sm sm:text-base font-medium 
             hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
           onClick={prevStep}
         >
           Back
         </button>
         <button 
-          className="px-8 py-3 rounded-xl bg-primary text-white font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white text-sm sm:text-base font-medium 
             hover:bg-primary/90 transition-all duration-200 shadow-lg 
             hover:shadow-primary/30 flex items-center gap-2
             disabled:opacity-50 disabled:cursor-not-allowed"

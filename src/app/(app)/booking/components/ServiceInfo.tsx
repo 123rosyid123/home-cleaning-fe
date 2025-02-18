@@ -25,7 +25,7 @@ export default function ServiceInfo() {
     <motion.div 
       initial="initial"
       animate="animate"
-      className="space-y-8 max-w-4xl mx-auto p-6"
+      className="space-y-8 max-w-4xl mx-auto"
     >
       {/* Contact Info Section */}
       <motion.div 
@@ -141,14 +141,14 @@ export default function ServiceInfo() {
 
       <div className="mt-8 flex justify-between">
         <button 
-          className="px-8 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
             hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
           onClick={prevStep}
         >
           Back
         </button>
         <button 
-          className="px-8 py-3 rounded-xl bg-primary text-white font-medium 
+          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white font-medium 
             hover:bg-primary/90 transition-all duration-200 shadow-lg 
             hover:shadow-primary/30 flex items-center gap-2"
           onClick={nextStep}
