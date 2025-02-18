@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
+import Image from 'next/image';
 export default function Navbar() {
   const pathname = usePathname();
   const developerName = "Developer"; // This could come from your auth context/state
@@ -14,8 +14,9 @@ export default function Navbar() {
   return (
     <div className="navbar bg-blue-800 text-white">
       <div className="navbar-start">
-        <Link href="/" className="btn btn-ghost text-xl hover:bg-gray-50/20 hover:border-transparent">
-          <span className="text-white font-bold">Home Cleaning SG</span>
+        <Link href="/" className="btn btn-ghost text-xl hover:bg-gray-50/20 hover:border-transparent hover:text-white">
+          <Image src="/logo-only.png" alt="Home Cleaning SG" height={30} width={30}/>
+          <span className=" font-bold">Home Cleaning SG</span>
         </Link>
       </div>
       
