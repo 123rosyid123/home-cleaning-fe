@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { GiKitchenTap, GiShower, GiBed, GiVacuumCleaner } from 'react-icons/gi';
+import Image from 'next/image';
 
 const services = [
   {
@@ -122,10 +123,12 @@ export default function ServiceInclusionsSection() {
                   </div>
                   <div className="card w-full lg:w-1/2 bg-base-100 shadow-xl image-full h-[200px] sm:h-[300px] lg:h-[400px]">
                     <figure>
-                      <img
+                      <Image
                         src={service.image}
                         alt={service.title}
                         className="w-full h-full object-cover opacity-50"
+                        width={300}
+                        height={300}
                       />
                     </figure>
                     <div className="card-body justify-end">
