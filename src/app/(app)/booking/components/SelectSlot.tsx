@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useEffect } from "react";
+import { useBookingStore } from "@/store/bookingStore";
+import { useEffect, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { useBookingStore } from "@/store/bookingStore";
+import ButtonBack from "./ButtonBack";
+import ButtonNext from "./ButtonNext";
 
 // Add custom styles for the calendar
 const calendarStyles = `
@@ -14,7 +16,7 @@ const calendarStyles = `
 `;
 
 export default function SelectSlot() {
-  const { duration, date, time, postalCode, updateBookingData, nextStep, prevStep } = useBookingStore();
+  const { duration, date, time, postalCode, updateBookingData } = useBookingStore();
 
   // Set default date to today when component mounts
   useEffect(() => {
@@ -155,10 +157,9 @@ export default function SelectSlot() {
                 className={`
                   px-2 sm:px-4 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-medium 
                   transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer
-                  ${
-                    time === slot.value
-                      ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  ${time === slot.value
+                    ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                   }
                 `}
                 onClick={() => updateBookingData({ time: slot.value })}
@@ -171,23 +172,8 @@ export default function SelectSlot() {
       </div>
 
       <div className="mt-8 flex justify-between gap-4">
-        <button 
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 text-sm sm:text-base font-medium 
-            hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
-          onClick={prevStep}
-        >
-          Back
-        </button>
-        <button 
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white text-sm sm:text-base font-medium 
-            hover:bg-primary/90 transition-all duration-200 shadow-lg 
-            hover:shadow-primary/30 flex items-center gap-2
-            disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={nextStep}
-          disabled={!date || !time || !postalCode || postalCode.length !== 6}
-        >
-          Book Appointment
-        </button>
+        <ButtonBack />
+        <ButtonNext text="Book Appointment" disabled={!date || !time || !postalCode || postalCode.length !== 6} />
       </div>
     </div>
   );

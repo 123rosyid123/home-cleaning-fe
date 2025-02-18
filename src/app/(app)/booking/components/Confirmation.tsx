@@ -15,6 +15,8 @@ import {
   User
 } from 'lucide-react';
 import { useState } from 'react';
+import ButtonBack from './ButtonBack';
+import ButtonNext from './ButtonNext';
 
 type FrequencyType = 'oneTime' | 'everyOtherWeek' | 'oncePerWeek' | 'moreThanOnce';
 type DurationType = '4hours' | '3hours';
@@ -33,7 +35,6 @@ export default function Confirmation() {
     address,
     postalCode,
     additionalNotes,
-    prevStep,
   } = useBookingStore();
 
   const frequencies = {
@@ -233,24 +234,8 @@ export default function Confirmation() {
       </div>
 
       <div className="mt-8 flex justify-between gap-4">
-        <button
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 text-sm sm:text-base font-medium 
-            hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
-          onClick={prevStep}
-          disabled={isProcessing}
-        >
-          Back
-        </button>
-        <button
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white text-sm sm:text-base font-medium 
-            hover:bg-primary/90 transition-all duration-200 shadow-lg 
-            hover:shadow-primary/30 flex items-center gap-2 disabled:opacity-50
-            disabled:cursor-not-allowed"
-          onClick={handleSubmit}
-          disabled={isProcessing}
-        >
-          {isProcessing ? 'Processing...' : 'Proceed to Payment'}
-        </button>
+        <ButtonBack />
+        <ButtonNext text="Proceed to Payment" disabled={isProcessing} onClick={handleSubmit} />
       </div>
     </div>
   );

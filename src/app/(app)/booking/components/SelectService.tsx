@@ -1,9 +1,10 @@
 'use client';
 
 import { useBookingStore } from '@/store/bookingStore';
+import ButtonNext from './ButtonNext';
 
 export default function SelectService() {
-  const { frequency, duration, updateBookingData, nextStep } = useBookingStore();
+  const { frequency, duration, updateBookingData } = useBookingStore();
 
   const frequencies = [
     { 
@@ -135,18 +136,8 @@ export default function SelectService() {
         </div>
       </div>
 
-      <div className="flex justify-end mt-6 sm:mt-8 md:mt-10">
-        <button 
-          className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200 flex items-center gap-2 w-full sm:w-auto
-            ${(!frequency || !duration)
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-primary/30'
-            }`}
-          onClick={nextStep}
-          disabled={!frequency || !duration}
-        >
-          Select Slot
-        </button>
+      <div className="mt-8 flex justify-end gap-4">
+        <ButtonNext text="Select Slot" disabled={!frequency || !duration} />
       </div>
     </div>
   );

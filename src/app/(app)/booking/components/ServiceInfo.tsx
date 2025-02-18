@@ -2,6 +2,8 @@
 
 import { useBookingStore } from '@/store/bookingStore';
 import { motion } from 'framer-motion';
+import ButtonNext from './ButtonNext';
+import ButtonBack from './ButtonBack';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -17,8 +19,6 @@ export default function ServiceInfo() {
     address,
     additionalNotes,
     updateBookingData, 
-    nextStep, 
-    prevStep 
   } = useBookingStore();
 
   return (
@@ -140,21 +140,8 @@ export default function ServiceInfo() {
       </motion.div>
 
       <div className="mt-8 flex justify-between">
-        <button 
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-gray-100 text-gray-700 font-medium 
-            hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
-          onClick={prevStep}
-        >
-          Back
-        </button>
-        <button 
-          className="px-4 sm:px-8 py-2.5 sm:py-3 rounded-xl bg-primary text-white font-medium 
-            hover:bg-primary/90 transition-all duration-200 shadow-lg 
-            hover:shadow-primary/30 flex items-center gap-2"
-          onClick={nextStep}
-        >
-          Confirmation
-        </button>
+        <ButtonBack />
+        <ButtonNext text="Confirmation" disabled={!contactName || !phoneNumber || !email || !address || !additionalNotes} />
       </div>
     </motion.div>
   );
