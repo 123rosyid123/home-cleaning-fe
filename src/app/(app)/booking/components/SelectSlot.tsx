@@ -74,9 +74,9 @@ export default function SelectSlot() {
 
   return (
     <div className="w-full max-w-7xl mx-auto sm:py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
         {/* Date Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="lg:col-span-4 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <div className="bg-primary/10 p-2 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -138,7 +138,7 @@ export default function SelectSlot() {
         </div>
 
         {/* Time Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="lg:col-span-8 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <div className="bg-primary/10 p-2 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
