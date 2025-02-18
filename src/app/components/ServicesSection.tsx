@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const servicesData = [
   {
@@ -99,10 +100,12 @@ export default function ServicesSection() {
               {service.isRecommended && (
                 <div className="flex flex-col items-center py-6 mb-2 transform hover:scale-105 transition-transform duration-200">
                   <div className="bg-[#E9F1FF] rounded-full p-3 shadow-md">
-                    <img 
+                    <Image 
                       src="https://cdn.prod.website-files.com/647e01c6bc9b144cf70df6ff/6492773c5674f584818caa50_recomended.svg" 
                       alt="Recommended Badge"
                       className="w-8 h-8" 
+                      width={32}
+                      height={32}
                     />
                   </div>
                   <span className="text-[#0A46D6] text-sm font-bold text-center leading-tight mt-2 bg-[#E9F1FF] px-4 py-1 rounded-full shadow-sm">RECOMMENDED</span>
