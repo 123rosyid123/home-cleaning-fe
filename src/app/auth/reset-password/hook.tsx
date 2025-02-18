@@ -1,16 +1,11 @@
-import { apiResetPassword } from '@/services/authService';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { AxiosError } from 'axios';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-
-interface ErrorResponse {
-  message: string;
-  errors?: Record<string, string[]>;
-}
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { actionResetPassword } from './action';
 
 const resetPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -51,7 +46,7 @@ export const useResetPassword = () => {
     }
 
     try {
-      const response = await apiResetPassword(
+      const response = await actionResetPassword(
         token,
         data.email,
         data.password,
@@ -60,12 +55,7 @@ export const useResetPassword = () => {
       toast.success(response.message || 'Password has been reset successfully');
       router.push('/auth/login');
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data) {
-        const errorData = error.response.data as ErrorResponse;
-        toast.error(errorData.message || 'Something went wrong');
-      } else {
-        toast.error('Something went wrong');
-      }
+      toastError(error as APIError);
     }
   };
 
