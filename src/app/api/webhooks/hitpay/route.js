@@ -9,7 +9,7 @@ function formDataToObject(formData) {
   return obj;
 }
 
-export function generateSignature(data, secret) {
+function generateSignature(data, secret) {
   // Sort keys alphabetically and concatenate key-value pairs
   const source = [];
   Object.keys(data).sort().forEach((key) => {
