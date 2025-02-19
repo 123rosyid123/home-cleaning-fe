@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { UserProfile } from '@/types/accountType';
 import 'server-only';
 
 // max age is 1 year
@@ -17,6 +18,11 @@ interface CookieStore {
   get: (name: string) => { value: string } | undefined;
 }
 
+interface SessionData {
+  authenticated: string | undefined;
+  user: string | undefined;
+}
+
 const setCookie = (cookieStore: CookieStore, name: string, value: string, maxAge: number, httpOnly = true) => {
   cookieStore.set(name, value, {
     httpOnly,
@@ -29,13 +35,11 @@ const setCookie = (cookieStore: CookieStore, name: string, value: string, maxAge
 
 export async function createSession(token: string) {
   const cookieStore = await cookies();
-
   setCookie(cookieStore, 'authenticated', token, maxAge);
 }
 
-export async function createUserSession(payload: object) {
+export async function createUserSession(payload: UserProfile) {
   const cookieStore = await cookies();
-
   setCookie(cookieStore, 'user', JSON.stringify(payload), maxAge, false);
 }
 
@@ -45,7 +49,7 @@ export async function clearSession() {
   cookieStore.delete('user');
 }
 
-export async function getSession() {
+export async function getSession(): Promise<SessionData> {
   const cookieStore = await cookies();
 
   const authenticated = cookieStore.get('authenticated')?.value;

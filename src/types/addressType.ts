@@ -9,6 +9,7 @@ export interface Address {
   postal_code: string;
   latitude: number | null;
   longitude: number | null;
+  name: string;
   phone: string;
 }
 

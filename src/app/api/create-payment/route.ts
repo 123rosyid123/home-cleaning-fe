@@ -5,7 +5,7 @@ const HITPAY_API_ENDPOINT = process.env.NEXT_PUBLIC_HITPAY_MODE === 'live'
   ? 'https://api.hit-pay.com/v1' 
   : 'https://api.sandbox.hit-pay.com/v1';
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { 

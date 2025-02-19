@@ -38,6 +38,7 @@ const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   longitude: null,
   phone: '',
   is_primary: false,
+  name: '',
 };
 
 const addressSchema = z.object({
@@ -50,6 +51,7 @@ const addressSchema = z.object({
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
   is_primary: z.boolean(),
+  name: z.string().min(1, 'Name is required'),
 });
 
 type AddressFormData = z.infer<typeof addressSchema>;
@@ -248,6 +250,7 @@ export function useAddressContent() {
       longitude: address.longitude,
       phone: address.phone,
       is_primary: address.is_primary,
+      name: address.name,
     });
     if (address.latitude && address.longitude) {
       setSelectedLocation({ lat: address.latitude, lng: address.longitude });

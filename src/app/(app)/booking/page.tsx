@@ -18,12 +18,12 @@ export default function Booking() {
             <span className="sm:hidden">Service</span>
           </li>
           <li className={`step ${step >= 2 ? 'step-primary' : ''}`}>
-            <span className="hidden sm:inline">Select Slot</span>
-            <span className="sm:hidden">Slot</span>
-          </li>
-          <li className={`step ${step >= 3 ? 'step-primary' : ''}`}>
             <span className="hidden sm:inline">Service Info</span>
             <span className="sm:hidden">Info</span>
+          </li>
+          <li className={`step ${step >= 3 ? 'step-primary' : ''}`}>
+            <span className="hidden sm:inline">Select Slot</span>
+            <span className="sm:hidden">Slot</span>
           </li>
           <li className={`step ${step >= 4 ? 'step-primary' : ''}`}>
             <span className="hidden sm:inline">Confirmation</span>
@@ -33,8 +33,8 @@ export default function Booking() {
 
         <div>
           {step === 1 && <SelectService />}
-          {step === 2 && <SelectSlot />}
-          {step === 3 && <ServiceInfo />}
+          {step === 2 && <ServiceInfo />}
+          {step === 3 && <SelectSlot />}
           {step === 4 && <Confirmation />}
         </div>
       </div>

@@ -151,8 +151,35 @@ export default function AddressContent() {
               <div>
                 <input
                   type="text"
+                  placeholder="Contact Name"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.name ? 'input-error' : ''}`}
+                  {...newAddressForm.register('name')}
+                />
+                {newAddressForm.formState.errors.name && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.name.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div>
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}
+                  {...newAddressForm.register('phone')}
+                />
+                {newAddressForm.formState.errors.phone && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.phone.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div>
+                <textarea
                   placeholder="Address"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.address ? 'input-error' : ''}`}
+                  className={`textarea textarea-bordered w-full ${newAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
                   {...newAddressForm.register('address')}
                 />
                 {newAddressForm.formState.errors.address && (
@@ -162,33 +189,18 @@ export default function AddressContent() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Postal Code"
-                    className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
-                    {...newAddressForm.register('postal_code')}
-                  />
-                  {newAddressForm.formState.errors.postal_code && (
-                    <label className="label">
-                      <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
-                    </label>
-                  )}
-                </div>
-                <div>
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className={`input input-bordered w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}
-                    {...newAddressForm.register('phone')}
-                  />
-                  {newAddressForm.formState.errors.phone && (
-                    <label className="label">
-                      <span className="label-text-alt text-error">{newAddressForm.formState.errors.phone.message}</span>
-                    </label>
-                  )}
-                </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Postal Code"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
+                  {...newAddressForm.register('postal_code')}
+                />
+                {newAddressForm.formState.errors.postal_code && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
+                  </label>
+                )}
               </div>
               
               <div className="form-control">
@@ -279,40 +291,57 @@ export default function AddressContent() {
               >
                 {editingId === address.id ? (
                   <form onSubmit={editAddressForm.handleSubmit(handleSaveEdit)} className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
+                    <div>
+                      <label className="label">
+                        <span className="label-text">Label</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Label (e.g., Home, Office)"
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.label ? 'input-error' : ''}`}
+                        {...editAddressForm.register('label')}
+                      />
+                      {editAddressForm.formState.errors.label && (
                         <label className="label">
-                          <span className="label-text">Label</span>
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.label.message}</span>
                         </label>
-                        <input
-                          type="text"
-                          placeholder="Label (e.g., Home, Office)"
-                          className={`input input-bordered w-full ${editAddressForm.formState.errors.label ? 'input-error' : ''}`}
-                          {...editAddressForm.register('label')}
-                        />
-                        {editAddressForm.formState.errors.label && (
-                          <label className="label">
-                            <span className="label-text-alt text-error">{editAddressForm.formState.errors.label.message}</span>
-                          </label>
-                        )}
-                      </div>
-                      <div>
-                        <label className="label">
-                          <span className="label-text">Phone Number</span>
-                        </label>
-                        <input
-                          type="tel"
-                          placeholder="Phone Number"
-                          className={`input input-bordered w-full ${editAddressForm.formState.errors.phone ? 'input-error' : ''}`}
-                          {...editAddressForm.register('phone')}
-                        />
-                        {editAddressForm.formState.errors.phone && (
-                          <label className="label">
-                            <span className="label-text-alt text-error">{editAddressForm.formState.errors.phone.message}</span>
-                          </label>
-                        )}
-                      </div>
+                      )}
                     </div>
+
+                    <div>
+                      <label className="label">
+                        <span className="label-text">Contact Name</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contact Name"
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.name ? 'input-error' : ''}`}
+                        {...editAddressForm.register('name')}
+                      />
+                      {editAddressForm.formState.errors.name && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.name.message}</span>
+                        </label>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="label">
+                        <span className="label-text">Phone Number</span>
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.phone ? 'input-error' : ''}`}
+                        {...editAddressForm.register('phone')}
+                      />
+                      {editAddressForm.formState.errors.phone && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.phone.message}</span>
+                        </label>
+                      )}
+                    </div>
+
                     <div>
                       <label className="label">
                         <span className="label-text">Address</span>
@@ -328,6 +357,7 @@ export default function AddressContent() {
                         </label>
                       )}
                     </div>
+
                     <div>
                       <label className="label">
                         <span className="label-text">Postal Code</span>
@@ -405,6 +435,7 @@ export default function AddressContent() {
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-lg">{address.label}</h3>
+                      <p className="text-base-content/70">Contact: {address.name}</p>
                       <p className="text-base-content/70">{address.address}</p>
                       <p className="text-base-content/70">
                         Postal Code: {address.postal_code}
