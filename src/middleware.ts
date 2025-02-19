@@ -17,7 +17,10 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (!authenticated) {
-    return NextResponse.redirect(new URL(LOGIN_PATH, request.url));
+    const intendedUrl = pathname + request.nextUrl.search;
+    const loginUrl = new URL(LOGIN_PATH, request.url);
+    loginUrl.searchParams.set('redirect', intendedUrl);
+    return NextResponse.redirect(loginUrl);
   }
 
   // Create a new headers object

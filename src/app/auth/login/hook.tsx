@@ -1,12 +1,12 @@
 'use client';
 
+import { actionLogin } from '@/app/actions/authActions';
 import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { actionLogin } from '@/app/actions/authLoginActions';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -17,6 +17,7 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const useLoginForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,20 +26,25 @@ export const useLoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
+    defaultValues: {
+      email: 'test@example.com',
+      password: 'password'
+    },
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
+      const redirectUrl = searchParams.get('redirect');
 
-      const response = await actionLogin(data);
+      const response = await actionLogin(data, redirectUrl || undefined);
 
-      if (!response.success) {
+      if (!response.success || !('result' in response)) {
         throw new Error(JSON.stringify(response));
       }
 
-      router.push('/booking');
+      router.push(response.result?.redirectUrl || '/booking');
     } catch (error) {
       toastError(error as APIError);
     } finally {

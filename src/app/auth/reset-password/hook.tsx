@@ -1,11 +1,11 @@
+import { actionResetPassword } from '@/app/actions/authActions';
 import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { actionResetPassword } from '@/app/actions/authResetPasswordAction';
 
 const resetPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),

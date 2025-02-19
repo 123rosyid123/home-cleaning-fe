@@ -1,12 +1,12 @@
 'use client';
 
+import { actionForgotPassword } from '@/app/actions/authActions';
+import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { actionForgotPassword } from '@/app/actions/authForgotPasswordActions';
-import { APIError, toastError } from '@/lib/toastFe';
 
 const forgotPasswordSchema = z.object({
   email: z.string()

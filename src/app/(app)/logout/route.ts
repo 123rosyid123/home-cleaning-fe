@@ -1,14 +1,17 @@
-import { clearSession } from '@/lib/session';
-import { apiLogout } from '@/services/authService';
+import { actionLogout } from '@/app/actions/authActions';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    await apiLogout();
-    await clearSession();
-    return NextResponse.redirect(new URL('/auth/login', process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'));
+    await actionLogout();
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.redirect(new URL('/auth/login', process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'));
+  } finally {
+    const response = NextResponse.redirect(
+      new URL('/', process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
+    );
+    response.cookies.delete('authenticated');
+    response.cookies.delete('user');
+    return response;
   }
-} 
+}

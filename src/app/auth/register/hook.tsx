@@ -1,12 +1,12 @@
 'use client';
 
+import { actionRegister } from '@/app/actions/authActions';
 import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { actionRegister } from '@/app/actions/authRegisterActions';
 
 const registerSchema = z
   .object({
