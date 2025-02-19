@@ -41,7 +41,7 @@ export default function Navbar({ user }: { user: UserProfile }) {
               Booking
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/upcoming" className={`rounded-lg ${isActive('/upcoming')}`}>
               Upcoming
             </Link>
@@ -60,7 +60,7 @@ export default function Navbar({ user }: { user: UserProfile }) {
             <Link href="/invoices" className={`rounded-lg ${isActive('/invoices')}`}>
               Invoices
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
 
@@ -105,10 +105,10 @@ export default function Navbar({ user }: { user: UserProfile }) {
             
             {/* Navigation Links */}
             <li onClick={handleClick}><Link href="/booking" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Booking</Link></li>
-            <li onClick={handleClick}><Link href="/upcoming" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Upcoming</Link></li>
+            {/* <li onClick={handleClick}><Link href="/upcoming" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Upcoming</Link></li>
             <li onClick={handleClick}><Link href="/history" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">History</Link></li>
             <li onClick={handleClick}><Link href="/rewards" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Rewards</Link></li>
-            <li onClick={handleClick}><Link href="/invoices" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Invoices</Link></li>
+            <li onClick={handleClick}><Link href="/invoices" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Invoices</Link></li> */}
             
             <div className="divider my-1"></div>
             
