@@ -33,18 +33,27 @@ export async function createSession(token: string) {
   setCookie(cookieStore, 'authenticated', token, maxAge);
 }
 
+export async function createUserSession(payload: object) {
+  const cookieStore = await cookies();
+
+  setCookie(cookieStore, 'user', JSON.stringify(payload), maxAge, false);
+}
+
 export async function clearSession() {
   const cookieStore = await cookies();
   cookieStore.delete('authenticated');
+  cookieStore.delete('user');
 }
 
 export async function getSession() {
   const cookieStore = await cookies();
 
   const authenticated = cookieStore.get('authenticated')?.value;
+  const user = cookieStore.get('user')?.value;
 
   return {
     authenticated,
+    user,
   };
 }
 
