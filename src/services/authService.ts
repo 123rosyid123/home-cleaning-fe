@@ -1,8 +1,9 @@
 import httpClient from '@/lib/httpClient';
 import {
-  RegisterResponse,
-  LoginResponse,
   ForgotPasswordResponse,
+  LoginResponse,
+  LogoutResponse,
+  RegisterResponse,
   ResetPasswordResponse,
 } from '@/types/authType';
 
@@ -48,3 +49,9 @@ export const apiResetPassword = async (
   });
   return response.data;
 };
+
+export const apiLogout = async (): Promise<LogoutResponse> => {
+  const response = await httpClient.post('/v1/auth/logout');
+  return response.data;
+};
+  
