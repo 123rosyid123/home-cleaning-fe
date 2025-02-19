@@ -11,6 +11,9 @@ import {
   actionSetPrimaryAddress
 } from '@/app/actions/addressActions';
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 type ApiSuccessResponse<T> = {
   success: true;
@@ -37,12 +40,24 @@ const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   is_primary: false,
 };
 
+const addressSchema = z.object({
+  label: z.string().min(1, 'Label is required'),
+  address: z.string().min(1, 'Address is required'),
+  postal_code: z.string().or(z.number())
+    .transform(val => val.toString())
+    .pipe(z.string().length(6, 'Postal code must be 6 characters')),
+  phone: z.string().min(1, 'Phone number is required'),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  is_primary: z.boolean(),
+});
+
+type AddressFormData = z.infer<typeof addressSchema>;
+
 export function useAddressContent() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingAddress, setEditingAddress] = useState<Omit<Address, 'id' | 'user_id'>>(emptyAddress);
-  const [newAddress, setNewAddress] = useState<Omit<Address, 'id' | 'user_id'>>(emptyAddress);
   const [showMap, setShowMap] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{lat: number, lng: number} | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +65,16 @@ export function useAddressContent() {
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
+
+  const newAddressForm = useForm<AddressFormData>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: emptyAddress,
+  });
+
+  const editAddressForm = useForm<AddressFormData>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: emptyAddress,
+  });
 
   // Fetch addresses on component mount
   useEffect(() => {
@@ -130,25 +155,19 @@ export function useAddressContent() {
         const { address, postal_code } = await getAddressFromLatLng(lat, lng);
         
         if (editingId !== null) {
-          setEditingAddress(prev => ({
-            ...prev,
-            address,
-            postal_code,
-            latitude: lat,
-            longitude: lng,
-          }));
+          editAddressForm.setValue('address', address);
+          editAddressForm.setValue('postal_code', postal_code);
+          editAddressForm.setValue('latitude', lat);
+          editAddressForm.setValue('longitude', lng);
         } else {
-          setNewAddress(prev => ({
-            ...prev,
-            address,
-            postal_code,
-            latitude: lat,
-            longitude: lng,
-          }));
+          newAddressForm.setValue('address', address);
+          newAddressForm.setValue('postal_code', postal_code);
+          newAddressForm.setValue('latitude', lat);
+          newAddressForm.setValue('longitude', lng);
         }
       }
     });
-  }, [editingId, updateMarkerPosition]);
+  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
 
   const handleSearchBoxLoad = useCallback((ref: google.maps.places.SearchBox) => {
     searchBoxRef.current = ref;
@@ -188,13 +207,19 @@ export function useAddressContent() {
         };
 
         if (editingId !== null) {
-          setEditingAddress(prev => ({ ...prev, ...addressData }));
+          editAddressForm.setValue('address', addressData.address);
+          editAddressForm.setValue('postal_code', addressData.postal_code);
+          editAddressForm.setValue('latitude', addressData.latitude);
+          editAddressForm.setValue('longitude', addressData.longitude);
         } else {
-          setNewAddress(prev => ({ ...prev, ...addressData }));
+          newAddressForm.setValue('address', addressData.address);
+          newAddressForm.setValue('postal_code', addressData.postal_code);
+          newAddressForm.setValue('latitude', addressData.latitude);
+          newAddressForm.setValue('longitude', addressData.longitude);
         }
       }
     }
-  }, [editingId, updateMarkerPosition]);
+  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
 
   const handleGetCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -217,32 +242,26 @@ export function useAddressContent() {
         const { address, postal_code } = await getAddressFromLatLng(lat, lng);
         
         if (editingId !== null) {
-          setEditingAddress(prev => ({
-            ...prev,
-            address,
-            postal_code,
-            latitude: lat,
-            longitude: lng,
-          }));
+          editAddressForm.setValue('address', address);
+          editAddressForm.setValue('postal_code', postal_code);
+          editAddressForm.setValue('latitude', lat);
+          editAddressForm.setValue('longitude', lng);
         } else {
-          setNewAddress(prev => ({
-            ...prev,
-            address,
-            postal_code,
-            latitude: lat,
-            longitude: lng,
-          }));
+          newAddressForm.setValue('address', address);
+          newAddressForm.setValue('postal_code', postal_code);
+          newAddressForm.setValue('latitude', lat);
+          newAddressForm.setValue('longitude', lng);
         }
       },
       (error) => {
         setError('Error getting location: ' + error.message);
       }
     );
-  }, [editingId, updateMarkerPosition]);
+  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
 
   const handleStartEdit = useCallback((address: Address) => {
     setEditingId(address.id);
-    setEditingAddress({
+    editAddressForm.reset({
       label: address.label,
       address: address.address,
       postal_code: address.postal_code,
@@ -254,16 +273,16 @@ export function useAddressContent() {
     if (address.latitude && address.longitude) {
       setSelectedLocation({ lat: address.latitude, lng: address.longitude });
     }
-  }, []);
+  }, [editAddressForm]);
 
-  const handleSaveEdit = useCallback(async () => {
+  const handleSaveEdit = useCallback(async (data: AddressFormData) => {
     if (editingId === null) return;
 
     try {
       setIsLoading(true);
       const result = await actionUpdateAddress({
         id: editingId,
-        ...editingAddress
+        ...data
       }) as ApiResponse<Address>;
       
       if (result.success) {
@@ -275,7 +294,7 @@ export function useAddressContent() {
         
         toast.success(result.message);
         setEditingId(null);
-        setEditingAddress(emptyAddress);
+        editAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
         setShowMap(false);
         if (markerRef.current) {
@@ -293,30 +312,30 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [editingId, editingAddress]);
+  }, [editingId, editAddressForm]);
 
   const handleCancelEdit = useCallback(() => {
     setEditingId(null);
-    setEditingAddress(emptyAddress);
+    editAddressForm.reset(emptyAddress);
     setSelectedLocation(null);
     setShowMap(false);
     if (markerRef.current) {
       markerRef.current.setMap(null);
       markerRef.current = null;
     }
-  }, []);
+  }, [editAddressForm]);
 
-  const handleAddNew = useCallback(async () => {
+  const handleAddNew = useCallback(async (data: AddressFormData) => {
     try {
       setIsLoading(true);
-      const result = await actionCreateAddress(newAddress) as ApiResponse<Address>;
+      const result = await actionCreateAddress(data) as ApiResponse<Address>;
       
       if (result.success) {
         setAddresses(prev => [...prev, result.result]);
         toast.success(result.message);
         
         setIsAddingNew(false);
-        setNewAddress(emptyAddress);
+        newAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
         setShowMap(false);
         if (markerRef.current) {
@@ -334,7 +353,7 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [newAddress]);
+  }, [newAddressForm]);
 
   const handleDelete = useCallback(async (id: number) => {
     try {
@@ -383,19 +402,31 @@ export function useAddressContent() {
     }
   }, []);
 
+  // Update form values when location is selected
+  useEffect(() => {
+    if (selectedLocation) {
+      const { lat, lng } = selectedLocation;
+      if (editingId !== null) {
+        editAddressForm.setValue('latitude', lat);
+        editAddressForm.setValue('longitude', lng);
+      } else {
+        newAddressForm.setValue('latitude', lat);
+        newAddressForm.setValue('longitude', lng);
+      }
+    }
+  }, [selectedLocation, editingId, editAddressForm, newAddressForm]);
+
   return {
     addresses,
     isAddingNew,
     editingId,
-    editingAddress,
-    newAddress,
     showMap,
     selectedLocation,
     error,
     isLoading,
+    newAddressForm,
+    editAddressForm,
     setIsAddingNew,
-    setEditingAddress,
-    setNewAddress,
     setShowMap,
     handleMapLoad,
     handleSearchBoxLoad,

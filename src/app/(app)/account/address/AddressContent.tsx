@@ -28,14 +28,12 @@ export default function AddressContent() {
     addresses,
     isAddingNew,
     editingId,
-    editingAddress,
-    newAddress,
     showMap,
     selectedLocation,
     isLoading,
+    newAddressForm,
+    editAddressForm,
     setIsAddingNew,
-    setEditingAddress,
-    setNewAddress,
     setShowMap,
     handleMapLoad,
     handleSearchBoxLoad,
@@ -131,44 +129,62 @@ export default function AddressContent() {
 
         {isAddingNew && (
           <div className="card bg-base-200 p-4 mb-4">
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Label (e.g., Home, Office)"
-                className="input input-bordered w-full"
-                value={newAddress.label}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, label: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Address"
-                className="input input-bordered w-full"
-                value={newAddress.address}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, address: e.target.value })
-                }
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={newAddressForm.handleSubmit(handleAddNew)} className="space-y-4">
+              <div>
                 <input
                   type="text"
-                  placeholder="Postal Code"
-                  className="input input-bordered"
-                  value={newAddress.postal_code}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, postal_code: e.target.value })
-                  }
+                  placeholder="Label (e.g., Home, Office)"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.label ? 'input-error' : ''}`}
+                  {...newAddressForm.register('label')}
                 />
+                {newAddressForm.formState.errors.label && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.label.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div>
                 <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  className="input input-bordered"
-                  value={newAddress.phone}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, phone: e.target.value })
-                  }
+                  type="text"
+                  placeholder="Address"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.address ? 'input-error' : ''}`}
+                  {...newAddressForm.register('address')}
                 />
+                {newAddressForm.formState.errors.address && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Postal Code"
+                    className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
+                    {...newAddressForm.register('postal_code')}
+                  />
+                  {newAddressForm.formState.errors.postal_code && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
+                    </label>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    className={`input input-bordered w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}
+                    {...newAddressForm.register('phone')}
+                  />
+                  {newAddressForm.formState.errors.phone && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{newAddressForm.formState.errors.phone.message}</span>
+                    </label>
+                  )}
+                </div>
               </div>
               
               <div className="form-control">
@@ -177,16 +193,13 @@ export default function AddressContent() {
                   <input
                     type="checkbox"
                     className="checkbox"
-                    checked={newAddress.is_primary}
-                    onChange={(e) =>
-                      setNewAddress({ ...newAddress, is_primary: e.target.checked })
-                    }
+                    {...newAddressForm.register('is_primary')}
                   />
                 </label>
               </div>
 
               <LocationButtons />
-              <CoordinatesDisplay lat={newAddress.latitude} lng={newAddress.longitude} />
+              <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} />
 
               {showMap && (
                 <div className="space-y-4">
@@ -207,18 +220,20 @@ export default function AddressContent() {
 
               <div className="flex flex-col sm:flex-row justify-end gap-2">
                 <button
+                  type="button"
                   className="btn btn-ghost w-full sm:w-auto"
                   onClick={() => {
                     setIsAddingNew(false);
                     setShowMap(false);
+                    newAddressForm.reset();
                   }}
                   disabled={isLoading}
                 >
                   Cancel
                 </button>
                 <button 
+                  type="submit"
                   className="btn btn-primary w-full sm:w-auto" 
-                  onClick={handleAddNew}
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -227,7 +242,7 @@ export default function AddressContent() {
                   Save Address
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         )}
 
@@ -247,7 +262,7 @@ export default function AddressContent() {
                 className="card bg-base-200 p-4 hover:bg-base-300 transition-colors"
               >
                 {editingId === address.id ? (
-                  <div className="space-y-4">
+                  <form onSubmit={editAddressForm.handleSubmit(handleSaveEdit)} className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="label">
@@ -256,12 +271,14 @@ export default function AddressContent() {
                         <input
                           type="text"
                           placeholder="Label (e.g., Home, Office)"
-                          className="input input-bordered w-full"
-                          value={editingAddress.label}
-                          onChange={(e) =>
-                            setEditingAddress({ ...editingAddress, label: e.target.value })
-                          }
+                          className={`input input-bordered w-full ${editAddressForm.formState.errors.label ? 'input-error' : ''}`}
+                          {...editAddressForm.register('label')}
                         />
+                        {editAddressForm.formState.errors.label && (
+                          <label className="label">
+                            <span className="label-text-alt text-error">{editAddressForm.formState.errors.label.message}</span>
+                          </label>
+                        )}
                       </div>
                       <div>
                         <label className="label">
@@ -270,12 +287,14 @@ export default function AddressContent() {
                         <input
                           type="tel"
                           placeholder="Phone Number"
-                          className="input input-bordered"
-                          value={editingAddress.phone}
-                          onChange={(e) =>
-                            setEditingAddress({ ...editingAddress, phone: e.target.value })
-                          }
+                          className={`input input-bordered w-full ${editAddressForm.formState.errors.phone ? 'input-error' : ''}`}
+                          {...editAddressForm.register('phone')}
                         />
+                        {editAddressForm.formState.errors.phone && (
+                          <label className="label">
+                            <span className="label-text-alt text-error">{editAddressForm.formState.errors.phone.message}</span>
+                          </label>
+                        )}
                       </div>
                     </div>
                     <div>
@@ -284,12 +303,14 @@ export default function AddressContent() {
                       </label>
                       <textarea
                         placeholder="Address"
-                        className="textarea textarea-bordered w-full"
-                        value={editingAddress.address}
-                        onChange={(e) =>
-                          setEditingAddress({ ...editingAddress, address: e.target.value })
-                        }
+                        className={`textarea textarea-bordered w-full ${editAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
+                        {...editAddressForm.register('address')}
                       />
+                      {editAddressForm.formState.errors.address && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address.message}</span>
+                        </label>
+                      )}
                     </div>
                     <div>
                       <label className="label">
@@ -298,16 +319,18 @@ export default function AddressContent() {
                       <input
                         type="text"
                         placeholder="Postal Code"
-                        className="input input-bordered w-full"
-                        value={editingAddress.postal_code}
-                        onChange={(e) =>
-                          setEditingAddress({ ...editingAddress, postal_code: e.target.value })
-                        }
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
+                        {...editAddressForm.register('postal_code')}
                       />
+                      {editAddressForm.formState.errors.postal_code && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.postal_code.message}</span>
+                        </label>
+                      )}
                     </div>
 
                     <LocationButtons />
-                    <CoordinatesDisplay lat={editingAddress.latitude} lng={editingAddress.longitude} />
+                    <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} />
 
                     {showMap && (
                       <div className="space-y-4">
@@ -328,6 +351,7 @@ export default function AddressContent() {
 
                     <div className="flex flex-col sm:flex-row justify-end gap-2">
                       <button
+                        type="button"
                         className="btn btn-ghost"
                         onClick={() => {
                           handleCancelEdit();
@@ -338,8 +362,8 @@ export default function AddressContent() {
                         Cancel
                       </button>
                       <button 
+                        type="submit"
                         className="btn btn-primary" 
-                        onClick={handleSaveEdit}
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -348,7 +372,7 @@ export default function AddressContent() {
                         Save Changes
                       </button>
                     </div>
-                  </div>
+                  </form>
                 ) : (
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div className="flex-1 min-w-0">
