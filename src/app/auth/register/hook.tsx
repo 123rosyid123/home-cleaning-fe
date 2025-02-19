@@ -1,11 +1,12 @@
 'use client';
 
+import { APIError, toastError } from '@/lib/toastFe';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { actionRegister } from './action';
-import { useRouter } from 'next/navigation';
 
 const registerSchema = z
   .object({
@@ -43,14 +44,16 @@ export const useRegisterForm = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setIsLoading(true);
-      
+
       const response = await actionRegister(data);
-      
-      if (response.success) {
-        router.push('/booking');
+
+      if (!response.success) {
+        throw new Error(JSON.stringify(response));
       }
+
+      router.push('/booking');
     } catch (error) {
-        console.error('Registration error:', error);
+      toastError(error as APIError);
     } finally {
       setIsLoading(false);
     }

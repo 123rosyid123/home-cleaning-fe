@@ -1,5 +1,6 @@
 'use client';
 
+import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -33,11 +34,13 @@ export const useLoginForm = () => {
 
       const response = await actionLogin(data);
 
-      if (response.success) {
-        router.push('/booking');
+      if (!response.success) {
+        throw new Error(JSON.stringify(response));
       }
+
+      router.push('/booking');
     } catch (error) {
-      console.error('Login error:', error);
+      toastError(error as APIError);
     } finally {
       setIsLoading(false);
     }
