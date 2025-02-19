@@ -23,7 +23,7 @@ export default function SelectSlot() {
     if (!date) {
       updateBookingData({ date: new Date() });
     }
-  }, []);
+  }, [date, updateBookingData]);
 
   const handlePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');

@@ -3,8 +3,9 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useLoginForm } from './hook';
+import { Suspense } from 'react';
 
-export default function LoginPage() {
+function LoginForm() {
   const { register, handleSubmit, errors, isLoading, onSubmit, showPassword, setShowPassword } = useLoginForm();
 
   const formAnimation = {
@@ -158,5 +159,15 @@ export default function LoginPage() {
         </Link>
       </motion.p>
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
+      <span className="loading loading-bars loading-lg"></span>
+    </div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
