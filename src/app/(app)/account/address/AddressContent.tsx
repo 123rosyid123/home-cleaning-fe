@@ -5,6 +5,7 @@ import {
   GoogleMap,
   StandaloneSearchBox,
   useLoadScript,
+  Marker,
 } from '@react-google-maps/api';
 import { useAddressContent, libraries } from './AddressContentHook';
 
@@ -45,17 +46,20 @@ export default function AddressContent() {
     handleAddNew,
     handleDelete,
     handleSetPrimary,
+    handleMapClick,
   } = useAddressContent();
 
   const LocationButtons = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <button
+        type='button'
         className="btn btn-secondary"
         onClick={() => setShowMap(true)}
       >
         <MapPin className="w-4 h-4 mr-2" /> Select from Map
       </button>
       <button
+        type='button'
         className="btn btn-secondary"
         onClick={handleGetCurrentLocation}
       >
@@ -211,7 +215,19 @@ export default function AddressContent() {
                         zoom={13}
                         center={selectedLocation || defaultCenter}
                         onLoad={handleMapLoad}
+                        onClick={(e) => {
+                          if (e.latLng) {
+                            const lat = e.latLng.lat();
+                            const lng = e.latLng.lng();
+                            handleMapClick({ lat, lng });
+                          }
+                        }}
                       >
+                        {selectedLocation && (
+                          <Marker
+                            position={selectedLocation}
+                          />
+                        )}
                       </GoogleMap>
                     </div>
                   )}
@@ -342,7 +358,19 @@ export default function AddressContent() {
                               zoom={13}
                               center={selectedLocation || defaultCenter}
                               onLoad={handleMapLoad}
+                              onClick={(e) => {
+                                if (e.latLng) {
+                                  const lat = e.latLng.lat();
+                                  const lng = e.latLng.lng();
+                                  handleMapClick({ lat, lng });
+                                }
+                              }}
                             >
+                              {selectedLocation && (
+                                <Marker
+                                  position={selectedLocation}
+                                />
+                              )}
                             </GoogleMap>
                           </div>
                         )}

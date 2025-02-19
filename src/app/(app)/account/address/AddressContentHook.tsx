@@ -45,7 +45,7 @@ const addressSchema = z.object({
   address: z.string().min(1, 'Address is required'),
   postal_code: z.string().or(z.number())
     .transform(val => val.toString())
-    .pipe(z.string().length(6, 'Postal code must be 6 characters')),
+    .pipe(z.string().min(1, 'Postal code is required')),
   phone: z.string().min(1, 'Phone number is required'),
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
@@ -64,7 +64,6 @@ export function useAddressContent() {
   const [isLoading, setIsLoading] = useState(false);
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
 
   const newAddressForm = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -100,17 +99,6 @@ export function useAddressContent() {
     fetchAddresses();
   }, []);
 
-  const updateMarkerPosition = useCallback((position: google.maps.LatLngLiteral, map: google.maps.Map) => {
-    if (markerRef.current) {
-      markerRef.current.setPosition(position);
-    } else {
-      markerRef.current = new google.maps.Marker({
-        position,
-        map,
-      });
-    }
-  }, []);
-
   const getAddressFromLatLng = async (lat: number, lng: number) => {
     const geocoder = new google.maps.Geocoder();
     try {
@@ -139,35 +127,28 @@ export function useAddressContent() {
     return { address: '', postal_code: '' };
   };
 
+  const handleMapClick = useCallback(async (position: { lat: number; lng: number }) => {
+    const { lat, lng } = position;
+    setSelectedLocation(position);
+    
+    const { address, postal_code } = await getAddressFromLatLng(lat, lng);
+    
+    if (editingId !== null) {
+      editAddressForm.setValue('address', address);
+      editAddressForm.setValue('postal_code', postal_code);
+      editAddressForm.setValue('latitude', lat);
+      editAddressForm.setValue('longitude', lng);
+    } else {
+      newAddressForm.setValue('address', address);
+      newAddressForm.setValue('postal_code', postal_code);
+      newAddressForm.setValue('latitude', lat);
+      newAddressForm.setValue('longitude', lng);
+    }
+  }, [editingId, editAddressForm, newAddressForm]);
+
   const handleMapLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
-    
-    // Add click event listener to map
-    map.addListener('click', async (event: google.maps.MapMouseEvent) => {
-      const lat = event.latLng?.lat();
-      const lng = event.latLng?.lng();
-      
-      if (lat && lng) {
-        const position = { lat, lng };
-        setSelectedLocation(position);
-        updateMarkerPosition(position, map);
-
-        const { address, postal_code } = await getAddressFromLatLng(lat, lng);
-        
-        if (editingId !== null) {
-          editAddressForm.setValue('address', address);
-          editAddressForm.setValue('postal_code', postal_code);
-          editAddressForm.setValue('latitude', lat);
-          editAddressForm.setValue('longitude', lng);
-        } else {
-          newAddressForm.setValue('address', address);
-          newAddressForm.setValue('postal_code', postal_code);
-          newAddressForm.setValue('latitude', lat);
-          newAddressForm.setValue('longitude', lng);
-        }
-      }
-    });
-  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
+  }, []);
 
   const handleSearchBoxLoad = useCallback((ref: google.maps.places.SearchBox) => {
     searchBoxRef.current = ref;
@@ -189,7 +170,6 @@ export function useAddressContent() {
         setSelectedLocation(position);
         mapRef.current.panTo(position);
         mapRef.current.setZoom(15);
-        updateMarkerPosition(position, mapRef.current);
 
         let postalCode = '';
         // Extract postal code from address components
@@ -219,7 +199,7 @@ export function useAddressContent() {
         }
       }
     }
-  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
+  }, [editingId, editAddressForm, newAddressForm]);
 
   const handleGetCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -236,7 +216,6 @@ export function useAddressContent() {
         if (mapRef.current) {
           mapRef.current.panTo(userLocation);
           mapRef.current.setZoom(15);
-          updateMarkerPosition(userLocation, mapRef.current);
         }
 
         const { address, postal_code } = await getAddressFromLatLng(lat, lng);
@@ -257,7 +236,7 @@ export function useAddressContent() {
         setError('Error getting location: ' + error.message);
       }
     );
-  }, [editingId, updateMarkerPosition, editAddressForm, newAddressForm]);
+  }, [editingId, editAddressForm, newAddressForm]);
 
   const handleStartEdit = useCallback((address: Address) => {
     setEditingId(address.id);
@@ -297,10 +276,6 @@ export function useAddressContent() {
         editAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
         setShowMap(false);
-        if (markerRef.current) {
-          markerRef.current.setMap(null);
-          markerRef.current = null;
-        }
       } else {
         toast.error(result.message);
         setError(result.message);
@@ -319,10 +294,6 @@ export function useAddressContent() {
     editAddressForm.reset(emptyAddress);
     setSelectedLocation(null);
     setShowMap(false);
-    if (markerRef.current) {
-      markerRef.current.setMap(null);
-      markerRef.current = null;
-    }
   }, [editAddressForm]);
 
   const handleAddNew = useCallback(async (data: AddressFormData) => {
@@ -338,10 +309,6 @@ export function useAddressContent() {
         newAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
         setShowMap(false);
-        if (markerRef.current) {
-          markerRef.current.setMap(null);
-          markerRef.current = null;
-        }
       } else {
         toast.error(result.message);
         setError(result.message);
@@ -438,5 +405,6 @@ export function useAddressContent() {
     handleAddNew,
     handleDelete,
     handleSetPrimary,
+    handleMapClick,
   };
 } 
