@@ -1,7 +1,7 @@
 'use server';
 
 import { apiLogin } from '@/services/authService';
-import { LoginFormData } from './hook';
+import { LoginFormData } from '../auth/login/hook';
 import { AxiosError } from 'axios';
 import { createSession, createUserSession } from '@/lib/session';
 import { buildSuccessResponse, buildErrorResponse } from '@/lib/apiResponse';

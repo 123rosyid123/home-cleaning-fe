@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { actionForgotPassword } from './action';
+import { actionForgotPassword } from '@/app/actions/authForgotPasswordActions';
 import { APIError, toastError } from '@/lib/toastFe';
 
 const forgotPasswordSchema = z.object({

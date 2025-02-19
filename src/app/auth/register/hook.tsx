@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { actionRegister } from './action';
+import { actionRegister } from '@/app/actions/authRegisterActions';
 
 const registerSchema = z
   .object({

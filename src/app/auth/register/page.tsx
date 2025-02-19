@@ -63,6 +63,7 @@ export default function RegisterPage() {
             <input
               type="email"
               placeholder="your@email.com"
+              autoComplete="email"
               className={`input input-bordered w-full transition-all duration-200 ${
                 errors.email ? 'input-error' : ''
               } focus:ring-2 focus:ring-primary/20`}
@@ -88,6 +89,7 @@ export default function RegisterPage() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
+              autoComplete="new-password"
               className={`input input-bordered w-full transition-all duration-200 ${
                 errors.password ? 'input-error' : ''
               } focus:ring-2 focus:ring-primary/20`}
@@ -129,6 +131,7 @@ export default function RegisterPage() {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
+              autoComplete="new-password"
               className={`input input-bordered w-full transition-all duration-200 ${
                 errors.confirmPassword ? 'input-error' : ''
               } focus:ring-2 focus:ring-primary/20`}

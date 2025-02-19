@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { actionResetPassword } from './action';
+import { actionResetPassword } from '@/app/actions/authResetPasswordAction';
 
 const resetPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),

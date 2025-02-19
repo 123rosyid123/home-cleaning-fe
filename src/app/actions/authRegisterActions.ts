@@ -4,7 +4,7 @@ import { createSession } from '@/lib/session';
 import { buildErrorResponse, buildSuccessResponse } from '@/lib/apiResponse';
 import { apiRegister } from '@/services/authService';
 import { AxiosError } from 'axios';
-import { RegisterFormData } from './hook';
+import { RegisterFormData } from '../auth/register/hook';
 
 export const actionRegister = async (formData: RegisterFormData) => {
   try {

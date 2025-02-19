@@ -60,6 +60,7 @@ export default function LoginPage() {
               className={`input input-bordered w-full transition-all duration-200 ${errors.email ? 'input-error' : ''
                 } focus:ring-2 focus:ring-primary/20`}
               {...register('email')}
+              autoComplete="email"
             />
           </motion.div>
           {errors.email && (
@@ -87,6 +88,7 @@ export default function LoginPage() {
               className={`input input-bordered w-full transition-all duration-200 ${errors.password ? 'input-error' : ''
                 } focus:ring-2 focus:ring-primary/20`}
               {...register('password')}
+              autoComplete="current-password"
             />
             <button
               type="button"

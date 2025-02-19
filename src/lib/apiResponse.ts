@@ -14,9 +14,9 @@ const getErrorContext = (error: Error | AxiosError) => {
   return error.message;
 };
 
-export const buildSuccessResponse = (
+export const buildSuccessResponse = <T>(
   message: string,
-  result: object | null = null
+  result: T | null = null
 ) => {
   return {
     success: true,

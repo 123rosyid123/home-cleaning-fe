@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { actionLogin } from './action';
+import { actionLogin } from '@/app/actions/authLoginActions';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
