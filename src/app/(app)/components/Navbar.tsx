@@ -38,29 +38,14 @@ export default function Navbar({ user }: { user: UserProfile }) {
         <ul className="menu menu-horizontal px-1 gap-1">
           <li>
             <Link href="/booking" className={`rounded-lg ${isActive('/booking')}`}>
-              Booking
-            </Link>
-          </li>
-          {/* <li>
-            <Link href="/upcoming" className={`rounded-lg ${isActive('/upcoming')}`}>
-              Upcoming
+              Book Now
             </Link>
           </li>
           <li>
-            <Link href="/history" className={`rounded-lg ${isActive('/history')}`}>
-              History
+            <Link href="/my-bookings" className={`rounded-lg ${isActive('/my-bookings')}`}>
+              My Bookings
             </Link>
           </li>
-          <li>
-            <Link href="/rewards" className={`rounded-lg ${isActive('/rewards')}`}>
-              Rewards
-            </Link>
-          </li>
-          <li>
-            <Link href="/invoices" className={`rounded-lg ${isActive('/invoices')}`}>
-              Invoices
-            </Link>
-          </li> */}
         </ul>
       </div>
 
@@ -104,11 +89,8 @@ export default function Navbar({ user }: { user: UserProfile }) {
             </li>
             
             {/* Navigation Links */}
-            <li onClick={handleClick}><Link href="/booking" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Booking</Link></li>
-            {/* <li onClick={handleClick}><Link href="/upcoming" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Upcoming</Link></li>
-            <li onClick={handleClick}><Link href="/history" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">History</Link></li>
-            <li onClick={handleClick}><Link href="/rewards" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Rewards</Link></li>
-            <li onClick={handleClick}><Link href="/invoices" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Invoices</Link></li> */}
+            <li onClick={handleClick}><Link href="/booking" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">Book Now</Link></li>
+            <li onClick={handleClick}><Link href="/my-bookings" className="text-white hover:bg-blue-700/50 active:bg-blue-600/50 py-3 mb-1 rounded-lg">My Bookings</Link></li>
             
             <div className="divider my-1"></div>
             

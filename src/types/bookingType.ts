@@ -1,5 +1,11 @@
 import { GenericResponse } from './genericResponse';
 
+export enum BookingStatus {
+  PENDING = 'pending',
+  CONFIRMED = 'confirmed',
+  CANCELLED = 'cancelled',
+}
+
 export interface AvailableTime {
   start_time: string;
   end_time: string;
@@ -35,5 +41,43 @@ export interface CreateBooking {
   payment_url: string;
 }
 
+export interface ListBookingRequest {
+  from_date: string;
+  end_date: string;
+  status: BookingStatus;
+}
+
+export interface ListBooking {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: BookingStatus;
+  total_price: number;
+  product_name: string;
+}
+
+export interface ListBookingPagination {
+  current_page: number;
+  data: ListBooking[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: Array<{
+    url: string | null;
+    label: string;
+    active: boolean;
+  }>;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
 export type AvailableTimeResponse = GenericResponse<AvailableTime[]>;
 export type CreateBookingResponse = GenericResponse<CreateBooking>;
+export type ListBookingResponse = GenericResponse<ListBookingPagination>;
+export type CancelBookingResponse = GenericResponse<null>;
