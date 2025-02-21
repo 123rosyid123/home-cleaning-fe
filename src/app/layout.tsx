@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from 'next';
-import './globals.css';
 import { Poppins } from 'next/font/google';
 import { Toaster } from 'sonner';
+import './globals.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -25,16 +25,19 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_SG',
     siteName: 'Home Cleaning Services Singapore',
+    url: process.env.NEXT_PUBLIC_CANONICAL_URL,
+    images: [
+      {
+        url: '/logo-only-ori.png',
+      },
+    ],
   },
   alternates: {
-    canonical: 'https://your-domain.com',
+    canonical: process.env.NEXT_PUBLIC_CANONICAL_URL,
   },
   robots: {
     index: true,
     follow: true,
-  },
-  verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION_ID',
   },
 };
 
