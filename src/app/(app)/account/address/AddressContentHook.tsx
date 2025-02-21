@@ -88,7 +88,6 @@ export function useAddressContent() {
         if (result.success) {
           const addressData = result.data || [];
           setAddresses(addressData);
-          setStoreAddresses(addressData);
         } else {
           toast.error(result.message);
           setError(result.message);
@@ -103,7 +102,7 @@ export function useAddressContent() {
     };
 
     fetchAddresses();
-  }, [setStoreAddresses]);
+  }, []);
 
   const getAddressFromLatLng = async (lat: number, lng: number) => {
     const geocoder = new google.maps.Geocoder();
@@ -368,7 +367,6 @@ export function useAddressContent() {
           is_primary: address.id === id,
         }));
         setAddresses(updatedAddresses);
-        setStoreAddresses(updatedAddresses);
         
         toast.success(result.message);
       } else {
@@ -382,7 +380,7 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [addresses, setStoreAddresses]);
+  }, [addresses]);
 
   // Update form values when location is selected
   useEffect(() => {

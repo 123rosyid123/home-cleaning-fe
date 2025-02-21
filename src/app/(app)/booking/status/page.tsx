@@ -20,10 +20,12 @@ export default async function BookingStatusPage({ searchParams }: { searchParams
   }
 
   let paymentStatus = 'not_found';
+  let paymentUrl = '';
   try {
     const paymentResponse = await actionGetPaymentStatus(singleReference);
     if (paymentResponse.success) {
       paymentStatus = paymentResponse.data?.status || 'not_found';
+      paymentUrl = paymentResponse.data?.payment_url || '';
     }
   } catch {
     paymentStatus = 'not_found';
@@ -31,7 +33,7 @@ export default async function BookingStatusPage({ searchParams }: { searchParams
 
   switch (paymentStatus) {
     case 'pending':
-      return <StatusPending />;
+      return <StatusPending paymentUrl={paymentUrl} />;
     case 'canceled':
       return <StatusCancelled />;
     case 'completed':

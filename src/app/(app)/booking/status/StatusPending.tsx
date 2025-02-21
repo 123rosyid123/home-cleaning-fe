@@ -1,7 +1,7 @@
-import { Clock, Home } from 'lucide-react';
+import { Clock, CreditCard, Home } from 'lucide-react';
 import Link from 'next/link';
 
-export default function StatusPending() {
+export default function StatusPending({ paymentUrl }: { paymentUrl: string }) {
   return (
     <div className="max-w-3xl mx-auto mt-20 text-center">
       <div className="bg-gradient-to-b from-white to-gray-50 shadow-2xl rounded-3xl p-12 mb-8 border border-gray-100">
@@ -34,15 +34,15 @@ export default function StatusPending() {
             <span>Return Home</span>
           </Link>
 
-          {/* <Link 
-            href="/bookings"
+          <Link 
+            href={paymentUrl}
             className="group px-8 py-4 rounded-xl bg-white text-primary font-medium 
               border-2 border-primary hover:bg-primary/5 transition-all duration-300
               inline-flex items-center gap-2 transform hover:scale-105"
           >
-            <Calendar className="w-5 h-5" />
-            <span>View Bookings</span>
-          </Link> */}
+            <CreditCard className="w-5 h-5" />
+            <span>Payment URL</span>
+          </Link>
         </div>
       </div>
 
