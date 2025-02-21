@@ -28,6 +28,8 @@ type StepAddress = {
   address: string;
   postalCode: string;
   additionalNotes: string;
+  latitude: number | null;
+  longitude: number | null;
   selectedAddressId: number | null;
 };
 
@@ -95,6 +97,8 @@ const initialState = {
     postalCode: '',
     additionalNotes: '',
     selectedAddressId: null,
+    latitude: null,
+    longitude: null,
   },
   ref: {
     addresses: [],
@@ -151,6 +155,8 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
             postalCode: primaryAddress.postal_code.toString(),
             phoneNumber: primaryAddress.phone,
             contactName: primaryAddress.name,
+            latitude: primaryAddress.latitude,
+            longitude: primaryAddress.longitude,
           },
         }),
       };
@@ -173,6 +179,8 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
             postalCode: selectedAddress.postal_code.toString(),
             phoneNumber: selectedAddress.phone,
             contactName: selectedAddress.name,
+            latitude: selectedAddress.latitude,
+            longitude: selectedAddress.longitude,
           },
         };
       }

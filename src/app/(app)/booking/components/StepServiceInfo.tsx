@@ -26,6 +26,8 @@ export default function ServiceInfo() {
     isNextButtonDisabled,
     selectAddress,
     handleAdditionalNotesChange,
+    latitude,
+    longitude,
   } = useServiceInfo();
 
   return (
@@ -163,9 +165,10 @@ export default function ServiceInfo() {
           />
           {address && (
             <div className="mt-4">
-              <AddressMap 
-                address={address} 
-                className="border border-primary/20 shadow-sm" 
+              <AddressMap
+                latitude={latitude || 0}
+                longitude={longitude || 0}
+                className="border border-primary/20 shadow-sm"
               />
             </div>
           )}
