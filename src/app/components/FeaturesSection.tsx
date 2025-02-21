@@ -1,3 +1,5 @@
+'use client';
+
 import { FiDollarSign, FiCalendar, FiAward } from 'react-icons/fi';
 
 export default function FeaturesSection() {

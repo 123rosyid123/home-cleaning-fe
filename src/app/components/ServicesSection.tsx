@@ -1,44 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { ProductVariant } from '@/types/productType';
 
-const servicesData = [
-  {
-    type: "One Time Cleaning",
-    priceRange: {
-      min: 17.44,
-      max: 27.25,
-      gstRange: "16 - 25"
-    },
-    inclusions: [
-      "Scrubbing toilets, showers, tubs and sinks",
-      "Dusting of all accessible surfaces",
-      "Wiping down mirrors and glass",
-      "Mopping and scrubbing floors",
-      "Emptying waste and recycling"
-    ],
-    cleanerInfo: "You will be assigned the closest cleaner available at your booked schedule",
-    isRecommended: false
-  },
-  {
-    type: "Recurring Cleaning",
-    priceRange: {
-      min: 19.62,
-      max: 23.98,
-      gstRange: "18 - 22"
-    },
-    inclusions: [
-      "Standard home cleaning checklist",
-      "Weekly and fortnightly options available",
-      "Instant booking confirmation",
-      "Same cleaner every session",
-      "Dedicated customer support"
-    ],
-    cleanerInfo: "You will be assigned the same cleaner for every recurring session so they remember your preferences",
-    isRecommended: true
-  }
-];
-
-export default function ServicesSection() {
+export default function ServicesSection({ productVariants }: { productVariants: ProductVariant[] }) {
   return (
     <section className="py-20 bg-blue-700">
       <div className="container mx-auto px-4">
@@ -51,25 +17,25 @@ export default function ServicesSection() {
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          {servicesData.map((service) => (
+          {productVariants.map((service) => (
             <div 
-              key={service.type}
+              key={service.metadata.type}
               className={`bg-white rounded-2xl p-6 w-[400px] h-[650px] shadow-lg relative flex flex-col ${
-                service.isRecommended ? 'border-t-4 border-[#FF6F3D]' : ''
+                service.metadata.isRecommended ? 'border-t-4 border-[#FF6F3D]' : ''
               }`}
             >
               <h2 className="text-[#0A46D6] text-lg font-semibold">
-                {service.type}
+                {service.metadata.type}
               </h2>
               <div className="flex justify-between items-start mt-2">
                 <div>
                   <div className="flex items-end space-x-2">
-                    <span className="text-[#0A46D6] text-3xl font-bold">${service.priceRange.min}</span>
+                    <span className="text-[#0A46D6] text-3xl font-bold">${service.metadata.priceRange.min}</span>
                     <span className="text-gray-500 text-xl">—</span>
-                    <span className="text-[#0A46D6] text-3xl font-bold">${service.priceRange.max}</span>
+                    <span className="text-[#0A46D6] text-3xl font-bold">${service.metadata.priceRange.max}</span>
                     <span className="text-gray-400 text-sm">/hr</span>
                   </div>
-                  <p className="text-gray-400 text-xs mt-1">${service.priceRange.gstRange}/hr + GST</p>
+                  <p className="text-gray-400 text-xs mt-1">${service.metadata.priceRange.gstRange}/hr + GST</p>
                 </div>
               </div>
 
@@ -85,7 +51,7 @@ export default function ServicesSection() {
                 <div className="bg-[#E9F1FF] rounded-xl mt-6 p-4">
                   <h3 className="text-[#0A46D6] font-semibold">This plan includes:</h3>
                   <ul className="list-disc text-sm text-[#0A46D6] mt-2 pl-5 space-y-1">
-                    {service.inclusions.map((inclusion, idx) => (
+                    {service.metadata.inclusions.map((inclusion, idx) => (
                       <li key={idx}>{inclusion}</li>
                     ))}
                   </ul>
@@ -93,11 +59,11 @@ export default function ServicesSection() {
 
                 <div className="bg-[#F3F5F9] rounded-xl mt-4 p-4">
                   <h3 className="text-[#0A46D6] font-semibold">Your assigned cleaner:</h3>
-                  <p className="text-sm text-[#0A46D6] mt-1">{service.cleanerInfo}</p>
+                  <p className="text-sm text-[#0A46D6] mt-1">{service.metadata.cleanerInfo}</p>
                 </div>
               </div>
 
-              {service.isRecommended && (
+              {service.metadata.isRecommended && (
                 <div className="flex flex-col items-center py-6 mb-2 transform hover:scale-105 transition-transform duration-200">
                   <div className="bg-[#E9F1FF] rounded-full p-3 shadow-md">
                     <Image 

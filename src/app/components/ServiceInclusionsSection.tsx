@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { GiKitchenTap, GiShower, GiBed, GiVacuumCleaner } from 'react-icons/gi';

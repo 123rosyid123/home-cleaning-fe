@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';

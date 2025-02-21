@@ -1,10 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function CTASection() {
   return (
     <section className="relative py-20 overflow-hidden">
       <div className="absolute inset-0 bg-blue-800"></div>
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-10"></div>
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?q=80&w=3540&auto=format')] bg-cover bg-center opacity-10"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center text-white">
           <h2 className="text-4xl font-bold mb-8">Ready for a Spotless Home?</h2>
