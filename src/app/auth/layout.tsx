@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 export default function AuthLayout({
   children,
@@ -10,9 +11,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center py-12 relative overflow-hidden"
-      style={{
-        backgroundImage: 'url("/images/background.jpeg")',
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center py-12 relative overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/background.jpeg")',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         backgroundBlendMode: 'overlay'
       }}>
@@ -61,8 +63,9 @@ export default function AuthLayout({
             <h1 className="text-2xl font-bold text-primary">Home Cleaning Singapore</h1>
             {children}
           </motion.div>
-        </div>
-      </motion.div>
-    </div>
+          </div>
+        </motion.div>
+      </div>
+    </Suspense>
   );
 }

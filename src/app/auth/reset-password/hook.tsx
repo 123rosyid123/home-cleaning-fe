@@ -25,11 +25,11 @@ type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export const useResetPassword = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
-  const searchParams = useSearchParams();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),

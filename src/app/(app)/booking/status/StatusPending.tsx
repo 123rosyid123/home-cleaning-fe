@@ -22,26 +22,26 @@ export default function StatusPending({ paymentUrl }: { paymentUrl: string }) {
           </p>
         </div>
 
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-4 flex-wrap">
           <Link
             href="/"
-            className="group px-8 py-4 rounded-xl bg-primary text-white font-medium 
+            className="group px-4 py-2 rounded-xl bg-primary text-white font-medium 
               hover:bg-primary/90 transition-all duration-300 shadow-lg 
               hover:shadow-primary/30 inline-flex items-center gap-2 
-              transform hover:scale-105"
+              transform hover:scale-105 sm:px-8 sm:py-4"
           >
             <Home className="w-5 h-5" />
-            <span>Return Home</span>
+            <span className="text-sm sm:text-base">Return Home</span>
           </Link>
 
           <Link 
             href={paymentUrl}
-            className="group px-8 py-4 rounded-xl bg-white text-primary font-medium 
+            className="group px-4 py-2 rounded-xl bg-white text-primary font-medium 
               border-2 border-primary hover:bg-primary/5 transition-all duration-300
-              inline-flex items-center gap-2 transform hover:scale-105"
+              inline-flex items-center gap-2 transform hover:scale-105 sm:px-8 sm:py-4"
           >
             <CreditCard className="w-5 h-5" />
-            <span>Payment URL</span>
+            <span className="text-sm sm:text-base">Payment URL</span>
           </Link>
         </div>
       </div>
