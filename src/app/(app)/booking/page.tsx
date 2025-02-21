@@ -1,13 +1,18 @@
 'use client';
 
 import { useBookingStore } from '@/store/bookingStore';
-import SelectService from './components/SelectService';
-import SelectSlot from './components/SelectSlot';
-import ServiceInfo from './components/ServiceInfo';
-import Confirmation from './components/Confirmation';
+import StepSelectService from './components/StepSelectService';
+import StepSelectSlot from './components/StepSelectSlot';
+import StepServiceInfo from './components/StepServiceInfo';
+import StepConfirmation from './components/StepConfirmation';
+import { useEffect } from 'react';
 
 export default function Booking() {
   const { step } = useBookingStore();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
 
   return (
     <div className="min-h-screen bg-base-100 p-4">
@@ -32,10 +37,10 @@ export default function Booking() {
         </ul>
 
         <div>
-          {step === 1 && <SelectService />}
-          {step === 2 && <ServiceInfo />}
-          {step === 3 && <SelectSlot />}
-          {step === 4 && <Confirmation />}
+          {step === 1 && <StepSelectService />}
+          {step === 2 && <StepServiceInfo />}
+          {step === 3 && <StepSelectSlot />}
+          {step === 4 && <StepConfirmation />}
         </div>
       </div>
     </div>

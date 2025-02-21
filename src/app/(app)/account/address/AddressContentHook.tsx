@@ -1,24 +1,25 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Address } from '@/types/addressType';
-import { Libraries } from '@react-google-maps/api';
-import { 
-  actionGetAddresses,
+import {
   actionCreateAddress,
-  actionUpdateAddress,
   actionDeleteAddress,
-  actionSetPrimaryAddress
+  actionGetAddresses,
+  actionSetPrimaryAddress,
+  actionUpdateAddress
 } from '@/app/actions/addressActions';
-import { toast } from 'sonner';
-import { useForm } from 'react-hook-form';
+import { Address } from '@/types/addressType';
+import { useBookingStore } from '@/store/bookingStore';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Libraries } from '@react-google-maps/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 type ApiSuccessResponse<T> = {
   success: true;
   message: string;
-  result: T;
+  data: T;
 };
 
 type ApiErrorResponse = {
@@ -61,11 +62,12 @@ export function useAddressContent() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showMap, setShowMap] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const setStoreAddresses = useBookingStore(state => state.setAddresses);
 
   const newAddressForm = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -82,9 +84,11 @@ export function useAddressContent() {
     const fetchAddresses = async () => {
       try {
         setIsLoading(true);
-        const result = await actionGetAddresses() as ApiResponse<Address[]>;
+        const result = await actionGetAddresses();
         if (result.success) {
-          setAddresses(result.result);
+          const addressData = result.data || [];
+          setAddresses(addressData);
+          setStoreAddresses(addressData);
         } else {
           toast.error(result.message);
           setError(result.message);
@@ -99,7 +103,7 @@ export function useAddressContent() {
     };
 
     fetchAddresses();
-  }, []);
+  }, [setStoreAddresses]);
 
   const getAddressFromLatLng = async (lat: number, lng: number) => {
     const geocoder = new google.maps.Geocoder();
@@ -132,9 +136,9 @@ export function useAddressContent() {
   const handleMapClick = useCallback(async (position: { lat: number; lng: number }) => {
     const { lat, lng } = position;
     setSelectedLocation(position);
-    
+
     const { address, postal_code } = await getAddressFromLatLng(lat, lng);
-    
+
     if (editingId !== null) {
       editAddressForm.setValue('address', address);
       editAddressForm.setValue('postal_code', postal_code);
@@ -163,12 +167,12 @@ export function useAddressContent() {
     if (places && places.length > 0) {
       const place = places[0];
       const location = place.geometry?.location;
-      
+
       if (location) {
         const lat = location.lat();
         const lng = location.lng();
         const position = { lat, lng };
-        
+
         setSelectedLocation(position);
         mapRef.current.panTo(position);
         mapRef.current.setZoom(15);
@@ -213,7 +217,7 @@ export function useAddressContent() {
       async (position) => {
         const { latitude: lat, longitude: lng } = position.coords;
         const userLocation = { lat, lng };
-        
+
         setSelectedLocation(userLocation);
         if (mapRef.current) {
           mapRef.current.panTo(userLocation);
@@ -221,7 +225,7 @@ export function useAddressContent() {
         }
 
         const { address, postal_code } = await getAddressFromLatLng(lat, lng);
-        
+
         if (editingId !== null) {
           editAddressForm.setValue('address', address);
           editAddressForm.setValue('postal_code', postal_code);
@@ -266,14 +270,16 @@ export function useAddressContent() {
         id: editingId,
         ...data
       }) as ApiResponse<Address>;
-      
+
       if (result.success) {
-        setAddresses(addresses => addresses.map(address => 
+        const updatedAddresses = addresses.map(address =>
           address.id === editingId
-            ? result.result
+            ? result.data
             : address
-        ));
-        
+        );
+        setAddresses(updatedAddresses);
+        setStoreAddresses(updatedAddresses);
+
         toast.success(result.message);
         setEditingId(null);
         editAddressForm.reset(emptyAddress);
@@ -290,7 +296,7 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [editingId, editAddressForm]);
+  }, [editingId, editAddressForm, addresses, setStoreAddresses]);
 
   const handleCancelEdit = useCallback(() => {
     setEditingId(null);
@@ -303,11 +309,13 @@ export function useAddressContent() {
     try {
       setIsLoading(true);
       const result = await actionCreateAddress(data) as ApiResponse<Address>;
-      
+
       if (result.success) {
-        setAddresses(prev => [...prev, result.result]);
-        toast.success(result.message);
+        const updatedAddresses = [...addresses, result.data];
+        setAddresses(updatedAddresses);
+        setStoreAddresses(updatedAddresses);
         
+        toast.success(result.message);
         setIsAddingNew(false);
         newAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
@@ -323,15 +331,18 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [newAddressForm]);
+  }, [newAddressForm, addresses, setStoreAddresses]);
 
   const handleDelete = useCallback(async (id: number) => {
     try {
       setIsLoading(true);
       const result = await actionDeleteAddress(id.toString()) as ApiResponse<void>;
-      
+
       if (result.success) {
-        setAddresses(prev => prev.filter(a => a.id !== id));
+        const updatedAddresses = addresses.filter(a => a.id !== id);
+        setAddresses(updatedAddresses);
+        setStoreAddresses(updatedAddresses);
+        
         toast.success(result.message);
       } else {
         toast.error(result.message);
@@ -344,20 +355,21 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [addresses, setStoreAddresses]);
 
   const handleSetPrimary = useCallback(async (id: number) => {
     try {
       setIsLoading(true);
       const result = await actionSetPrimaryAddress(id.toString()) as ApiResponse<void>;
-      
+
       if (result.success) {
-        setAddresses(prev =>
-          prev.map(address => ({
-            ...address,
-            is_primary: address.id === id,
-          }))
-        );
+        const updatedAddresses = addresses.map(address => ({
+          ...address,
+          is_primary: address.id === id,
+        }));
+        setAddresses(updatedAddresses);
+        setStoreAddresses(updatedAddresses);
+        
         toast.success(result.message);
       } else {
         toast.error(result.message);
@@ -370,7 +382,7 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [addresses, setStoreAddresses]);
 
   // Update form values when location is selected
   useEffect(() => {

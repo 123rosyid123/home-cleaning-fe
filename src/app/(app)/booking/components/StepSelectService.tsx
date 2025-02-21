@@ -1,45 +1,18 @@
 'use client';
 
-import { useBookingStore } from '@/store/bookingStore';
+import { useSelectService } from './StepSelectServiceHook';
 import ButtonNext from './ButtonNext';
 
 export default function SelectService() {
-  const { frequency, duration, updateBookingData } = useBookingStore();
-
-  const frequencies = [
-    { 
-      id: 'oneTime', 
-      name: 'One Time Cleaning',
-      basePrice: '$16-$25/hr',
-      gstPrice: '$17.44-$27.25 w/GST'
-    },
-    { 
-      id: 'everyOtherWeek', 
-      name: 'Every other week',
-      basePrice: '$18-$22/hr',
-      gstPrice: '$19.62-$23.98 w/GST',
-      badge: '*Same Cleaner'
-    },
-    { 
-      id: 'oncePerWeek', 
-      name: 'Once per Week',
-      basePrice: '$18-$22/hr',
-      gstPrice: '$19.62-$23.98 w/GST',
-      badge: '*Same Cleaner'
-    },
-    { 
-      id: 'moreThanOnce', 
-      name: '> Once per Week',
-      basePrice: '$18-$22/hr',
-      gstPrice: '$19.62-$23.98 w/GST',
-      badge: '*Same Cleaner'
-    }
-  ];
-
-  const durations = [
-    { id: '4hours', name: '4 Hours', badge: 'Value for money' },
-    { id: '3hours', name: '3 Hours' }
-  ];
+  const {
+    durationId,
+    productVariantId,
+    frequencies,
+    durations,
+    handleFrequencySelect,
+    handleDurationSelect,
+    isNextButtonDisabled
+  } = useSelectService();
 
   return (
     <div className="max-w-7xl mx-auto sm:py-8 space-y-8 sm:space-y-12">
@@ -56,20 +29,20 @@ export default function SelectService() {
           </h2>
         </div>
         <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 md:mb-10 leading-relaxed">
-          Select your preferred cleaning frequency, you can always change this again after the booking.
+          Select how often you would like your home cleaned. Regular cleaning helps maintain a consistently clean environment.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {frequencies.map((freq) => (
-            <div 
+            <div
               key={freq.id}
               className={`relative cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] rounded-[24px]
-                ${frequency === freq.id 
-                  ? 'ring-[3px] ring-primary shadow-xl bg-primary/5' 
+                ${productVariantId === freq.id
+                  ? 'ring-[3px] ring-primary shadow-xl bg-primary/5'
                   : 'hover:ring-2 hover:ring-primary/30 hover:shadow-lg bg-white'}`}
-              onClick={() => updateBookingData({ frequency: freq.id })}
+              onClick={() => handleFrequencySelect(freq.id)}
             >
               <div className={`border rounded-[24px] p-4 sm:p-5 md:p-6 h-full flex flex-col
-                ${frequency === freq.id ? 'border-primary/20' : 'border-gray-200'}`}>
+                ${productVariantId === freq.id ? 'border-primary/20' : 'border-gray-200'}`}>
                 <div className="h-6 sm:h-8 mb-2 sm:mb-3">
                   {freq.badge && (
                     <span className="inline-block bg-primary/10 text-primary text-[10px] sm:text-xs md:text-sm px-2 py-1 sm:px-3 md:px-4 sm:py-1.5 rounded-full font-medium">
@@ -78,7 +51,7 @@ export default function SelectService() {
                   )}
                 </div>
                 <h3 className={`font-semibold text-base sm:text-lg md:text-xl mb-2 sm:mb-3
-                  ${frequency === freq.id ? 'text-primary' : 'text-gray-800'}`}>
+                  ${productVariantId === freq.id ? 'text-primary' : 'text-gray-800'}`}>
                   {freq.name}
                 </h3>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1">{freq.basePrice}</p>
@@ -105,21 +78,21 @@ export default function SelectService() {
           </h2>
         </div>
         <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 md:mb-10 leading-relaxed">
-          We recommend at least 3 hrs for up to 2 bedrooms, and 4 hrs and up for larger apartments. You can always change this again. (Min 3 hours)
+          Choose how long you need the cleaner. Longer durations allow for more thorough cleaning.
         </p>
-        <div className="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6 max-w-7xl">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {durations.map((dur) => (
-            <div 
+            <div
               key={dur.id}
               className={`relative cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] rounded-[24px]
-                ${duration === dur.id 
-                  ? 'ring-[3px] ring-primary shadow-xl bg-primary/5' 
+                ${durationId === dur.id
+                  ? 'ring-[3px] ring-primary shadow-xl bg-primary/5'
                   : 'hover:ring-2 hover:ring-primary/30 hover:shadow-lg bg-white'}`}
-              onClick={() => updateBookingData({ duration: dur.id, time: undefined })}
+              onClick={() => handleDurationSelect(dur.id)}
             >
-              <div className={`border rounded-[24px] p-4 sm:p-5 md:p-6 h-full flex flex-col
-                ${duration === dur.id ? 'border-primary/20' : 'border-gray-200'}`}>
-                <div className="h-6 sm:h-8 mb-2 sm:mb-3">
+              <div className={`border rounded-[24px] p-3 sm:p-4 md:p-5 h-full flex flex-col items-start
+                ${durationId === dur.id ? 'border-primary/20' : 'border-gray-200'}`}>
+                <div className="h-6 sm:h-7 mb-1 sm:mb-2">
                   {dur.badge && (
                     <span className="inline-block bg-primary/10 text-primary text-[10px] sm:text-xs md:text-sm px-2 py-1 sm:px-3 md:px-4 sm:py-1.5 rounded-full font-medium">
                       {dur.badge}
@@ -127,7 +100,7 @@ export default function SelectService() {
                   )}
                 </div>
                 <h3 className={`font-semibold text-base sm:text-lg md:text-xl
-                  ${duration === dur.id ? 'text-primary' : 'text-gray-800'}`}>
+                  ${durationId === dur.id ? 'text-primary' : 'text-gray-800'}`}>
                   {dur.name}
                 </h3>
               </div>
@@ -137,7 +110,7 @@ export default function SelectService() {
       </div>
 
       <div className="mt-8 flex justify-end gap-4">
-        <ButtonNext text="Select Slot" disabled={!frequency || !duration} />
+        <ButtonNext text="Next" disabled={isNextButtonDisabled} />
       </div>
     </div>
   );

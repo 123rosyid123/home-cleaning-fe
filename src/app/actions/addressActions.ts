@@ -8,14 +8,15 @@ import {
   apiSetPrimaryAddress 
 } from '@/services/addressService';
 import { 
+  Address,
   CreateAddressRequest, 
   UpdateAddressRequest 
 } from '@/types/addressType';
 import { revalidatePath } from 'next/cache';
-import { buildSuccessResponse, buildErrorResponse } from '@/lib/apiResponse';
+import { buildSuccessResponse, buildErrorResponse, SuccessResponse, ErrorResponse } from '@/lib/apiResponse';
 import { AxiosError } from 'axios';
 
-export async function actionGetAddresses() {
+export async function actionGetAddresses(): Promise<SuccessResponse<Address[]> | ErrorResponse> {
   try {
     const response = await apiGetAddresses();
     return buildSuccessResponse(response.message, response.data);

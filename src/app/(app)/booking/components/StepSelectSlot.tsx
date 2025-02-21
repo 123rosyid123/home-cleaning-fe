@@ -1,11 +1,10 @@
 'use client';
 
-import { useBookingStore } from "@/store/bookingStore";
-import { useEffect, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import ButtonBack from "./ButtonBack";
 import ButtonNext from "./ButtonNext";
+import { useSelectSlot } from "./StepSelectSlotHook";
 
 // Add custom styles for the calendar
 const calendarStyles = `
@@ -16,61 +15,16 @@ const calendarStyles = `
 `;
 
 export default function SelectSlot() {
-  const { duration, date, time, postalCode, updateBookingData } = useBookingStore();
-
-  // Set default date to today when component mounts
-  useEffect(() => {
-    if (!date) {
-      updateBookingData({ date: new Date() });
-    }
-  }, [date, updateBookingData]);
-
-  const handlePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
-    if (value.length <= 6) {
-      updateBookingData({ postalCode: value });
-    }
-  };
-
-  // Function to generate time slots based on duration
-  const timeSlots = useMemo(() => {
-    const slots = [];
-    const durationHours = duration === "4hours" ? 4 : 3; // Duration in hours
-
-    // Start time: 9 AM (9 * 60 = 540 minutes)
-    // End time: 10 PM (22 * 60 = 1320 minutes)
-    let currentTime = 540;
-    const endTime = 1320;
-
-    while (currentTime + durationHours * 60 <= endTime) {
-      const startHours = Math.floor(currentTime / 60);
-      const startMinutes = currentTime % 60;
-      const startPeriod = startHours >= 12 ? "PM" : "AM";
-      const startDisplayHours = startHours > 12 ? startHours - 12 : startHours;
-
-      const endTimeValue = currentTime + durationHours * 60;
-      const endHours = Math.floor(endTimeValue / 60);
-      const endMinutes = endTimeValue % 60;
-      const endPeriod = endHours >= 12 ? "PM" : "AM";
-      const endDisplayHours = endHours > 12 ? endHours - 12 : endHours;
-
-      const timeString = {
-        display: `${String(startDisplayHours).padStart(2, "0")}.${String(startMinutes).padStart(
-          2,
-          "0"
-        )} ${startPeriod} - ${String(endDisplayHours).padStart(2, "0")}.${String(endMinutes).padStart(
-          2,
-          "0"
-        )} ${endPeriod}`,
-        value: `${String(startDisplayHours).padStart(2, "0")}.${String(startMinutes).padStart(2, "0")} ${startPeriod}`,
-      };
-
-      slots.push(timeString);
-      currentTime += durationHours * 60; // Add duration in minutes
-    }
-
-    return slots;
-  }, [duration]);
+  const {
+    date,
+    startTime,
+    postalCode,
+    timeSlots,
+    isLoading,
+    handleDateChange,
+    handleTimeSelect,
+    isNextDisabled
+  } = useSelectSlot();
 
   return (
     <div className="w-full max-w-7xl mx-auto sm:py-8">
@@ -103,7 +57,7 @@ export default function SelectSlot() {
                 pattern="[0-9]*"
                 inputMode="numeric"
                 value={postalCode || ''}
-                onChange={handlePostalCode}
+                disabled={true}
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -120,7 +74,7 @@ export default function SelectSlot() {
           <div className="calendar-container max-w-[400px] mx-auto lg:max-w-none">
             <style>{calendarStyles}</style>
             <Calendar
-              onChange={(newDate) => updateBookingData({ date: newDate as Date })}
+              onChange={handleDateChange}
               value={date || new Date()}
               minDate={new Date()}
               maxDate={new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)}
@@ -150,30 +104,49 @@ export default function SelectSlot() {
               Appointment Time
             </h3>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot.value}
-                className={`
-                  px-2 sm:px-4 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-medium 
-                  transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer
-                  ${time === slot.value
-                    ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
-                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                  }
-                `}
-                onClick={() => updateBookingData({ time: slot.value })}
-              >
-                {slot.display}
-              </button>
-            ))}
-          </div>
+          
+          {isLoading ? (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-sm text-gray-500">Loading available times...</p>
+              </div>
+            </div>
+          ) : timeSlots.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
+              {timeSlots.map((slot) => (
+                <button
+                  key={slot.value}
+                  className={`
+                    px-2 sm:px-4 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-medium 
+                    transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer
+                    ${startTime === slot.value
+                      ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
+                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                    }
+                  `}
+                  onClick={() => handleTimeSelect(slot.value)}
+                >
+                  <div className="flex flex-col gap-1">
+                    <span>{slot.display}</span>
+                    <span className="text-xs font-semibold">
+                      ${slot.price}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <p className="text-gray-500">No available time slots for this date</p>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="mt-8 flex justify-between gap-4">
         <ButtonBack />
-        <ButtonNext text="Book Appointment" disabled={!date || !time || !postalCode || postalCode.length !== 6} />
+        <ButtonNext text="Book Appointment" disabled={isNextDisabled} />
       </div>
     </div>
   );

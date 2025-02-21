@@ -1,7 +1,5 @@
 'use client';
 
-import { useBookingStore } from '@/store/bookingStore';
-import axios from 'axios';
 import {
   CalendarDays,
   Clock,
@@ -11,78 +9,14 @@ import {
   MapPin,
   Phone,
   RepeatIcon,
-  Timer,
   User
 } from 'lucide-react';
-import { useState } from 'react';
 import ButtonBack from './ButtonBack';
 import ButtonNext from './ButtonNext';
-
-type FrequencyType = 'oneTime' | 'everyOtherWeek' | 'oncePerWeek' | 'moreThanOnce';
-type DurationType = '4hours' | '3hours';
+import { useConfirmation } from './StepConfirmationHook';
 
 export default function Confirmation() {
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const {
-    frequency,
-    duration,
-    date,
-    time,
-    contactName,
-    phoneNumber,
-    email,
-    address,
-    postalCode,
-    additionalNotes,
-  } = useBookingStore();
-
-  const frequencies = {
-    oneTime: { name: 'One Time Cleaning', price: '$16-$25/hr' },
-    everyOtherWeek: { name: 'Every Other Week', price: '$18-$22/hr' },
-    oncePerWeek: { name: 'Once per Week', price: '$18-$22/hr' },
-    moreThanOnce: { name: '> Once per Week', price: '$18-$22/hr' }
-  };
-
-  const durations = {
-    '4hours': '4 Hours',
-    '3hours': '3 Hours'
-  };
-
-  const calculateAmount = () => {
-    // Calculate based on frequency and duration
-    const baseRate = frequency === 'oneTime' ? 25 : 22; // highest rate for one-time
-    const hours = duration === '4hours' ? 4 : 3;
-    return baseRate * hours;
-  };
-
-  const handleSubmit = async () => {
-    try {
-      setIsProcessing(true);
-
-      // Create unique reference for the booking
-      const reference_number = `BOOKING-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-
-      // Create payment request using axios
-      const { data } = await axios.post('/api/create-payment', {
-        amount: calculateAmount(),
-        currency: 'SGD',
-        email,
-        name: contactName,
-        phone: phoneNumber,
-        reference_number,
-        redirect_url: `${window.location.origin}/booking/success?ref=${reference_number}`
-      });
-
-      // Redirect to HitPay payment page
-      window.location.href = data.url;
-    } catch (error) {
-      console.error('Payment error:', error);
-      alert('Failed to process payment. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const { isProcessing, bookingData, handleSubmit } = useConfirmation();
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -120,37 +54,9 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Frequency</p>
-                  <p className="text-sm sm:text-base font-medium">{frequencies[frequency as FrequencyType]?.name}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Timer className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs sm:text-sm text-gray-500">Duration</p>
-                  <p className="text-sm sm:text-base font-medium">{durations[duration as DurationType]}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs sm:text-sm text-gray-500">Price</p>
-                  <p className="text-sm sm:text-base font-medium">{frequencies[frequency as FrequencyType]?.price}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <CalendarDays className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs sm:text-sm text-gray-500">Date</p>
-                  <p className="text-sm sm:text-base font-medium">{date?.toLocaleDateString()}</p>
+                  <p className="text-sm sm:text-base font-medium">
+                    {bookingData.frequency}
+                  </p>
                 </div>
               </div>
 
@@ -160,7 +66,31 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Time</p>
-                  <p className="text-sm sm:text-base font-medium">{time}</p>
+                  <p className="text-sm sm:text-base font-medium">
+                    {bookingData.startTime} - {bookingData.endTime} ({bookingData.duration})
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <DollarSign className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs sm:text-sm text-gray-500">Price (GST Inclusive)</p>
+                  <p className="text-sm sm:text-base font-medium">
+                    ${bookingData.price_gst}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <CalendarDays className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs sm:text-sm text-gray-500">Date</p>
+                  <p className="text-sm sm:text-base font-medium">{bookingData.date?.toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
@@ -176,7 +106,7 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Name</p>
-                  <p className="text-sm sm:text-base font-medium">{contactName}</p>
+                  <p className="text-sm sm:text-base font-medium">{bookingData.contactName}</p>
                 </div>
               </div>
 
@@ -186,7 +116,7 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Phone</p>
-                  <p className="text-sm sm:text-base font-medium">{phoneNumber}</p>
+                  <p className="text-sm sm:text-base font-medium">{bookingData.phoneNumber}</p>
                 </div>
               </div>
 
@@ -196,7 +126,7 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Email</p>
-                  <p className="text-sm sm:text-base font-medium">{email}</p>
+                  <p className="text-sm sm:text-base font-medium">{bookingData.email}</p>
                 </div>
               </div>
             </div>
@@ -210,14 +140,14 @@ export default function Confirmation() {
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Service Location</p>
-                <p className="text-sm sm:text-base font-medium mt-1">{address}</p>
-                <p className="text-sm sm:text-base font-medium">Postal Code: {postalCode}</p>
+                <p className="text-sm sm:text-base font-medium mt-1">{bookingData.address}</p>
+                <p className="text-sm sm:text-base font-medium">Postal Code: {bookingData.postalCode}</p>
               </div>
             </div>
           </div>
 
           {/* Additional Notes Section */}
-          {additionalNotes && (
+          {bookingData.additionalNotes && (
             <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
@@ -225,7 +155,7 @@ export default function Confirmation() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Additional Notes</p>
-                  <p className="text-sm sm:text-base font-medium mt-1">{additionalNotes}</p>
+                  <p className="text-sm sm:text-base font-medium mt-1">{bookingData.additionalNotes}</p>
                 </div>
               </div>
             </div>

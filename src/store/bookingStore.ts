@@ -1,87 +1,221 @@
-import { create } from 'zustand';
 import { Address } from '@/types/addressType';
+import { AvailableTime } from '@/types/bookingType';
+import { Duration } from '@/types/durationType';
+import { ProductVariant } from '@/types/productType';
+import { create } from 'zustand';
 
-type BookingState = {
-  step: number;
+type StepService = {
+  durationId: number;
+  productVariantId: number;
   frequency: string;
   duration: string;
+};
+
+type StepSlot = {
   date: Date | null;
-  time: string;
+  startTime: string;
+  endTime: string;
+  price_gst: number;
+  price: number;
+  cleanerId: number;
+};
+
+type StepAddress = {
+  addressId: number;
   contactName: string;
   phoneNumber: string;
   email: string;
   address: string;
   postalCode: string;
   additionalNotes: string;
-  addresses: Address[];
   selectedAddressId: number | null;
+};
+
+type BookingState = {
+  step: number;
+  stepService: StepService;
+  stepSlot: StepSlot;
+  stepAddress: StepAddress;
+  ref: {
+    addresses: Address[];
+    productVariants: ProductVariant[];
+    durations: Duration[];
+    availableTimes: {
+      [key: string]: AvailableTime[]; // key will be `${date}_${addressId}_${productVariantId}_${durationId}`
+    };
+  };
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
-  updateBookingData: (data: Partial<BookingState>) => void;
+  updateStepService: (data: Partial<StepService>) => void;
+  updateStepSlot: (data: Partial<StepSlot>) => void;
+  updateStepAddress: (data: Partial<StepAddress>) => void;
   resetBooking: () => void;
   setAddresses: (addresses: Address[]) => void;
   selectAddress: (addressId: number) => void;
-}
+  setProductVariants: (variants: ProductVariant[]) => void;
+  setDurations: (durations: Duration[]) => void;
+  setAvailableTimes: (
+    date: string,
+    addressId: number,
+    productVariantId: number,
+    durationId: number,
+    times: AvailableTime[]
+  ) => void;
+  getAvailableTimes: (
+    date: string,
+    addressId: number,
+    productVariantId: number,
+    durationId: number
+  ) => AvailableTime[] | null;
+};
 
 const initialState = {
   step: 1,
-  frequency: '',
-  duration: '',
-  date: null,
-  time: '',
-  contactName: '',
-  phoneNumber: '',
-  email: '',
-  address: '',
-  postalCode: '',
-  additionalNotes: '',
-  addresses: [],
-  selectedAddressId: null,
+  stepService: {
+    durationId: 0,
+    productVariantId: 0,
+    frequency: '',
+    duration: '',
+  },
+  stepSlot: {
+    date: null,
+    startTime: '',
+    endTime: '',
+    price_gst: 0,
+    price: 0,
+    cleanerId: 0,
+  },
+  stepAddress: {
+    addressId: 0,
+    contactName: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+    postalCode: '',
+    additionalNotes: '',
+    selectedAddressId: null,
+  },
+  ref: {
+    addresses: [],
+    productVariants: [],
+    durations: [],
+    availableTimes: {},
+  },
 };
 
-export const useBookingStore = create<BookingState>()((set) => ({
+export const useBookingStore = create<BookingState>()((set, get) => ({
   ...initialState,
 
   setStep: (step) => set({ step }),
-  
+
   nextStep: () => set((state) => ({ step: state.step + 1 })),
-  
+
   prevStep: () => set((state) => ({ step: state.step - 1 })),
-  
-  updateBookingData: (data) => 
-    set((state) => ({ ...state, ...data })),
-  
+
+  updateStepService: (data) =>
+    set((state) => ({
+      ...state,
+      stepService: { ...state.stepService, ...data },
+    })),
+
+  updateStepSlot: (data) =>
+    set((state) => ({
+      ...state,
+      stepSlot: { ...state.stepSlot, ...data },
+    })),
+
+  updateStepAddress: (data) =>
+    set((state) => ({
+      ...state,
+      stepAddress: { ...state.stepAddress, ...data },
+    })),
+
   resetBooking: () => set(initialState),
 
   setAddresses: (addresses) => {
-    set({ addresses });
-    // Set default address if there's a primary one
-    const primaryAddress = addresses.find(addr => addr.is_primary);
-    if (primaryAddress) {
-      set({
-        selectedAddressId: primaryAddress.id,
-        address: primaryAddress.address,
-        postalCode: primaryAddress.postal_code.toString(),
-        phoneNumber: primaryAddress.phone,
-        contactName: primaryAddress.name
-      });
-    }
+    set((state) => {
+      const primaryAddress = addresses.find((addr) => addr.is_primary);
+      return {
+        ...state,
+        ref: {
+          ...state.ref,
+          addresses,
+        },
+        ...(primaryAddress && {
+          stepAddress: {
+            ...state.stepAddress,
+            addressId: primaryAddress.id,
+            selectedAddressId: primaryAddress.id,
+            address: primaryAddress.address,
+            postalCode: primaryAddress.postal_code.toString(),
+            phoneNumber: primaryAddress.phone,
+            contactName: primaryAddress.name,
+          },
+        }),
+      };
+    });
   },
 
   selectAddress: (addressId) => {
     set((state) => {
-      const selectedAddress = state.addresses.find(addr => addr.id === addressId);
+      const selectedAddress = state.ref.addresses.find(
+        (addr) => addr.id === addressId
+      );
       if (selectedAddress) {
         return {
-          selectedAddressId: addressId,
-          address: selectedAddress.address,
-          postalCode: selectedAddress.postal_code.toString(),
-          phoneNumber: selectedAddress.phone,
-          contactName: selectedAddress.name
+          ...state,
+          stepAddress: {
+            ...state.stepAddress,
+            addressId: addressId,
+            selectedAddressId: addressId,
+            address: selectedAddress.address,
+            postalCode: selectedAddress.postal_code.toString(),
+            phoneNumber: selectedAddress.phone,
+            contactName: selectedAddress.name,
+          },
         };
       }
       return state;
     });
-  }
+  },
+
+  setProductVariants: (variants: ProductVariant[]) => {
+    set((state) => ({
+      ...state,
+      ref: {
+        ...state.ref,
+        productVariants: variants,
+      },
+    }));
+  },
+
+  setDurations: (durations: Duration[]) => {
+    set((state) => ({
+      ...state,
+      ref: {
+        ...state.ref,
+        durations,
+      },
+    }));
+  },
+
+  setAvailableTimes: (date, addressId, productVariantId, durationId, times) => {
+    const key = `${date}_${addressId}_${productVariantId}_${durationId}`;
+    set((state) => ({
+      ...state,
+      ref: {
+        ...state.ref,
+        availableTimes: {
+          ...state.ref.availableTimes,
+          [key]: times,
+        },
+      },
+    }));
+  },
+
+  getAvailableTimes: (date, addressId, productVariantId, durationId) => {
+    const key = `${date}_${addressId}_${productVariantId}_${durationId}`;
+    return get().ref.availableTimes[key] || null;
+  },
 }));

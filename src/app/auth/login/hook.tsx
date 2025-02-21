@@ -38,13 +38,12 @@ export const useLoginForm = () => {
       setIsLoading(true);
       const redirectUrl = searchParams.get('redirect');
 
-      const response = await actionLogin(data, redirectUrl || undefined);
-
-      if (!response.success || !('result' in response)) {
+      const response = await actionLogin(data);
+      if (!response.success) {
         throw new Error(JSON.stringify(response));
       }
 
-      router.push(response.result?.redirectUrl || '/booking');
+      router.push(redirectUrl || '/booking');
     } catch (error) {
       toastError(error as APIError);
     } finally {

@@ -1,15 +1,12 @@
 'use client';
 
-import { useBookingStore } from '@/store/bookingStore';
 import { motion } from 'framer-motion';
 import ButtonNext from './ButtonNext';
 import ButtonBack from './ButtonBack';
-import { useEffect } from 'react';
-import axios from 'axios';
-import { Address } from '@/types/addressType';
 import { cn } from '@/lib/utils';
-import { useAccountStore } from '@/store/accountStore';
 import Link from 'next/link';
+import { useServiceInfo } from './StepServiceInfoHook';
+import AddressMap from './AddressMap';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -26,35 +23,10 @@ export default function ServiceInfo() {
     additionalNotes,
     addresses,
     selectedAddressId,
-    updateBookingData,
-    setAddresses,
-    selectAddress
-  } = useBookingStore();
-
-  const { account } = useAccountStore();
-
-  useEffect(() => {
-    if (account?.email && !email) {
-      updateBookingData({ email: account.email });
-    }
-  }, [account, email, updateBookingData]);
-
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const response = await axios.get<{ success: boolean; message: string; result: Address[] }>('/api/booking/addresses');
-        if (response.data.success && response.data.result) {
-          setAddresses(response.data.result);
-        }
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-      }
-    };
-
-    if (addresses.length === 0) {
-      fetchAddresses();
-    }
-  }, [addresses.length, setAddresses]);
+    isNextButtonDisabled,
+    selectAddress,
+    handleAdditionalNotesChange,
+  } = useServiceInfo();
 
   return (
     <motion.div
@@ -145,7 +117,6 @@ export default function ServiceInfo() {
               className="input input-bordered w-full input-primary"
               value={phoneNumber || ''}
               readOnly
-              onChange={(e) => updateBookingData({ phoneNumber: e.target.value })}
               placeholder="+65 Phone Number"
             />
           </div>
@@ -159,8 +130,7 @@ export default function ServiceInfo() {
             type="email"
             className="input input-bordered w-full input-primary"
             value={email || ''}
-            readOnly={!!account?.email}
-            onChange={(e) => updateBookingData({ email: e.target.value })}
+            readOnly
             placeholder="Enter your email"
           />
         </div>
@@ -188,10 +158,17 @@ export default function ServiceInfo() {
           <textarea
             className="textarea textarea-primary w-full"
             value={address || ''}
-            onChange={(e) => updateBookingData({ address: e.target.value })}
-            placeholder="Enter full address"
             readOnly
+            placeholder="Enter full address"
           />
+          {address && (
+            <div className="mt-4">
+              <AddressMap 
+                address={address} 
+                className="border border-primary/20 shadow-sm" 
+              />
+            </div>
+          )}
         </div>
       </motion.div>
 
@@ -213,15 +190,15 @@ export default function ServiceInfo() {
           <textarea
             className="textarea textarea-primary w-full h-32"
             value={additionalNotes || ''}
-            onChange={(e) => updateBookingData({ additionalNotes: e.target.value })}
-            placeholder="Enter additional notes. Please note that for hygiene reasons our cleaners do not bring equipment - imagine a mop that has mopped 50 bathrooms being used in your house! But fret not - a list of recommended equipment will be sent to you on booking confirmation"
+            onChange={(e) => handleAdditionalNotesChange(e.target.value)}
+            placeholder="Enter additional notes for the cleaner..."
           />
         </div>
       </motion.div>
 
       <div className="mt-8 flex justify-between">
         <ButtonBack />
-        <ButtonNext text="Confirmation" disabled={!contactName || !phoneNumber || !email || !address} />
+        <ButtonNext text="Next" disabled={isNextButtonDisabled} />
       </div>
     </motion.div>
   );
