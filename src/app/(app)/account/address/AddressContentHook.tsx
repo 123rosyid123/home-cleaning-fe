@@ -7,10 +7,11 @@ import {
   actionSetPrimaryAddress,
   actionUpdateAddress
 } from '@/app/actions/addressActions';
-import { Address } from '@/types/addressType';
 import { useBookingStore } from '@/store/bookingStore';
+import { Address } from '@/types/addressType';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Libraries } from '@react-google-maps/api';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -68,6 +69,8 @@ export function useAddressContent() {
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const setStoreAddresses = useBookingStore(state => state.setAddresses);
+  const step = useBookingStore(state => state.step);
+  const router = useRouter();
 
   const newAddressForm = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -313,12 +316,17 @@ export function useAddressContent() {
         const updatedAddresses = [...addresses, result.data];
         setAddresses(updatedAddresses);
         setStoreAddresses(updatedAddresses);
-        
+
         toast.success(result.message);
         setIsAddingNew(false);
         newAddressForm.reset(emptyAddress);
         setSelectedLocation(null);
         setShowMap(false);
+
+        // If this is the first address being added, redirect to booking page
+        if (addresses.length === 0 && step === 2) {
+          router.push('/booking');
+        }
       } else {
         toast.error(result.message);
         setError(result.message);
@@ -330,7 +338,7 @@ export function useAddressContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [newAddressForm, addresses, setStoreAddresses]);
+  }, [newAddressForm, addresses, setStoreAddresses, router, step]);
 
   const handleDelete = useCallback(async (id: number) => {
     try {
@@ -341,7 +349,7 @@ export function useAddressContent() {
         const updatedAddresses = addresses.filter(a => a.id !== id);
         setAddresses(updatedAddresses);
         setStoreAddresses(updatedAddresses);
-        
+
         toast.success(result.message);
       } else {
         toast.error(result.message);
@@ -367,7 +375,7 @@ export function useAddressContent() {
           is_primary: address.id === id,
         }));
         setAddresses(updatedAddresses);
-        
+
         toast.success(result.message);
       } else {
         toast.error(result.message);
