@@ -1,13 +1,14 @@
 import { actionResetPassword } from '@/app/actions/authActions';
 import { APIError, toastError } from '@/lib/toastFe';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 const resetPasswordSchema = z.object({
+  token: z.string(),
   email: z.string().email('Invalid email address'),
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
@@ -24,35 +25,26 @@ type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export const useResetPassword = () => {
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    setToken(searchParams.get('token'));
-    setUserEmail(searchParams.get('email'));
-  }, []);
+  const searchParams = useSearchParams();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      email: userEmail || '',
+      token: searchParams.get('token') || '',
+      email: searchParams.get('email') || '',
       password: '',
       passwordConfirmation: '',
     },
   });
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    if (!token) {
-      toast.error('Reset token is missing');
-      return;
-    }
-
     try {
       const response = await actionResetPassword(
-        token,
+        data.token,
         data.email,
         data.password,
         data.passwordConfirmation

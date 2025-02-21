@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useResetPassword } from './hook';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { useResetPassword } from './hook';
 
 export default function ResetPasswordPage() {
   const {
@@ -68,8 +68,9 @@ export default function ResetPasswordPage() {
             <input
               type="email"
               placeholder="your@email.com"
+              autoComplete="email"
               className={`input input-bordered w-full transition-all duration-200 ${errors.email ? 'input-error' : ''
-              } focus:ring-2 focus:ring-primary/20`}
+                } focus:ring-2 focus:ring-primary/20`}
               readOnly
               {...register('email')}
             />
@@ -96,8 +97,9 @@ export default function ResetPasswordPage() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
+              autoComplete="new-password"
               className={`input input-bordered w-full transition-all duration-200 ${errors.password ? 'input-error' : ''
-              } focus:ring-2 focus:ring-primary/20`}
+                } focus:ring-2 focus:ring-primary/20`}
               {...register('password')}
             />
             <button
@@ -130,8 +132,9 @@ export default function ResetPasswordPage() {
             <input
               type={showPasswordConfirmation ? "text" : "password"}
               placeholder="••••••••"
+              autoComplete="new-password"
               className={`input input-bordered w-full transition-all duration-200 ${errors.passwordConfirmation ? 'input-error' : ''
-              } focus:ring-2 focus:ring-primary/20`}
+                } focus:ring-2 focus:ring-primary/20`}
               {...register('passwordConfirmation')}
             />
             <button
@@ -162,7 +165,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             className={`btn btn-primary w-full shadow-lg shadow-primary/20 text-sm sm:text-base h-10 min-h-0 sm:h-12 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+              }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
