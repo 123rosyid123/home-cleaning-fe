@@ -4,6 +4,7 @@ export enum BookingStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
+  COMPLETED = 'completed',
 }
 
 export interface AvailableTime {
@@ -45,6 +46,7 @@ export interface ListBookingRequest {
   from_date: string;
   end_date: string;
   status: BookingStatus;
+  page?: number;
 }
 
 export interface ListBooking {
