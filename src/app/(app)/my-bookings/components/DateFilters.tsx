@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 
 interface DateFiltersProps {
   selectedDays: { from?: Date; to?: Date };
@@ -6,6 +7,25 @@ interface DateFiltersProps {
 }
 
 const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays }) => {
+  const today = new Date();
+  const todayStr = format(today, 'yyyy-MM-dd');
+
+  const handleFromDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFromDate = e.target.value ? new Date(e.target.value) : undefined;
+    
+    // If to date exists and is before the new from date, reset it
+    if (selectedDays.to && newFromDate && selectedDays.to < newFromDate) {
+      setSelectedDays({ from: newFromDate, to: undefined });
+    } else {
+      setSelectedDays({ ...selectedDays, from: newFromDate });
+    }
+  };
+
+  const handleToDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newToDate = e.target.value ? new Date(e.target.value) : undefined;
+    setSelectedDays({ ...selectedDays, to: newToDate });
+  };
+
   return (
     <div className="flex space-x-4">
       <div className="flex flex-col">
@@ -13,11 +33,9 @@ const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays
         <input
           id="from-date"
           type="date"
-          value={selectedDays.from ? selectedDays.from.toISOString().split('T')[0] : ''}
-          onChange={(e) => {
-            const newFromDate = e.target.value ? new Date(e.target.value) : undefined;
-            setSelectedDays({ ...selectedDays, from: newFromDate });
-          }}
+          max={todayStr}
+          value={selectedDays.from ? format(selectedDays.from, 'yyyy-MM-dd') : ''}
+          onChange={handleFromDateChange}
           className="input input-bordered rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         />
       </div>
@@ -26,11 +44,10 @@ const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays
         <input
           id="to-date"
           type="date"
-          value={selectedDays.to ? selectedDays.to.toISOString().split('T')[0] : ''}
-          onChange={(e) => {
-            const newToDate = e.target.value ? new Date(e.target.value) : undefined;
-            setSelectedDays({ ...selectedDays, to: newToDate });
-          }}
+          min={selectedDays.from ? format(selectedDays.from, 'yyyy-MM-dd') : ''}
+          max={todayStr}
+          value={selectedDays.to ? format(selectedDays.to, 'yyyy-MM-dd') : ''}
+          onChange={handleToDateChange}
           className="input input-bordered rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         />
       </div>

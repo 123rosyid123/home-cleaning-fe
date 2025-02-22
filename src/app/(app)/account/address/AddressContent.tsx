@@ -115,8 +115,7 @@ export default function AddressContent() {
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="text-2xl font-bold">My Addresses</h2>
+        <div className="flex flex-col sm:flex-row-reverse items-start sm:items-center gap-4 mb-6">
           <button
             className="btn btn-primary w-full sm:w-auto"
             onClick={() => setIsAddingNew(true)}
