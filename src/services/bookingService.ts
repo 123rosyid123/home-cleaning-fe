@@ -5,6 +5,7 @@ import {
   CancelBookingResponse,
   CreateBookingRequest,
   CreateBookingResponse,
+  DetailBookingResponse,
   ListBookingRequest,
   ListBookingResponse,
 } from '@/types/bookingType';
@@ -30,6 +31,13 @@ export const apiListBooking = async (
   query: ListBookingRequest | undefined
 ): Promise<ListBookingResponse> => {
   const response = await httpClient.get('/v1/bookings', { params: query });
+  return response.data;
+};
+
+export const apiGetBookingById = async (
+  bookingId: string
+): Promise<DetailBookingResponse> => {
+  const response = await httpClient.get(`/v1/bookings/${bookingId}`);
   return response.data;
 };
 

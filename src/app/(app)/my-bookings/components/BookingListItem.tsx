@@ -2,6 +2,7 @@ import { BookingStatus } from '@/types/bookingType';
 import { format } from 'date-fns';
 import { Calendar, CheckCircle, Clock, DollarSign } from 'lucide-react';
 import React from 'react';
+import Link from 'next/link';
 
 interface BookingListItemProps {
   booking: {
@@ -32,7 +33,7 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
     if (booking.status === BookingStatus.PENDING) {
       return (
         <button 
-          className="btn btn-secondary btn-sm hover:bg-red-700 transition duration-200 rounded-lg shadow w-32" 
+          className="btn btn-secondary btn-sm hover:bg-red-700 transition duration-200 rounded-lg shadow w-full md:w-32" 
           onClick={() => cancelBooking(booking.id)}
         >
           Cancel Booking
@@ -69,7 +70,9 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
           </div>
 
           <div className="flex flex-col gap-2 justify-end mt-2 md:mt-0">
-            <button className="btn btn-primary btn-sm hover:bg-blue-700 transition duration-200 rounded-lg shadow w-32">View Details</button>
+            <Link href={`/my-bookings/${booking.id}`} className="w-full md:w-auto">
+              <button className="btn btn-primary btn-sm hover:bg-blue-700 transition duration-200 rounded-lg shadow w-full md:w-32">View Details</button>
+            </Link>
             {renderCancelButton()}
           </div>
         </div>

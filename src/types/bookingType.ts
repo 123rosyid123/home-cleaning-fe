@@ -79,7 +79,63 @@ export interface ListBookingPagination {
   total: number;
 }
 
+export interface DetailBooking {
+  id: string;
+  user_id: string;
+  cleaner_id: string;
+  master_product_id: number;
+  product_variant_id: string;
+  address: string;
+  postal_code: string;
+  phone: string;
+  status: BookingStatus;
+  comment: string | null;
+  additional_information: string | null;
+  date: string;
+  start_time: string;
+  end_time: string;
+  total_price: number;
+  promo_code: string;
+  discount: number | null;
+  cleaner: {
+    id: string;
+    name: string;
+    postal_code: string;
+    latitude: string;
+    longitude: string;
+    is_active: boolean;
+    phone: string;
+  };
+  product: {
+    id: string;
+    name: string;
+    description: string;
+    is_active: boolean;
+  };
+  product_variant: {
+    id: string;
+    product_id: string;
+    name: string;
+    peak_price: number;
+    offpeak_price: number;
+    is_recurring: boolean;
+    metadata: {
+      type: string;
+      inclusions: string[];
+      priceRange: {
+        max: number;
+        min: number;
+        gstRange: string;
+      };
+      cleanerInfo: string;
+      isRecommended: boolean;
+    };
+  };
+  payment: null;
+}
+
 export type AvailableTimeResponse = GenericResponse<AvailableTime[]>;
 export type CreateBookingResponse = GenericResponse<CreateBooking>;
 export type ListBookingResponse = GenericResponse<ListBookingPagination>;
 export type CancelBookingResponse = GenericResponse<null>;
+export type DetailBookingResponse = GenericResponse<DetailBooking>;
