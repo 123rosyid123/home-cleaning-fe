@@ -18,11 +18,13 @@ interface BookingListItemProps {
 }
 
 const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBooking }) => {
+  const [showModal, setShowModal] = React.useState(false);
+
   const renderStatus = () => {
-    const statusClass = booking.status === BookingStatus.COMPLETED ? 'text-blue-500' : 
-                        booking.status === BookingStatus.CONFIRMED ? 'text-green-500' : 
-                        booking.status === BookingStatus.PENDING ? 'text-yellow-500' : 
-                        'text-red-500';
+    const statusClass = booking.status === BookingStatus.COMPLETED ? 'text-blue-500' :
+      booking.status === BookingStatus.CONFIRMED ? 'text-green-500' :
+        booking.status === BookingStatus.PENDING ? 'text-yellow-500' :
+          'text-red-500';
     return (
       <span className={`ml-2 font-bold ${statusClass}`}>
         {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
@@ -33,9 +35,9 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
   const renderCancelButton = () => {
     if (booking.status === BookingStatus.PENDING) {
       return (
-        <button 
-          className="btn btn-secondary hover:bg-red-600 transition duration-200 rounded-lg shadow w-full md:w-32 md:btn-sm btn-sm" 
-          onClick={() => cancelBooking(booking.id)}
+        <button
+          className="btn btn-secondary hover:bg-red-600 transition duration-200 rounded-lg shadow w-full md:w-32 md:btn-sm btn-sm"
+          onClick={() => setShowModal(true)}
         >
           Cancel Booking
         </button>
@@ -46,7 +48,7 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
 
   return (
     <li key={booking.id} className="card bg-white shadow-md hover:shadow-lg transition-shadow duration-200 w-full p-2 rounded-lg">
-      <div className="card-body">
+      <div className="p-4 md:card-body">
         <h2 className="font-semibold text-sm flex items-center">
           <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
           {booking.product_name}
@@ -78,8 +80,28 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
           </div>
         </div>
       </div>
+      {showModal && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-base-200 border border-base-300 rounded-lg shadow-lg">
+            <h2 className="font-bold text-lg">Cancel Booking</h2>
+            <p className="mt-2">Are you sure you want to cancel this booking?</p>
+            <div className="modal-action">
+              <button className="btn" onClick={() => setShowModal(false)}>No, Keep</button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => {
+                  cancelBooking(booking.id);
+                  setShowModal(false);
+                }}
+              >
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </li>
   );
 };
 
-export default BookingListItem; 
+export default BookingListItem;

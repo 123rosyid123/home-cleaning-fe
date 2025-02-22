@@ -5,7 +5,7 @@ import {
 import { useMyBookingStore } from '@/store/myBookingStore';
 import { BookingStatus } from '@/types/bookingType';
 import { format } from 'date-fns';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export const useBookings = () => {
   const {
@@ -24,76 +24,116 @@ export const useBookings = () => {
     setPerPage,
     perPage,
     total,
+    totalPages,
   } = useMyBookingStore();
 
-  const prevSelectedDays = useRef(selectedDays);
-  const prevStatusFilter = useRef(statusFilter);
-  const prevCurrentPage = useRef(currentPage);
+  // Memoize previous values with useRef to avoid re-renders
+  const prevValues = useRef({
+    selectedDays,
+    statusFilter,
+    currentPage,
+  });
 
-  // Set default date range to last week only if selectedDays is not set
+  // Set default date range only once on mount
   useEffect(() => {
-    const today = new Date();
-    const lastWeek = new Date();
-    lastWeek.setDate(today.getDate() - 7);
-
-    // Check if selectedDays.from or selectedDays.to is null
     if (!selectedDays.from && !selectedDays.to) {
-      setSelectedDays({ from: lastWeek, to: today });
+      const today = new Date();
+      const next2Weeks = new Date(today);
+      next2Weeks.setDate(today.getDate() + 14);
+      const lastWeek = new Date(today);
+      lastWeek.setDate(today.getDate() - 7);
+
+      setSelectedDays({ from: lastWeek, to: next2Weeks });
     }
   }, [selectedDays, setSelectedDays]);
 
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [statusFilter, selectedDays.from, selectedDays.to, setCurrentPage]);
-
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
+  const fetchBookings = useCallback(async () => {
+    setLoading(true);
+    try {
       const result = await actionListBooking({
-        from_date: selectedDays.from ? format(new Date(selectedDays.from), 'yyyy-MM-dd') : '',
-        end_date: selectedDays.to ? format(new Date(selectedDays.to), 'yyyy-MM-dd') : '',
+        from_date: selectedDays.from
+          ? format(selectedDays.from, 'yyyy-MM-dd')
+          : '',
+        end_date: selectedDays.to ? format(selectedDays.to, 'yyyy-MM-dd') : '',
         status: statusFilter as BookingStatus,
         page: currentPage,
       });
 
       if (result.success) {
-        setBookings(result.data?.data || []);
-        setTotalPages(result.data?.last_page || 1);
-        setTotal(result.data?.total || 0);
-        setPerPage(result.data?.per_page || 10);
+        const {
+          data = [],
+          last_page = 1,
+          total = 0,
+          per_page = 10,
+        } = result.data || {};
+        setBookings(data);
+        setTotalPages(last_page);
+        setTotal(total);
+        setPerPage(per_page);
       } else {
         console.error('Failed to fetch bookings:', result);
       }
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    } finally {
       setLoading(false);
+    }
+  }, [
+    selectedDays,
+    statusFilter,
+    currentPage,
+    setBookings,
+    setLoading,
+    setTotalPages,
+    setTotal,
+    setPerPage,
+  ]);
+
+  useEffect(() => {
+    const {
+      selectedDays: prevSelectedDays,
+      statusFilter: prevStatusFilter,
+      currentPage: prevCurrentPage,
+    } = prevValues.current;
+
+    const filtersChanged =
+      statusFilter !== prevStatusFilter ||
+      selectedDays.from !== prevSelectedDays.from ||
+      selectedDays.to !== prevSelectedDays.to;
+
+    const hasChanged = filtersChanged || currentPage !== prevCurrentPage;
+
+    if (!hasChanged) return;
+
+    if (filtersChanged) {
+      setCurrentPage(1);
+    }
+
+    fetchBookings();
+
+    prevValues.current = {
+      selectedDays,
+      statusFilter,
+      currentPage,
     };
+  }, [selectedDays, statusFilter, currentPage, setCurrentPage, fetchBookings]);
 
-    // Check if any of the values have changed
-    if (
-      selectedDays.from !== prevSelectedDays.current.from ||
-      selectedDays.to !== prevSelectedDays.current.to ||
-      statusFilter !== prevStatusFilter.current ||
-      currentPage !== prevCurrentPage.current
-    ) {
-      fetchBookings();
-    }
+  const cancelBooking = useCallback(
+    async (bookingId: string) => {
+      try {
+        const result = await actionCancelBooking(bookingId);
+        if (result.success) {
+          setBookings(bookings.filter((booking) => booking.id !== bookingId));
+          fetchBookings(); // Refresh the list
+        }
+      } catch (error) {
+        console.error('Error canceling booking:', error);
+      }
+    },
+    [bookings, setBookings, fetchBookings]
+  );
 
-    // Update previous values
-    prevSelectedDays.current = selectedDays;
-    prevStatusFilter.current = statusFilter;
-    prevCurrentPage.current = currentPage;
-  }, [selectedDays, statusFilter, currentPage, setBookings, setLoading, setTotalPages, setTotal, setPerPage]);
-
-  const cancelBooking = async (bookingId: string) => {
-    const result = await actionCancelBooking(bookingId);
-    if (result.success) {
-      const updatedBookings = bookings.filter(
-        (booking) => booking.id !== bookingId
-      );
-      setBookings(updatedBookings);
-    }
-  };
-
+  // Memoize pagination calculations
   const startIndex = (currentPage - 1) * perPage + 1;
   const endIndex = Math.min(currentPage * perPage, total);
 
@@ -107,9 +147,9 @@ export const useBookings = () => {
     setStatusFilter,
     currentPage,
     setCurrentPage,
-    totalPages: useMyBookingStore((state) => state.totalPages),
-    total: useMyBookingStore((state) => state.total),
-    perPage: useMyBookingStore((state) => state.perPage),
+    totalPages,
+    total,
+    perPage,
     startIndex,
     endIndex,
   };

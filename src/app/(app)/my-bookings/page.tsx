@@ -1,5 +1,6 @@
 'use client';
 
+import BookingEmpty from './components/BookingEmpty';
 import BookingListItem from './components/BookingListItem';
 import DateFilters from './components/DateFilters';
 import Pagination from './components/Pagination';
@@ -35,20 +36,28 @@ export default function MyBookings() {
         <Skeleton />
       ) : (
         <>
-          <ul className="grid grid-cols-1 gap-4 mb-4">
-            {bookings.map((booking) => (
-              <BookingListItem key={booking.id} booking={booking} cancelBooking={cancelBooking} />
-            ))}
-          </ul>
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              startIndex={startIndex}
-              endIndex={endIndex}
-              total={total}
-            />
+          {bookings.length === 0 ? (
+            <div className="flex items-center justify-center min-h-[60vh]">
+              <BookingEmpty />
+            </div>
+          ) : (
+            <>
+              <ul className="grid grid-cols-1 gap-4 mb-4">
+                {bookings.map((booking) => (
+                  <BookingListItem key={booking.id} booking={booking} cancelBooking={cancelBooking} />
+                ))}
+              </ul>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                  startIndex={startIndex}
+                  endIndex={endIndex}
+                  total={total}
+                />
+              )}
+            </>
           )}
         </>
       )}
