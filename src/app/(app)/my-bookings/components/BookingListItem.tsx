@@ -1,7 +1,7 @@
-import React from 'react';
-import { Calendar, Clock, DollarSign, CheckCircle } from 'lucide-react';
-import { format } from 'date-fns';
 import { BookingStatus } from '@/types/bookingType';
+import { format } from 'date-fns';
+import { Calendar, CheckCircle, Clock, DollarSign } from 'lucide-react';
+import React from 'react';
 
 interface BookingListItemProps {
   booking: {
@@ -33,8 +33,8 @@ const BookingListItem: React.FC<BookingListItemProps> = ({ booking, cancelBookin
           </div>
 
           <div className="flex flex-col gap-2 justify-end mt-2 md:mt-0">
-            <button className="btn btn-primary btn-sm hover:bg-blue-700 transition duration-200 rounded-lg shadow">View Details</button>
-            {booking.status === BookingStatus.PENDING && <button className="btn btn-secondary btn-sm hover:bg-red-700 transition duration-200 rounded-lg shadow" onClick={() => cancelBooking(booking.id)}>Cancel Booking</button>}
+            <button className="btn btn-primary btn-sm hover:bg-blue-700 transition duration-200 rounded-lg shadow w-32">View Details</button>
+            {booking.status === BookingStatus.PENDING && <button className="btn btn-secondary btn-sm hover:bg-red-700 transition duration-200 rounded-lg shadow w-32" onClick={() => cancelBooking(booking.id)}>Cancel Booking</button>}
           </div>
         </div>
       </div>

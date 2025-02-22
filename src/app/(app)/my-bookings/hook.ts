@@ -5,7 +5,7 @@ import {
 import { useMyBookingStore } from '@/store/myBookingStore';
 import { BookingStatus } from '@/types/bookingType';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const useBookings = () => {
   const {
@@ -25,6 +25,10 @@ export const useBookings = () => {
     perPage,
     total,
   } = useMyBookingStore();
+
+  const prevSelectedDays = useRef(selectedDays);
+  const prevStatusFilter = useRef(statusFilter);
+  const prevCurrentPage = useRef(currentPage);
 
   // Set default date range to last week only if selectedDays is not set
   useEffect(() => {
@@ -64,9 +68,20 @@ export const useBookings = () => {
       setLoading(false);
     };
 
-    if (selectedDays.from && selectedDays.to) {
+    // Check if any of the values have changed
+    if (
+      selectedDays.from !== prevSelectedDays.current.from ||
+      selectedDays.to !== prevSelectedDays.current.to ||
+      statusFilter !== prevStatusFilter.current ||
+      currentPage !== prevCurrentPage.current
+    ) {
       fetchBookings();
     }
+
+    // Update previous values
+    prevSelectedDays.current = selectedDays;
+    prevStatusFilter.current = statusFilter;
+    prevCurrentPage.current = currentPage;
   }, [selectedDays, statusFilter, currentPage, setBookings, setLoading, setTotalPages, setTotal, setPerPage]);
 
   const cancelBooking = async (bookingId: string) => {
