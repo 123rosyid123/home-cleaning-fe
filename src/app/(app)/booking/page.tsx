@@ -17,6 +17,7 @@ export default function Booking() {
   return (
     <div className="min-h-screen bg-base-100 p-4">
       <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4 text-center md:hidden">Book Now</h1>
         <ul className="steps w-full mb-8">
           <li className={`step ${step >= 1 ? 'step-primary' : ''}`}>
             <span className="hidden sm:inline">Select Service</span>

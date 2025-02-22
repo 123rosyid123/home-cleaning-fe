@@ -1,9 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
-import { GiKitchenTap, GiShower, GiBed, GiVacuumCleaner } from 'react-icons/gi';
-import Image from 'next/image';
+import { GiBed, GiKitchenTap, GiShower, GiVacuumCleaner } from 'react-icons/gi';
 
 const services = [
   {
@@ -68,7 +68,7 @@ export default function ServiceInclusionsSection() {
   const [activeService, setActiveService] = useState(0);
 
   return (
-    <section className="py-12 sm:py-24 bg-gradient-to-b from-base-200 to-base-100">
+    <section className="py-12 sm:py-24 bg-gradient-to-b from-base-200 to-base-100" id="service-inclusions">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl sm:text-5xl font-bold mb-8 sm:mb-16 text-blue-800">
           Home Cleaning Service Inclusions
@@ -81,11 +81,10 @@ export default function ServiceInclusionsSection() {
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
-                className={`flex-shrink-0 w-16 sm:w-20 h-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ${
-                  activeService === index
+                className={`flex-shrink-0 w-16 sm:w-20 h-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ${activeService === index
                     ? 'bg-primary text-white shadow-lg scale-110'
                     : 'bg-white text-primary shadow hover:scale-105'
-                }`}
+                  }`}
               >
                 {service.icon}
                 <span className="text-[10px] sm:text-xs font-medium text-center">
@@ -148,11 +147,10 @@ export default function ServiceInclusionsSection() {
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
-                className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full transition-all duration-300 ${
-                  activeService === index
+                className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full transition-all duration-300 ${activeService === index
                     ? 'bg-primary w-6 sm:w-8'
                     : 'bg-primary/30'
-                }`}
+                  }`}
               />
             ))}
           </div>

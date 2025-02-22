@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import { FaMapMarkerAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 export default function HeroSection() {
   const fadeIn = {
@@ -96,7 +96,7 @@ export default function HeroSection() {
               <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
             </Link>
             <Link
-              href="/services"
+              href="#service-inclusions"
               className="btn btn-ghost sm:btn-lg border-2 border-white hover:bg-white hover:text-black transition-colors duration-300 px-4 sm:px-8"
             >
               Explore Services
