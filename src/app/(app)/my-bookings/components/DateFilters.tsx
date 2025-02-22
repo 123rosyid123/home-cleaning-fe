@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { format, addWeeks } from 'date-fns';
 
 interface DateFiltersProps {
   selectedDays: { from?: Date; to?: Date };
@@ -8,7 +8,8 @@ interface DateFiltersProps {
 
 const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays }) => {
   const today = new Date();
-  const todayStr = format(today, 'yyyy-MM-dd');
+  const maxDate = addWeeks(today, 2);
+  const maxDateStr = format(maxDate, 'yyyy-MM-dd');
 
   const handleFromDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFromDate = e.target.value ? new Date(e.target.value) : undefined;
@@ -27,25 +28,25 @@ const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays
   };
 
   return (
-    <div className="flex space-x-4">
-      <div className="flex flex-col">
+    <div className="flex space-x-4 flex-row justify-between">
+      <div className="flex flex-col w-full">
         <label htmlFor="from-date" className="text-sm font-medium">From</label>
         <input
           id="from-date"
           type="date"
-          max={todayStr}
+          max={maxDateStr}
           value={selectedDays.from ? format(selectedDays.from, 'yyyy-MM-dd') : ''}
           onChange={handleFromDateChange}
           className="input input-bordered rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         />
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full">
         <label htmlFor="to-date" className="text-sm font-medium">End Date</label>
         <input
           id="to-date"
           type="date"
           min={selectedDays.from ? format(selectedDays.from, 'yyyy-MM-dd') : ''}
-          max={todayStr}
+          max={maxDateStr}
           value={selectedDays.to ? format(selectedDays.to, 'yyyy-MM-dd') : ''}
           onChange={handleToDateChange}
           className="input input-bordered rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
