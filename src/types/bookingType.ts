@@ -1,5 +1,5 @@
 import { GenericResponse } from './genericResponse';
-
+import { PaymentStatusEnum } from './paymentType';
 export enum BookingStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
@@ -43,7 +43,7 @@ export interface CreateBooking {
 }
 
 export interface ListBookingRequest {
-  from_date: string;
+  start_date: string;
   end_date: string;
   status: BookingStatus;
   page?: number;
@@ -88,50 +88,80 @@ export interface DetailBooking {
   address: string;
   postal_code: string;
   phone: string;
+  name: string;
   status: BookingStatus;
   comment: string | null;
   additional_information: string | null;
   date: string;
   start_time: string;
   end_time: string;
+  latitude: string;
+  longitude: string;
   total_price: number;
   promo_code: string;
   discount: number | null;
-  cleaner: {
-    id: string;
-    name: string;
-    postal_code: string;
-    latitude: string;
-    longitude: string;
-    is_active: boolean;
-    phone: string;
-  };
-  product: {
-    id: string;
-    name: string;
-    description: string;
-    is_active: boolean;
-  };
-  product_variant: {
-    id: string;
-    product_id: string;
-    name: string;
-    peak_price: number;
-    offpeak_price: number;
-    is_recurring: boolean;
-    metadata: {
-      type: string;
-      inclusions: string[];
-      priceRange: {
-        max: number;
-        min: number;
-        gstRange: string;
-      };
-      cleanerInfo: string;
-      isRecommended: boolean;
-    };
-  };
-  payment: null;
+  cleaner: Cleaner;
+  product: Product;
+  product_variant: ProductVariant;
+  payments: Payment[] | null;
+}
+
+export interface Cleaner {
+  id: string;
+  name: string;
+  postal_code: string;
+  latitude: string;
+  longitude: string;
+  is_active: boolean;
+  phone: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  is_active: boolean;
+}
+
+export interface ProductVariant {
+  id: string;
+  product_id: string;
+  name: string;
+  peak_price: number;
+  offpeak_price: number;
+  is_recurring: boolean;
+  metadata: ProductMetadata;
+}
+
+export interface ProductMetadata {
+  type: string;
+  inclusions: string[];
+  priceRange: PriceRange;
+  cleanerInfo: string;
+  isRecommended: boolean;
+}
+
+export interface PriceRange {
+  max: number;
+  min: number;
+  gstRange: string;
+}
+
+export interface Payment {
+  id: string;
+  reference_id: string;
+  user_id: string;
+  booking_id: string;
+  raw_response: string;
+  status: PaymentStatusEnum;
+  amount: number;
+  checkout_url: string;
+  pivot: PaymentPivot;
+}
+
+export interface PaymentPivot {
+  booking_id: string;
+  payment_id: number;
 }
 
 export type AvailableTimeResponse = GenericResponse<AvailableTime[]>;

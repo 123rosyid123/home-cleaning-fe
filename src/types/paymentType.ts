@@ -5,4 +5,12 @@ export type PaymentStatus = {
     payment_url: string;
 };
 
+export enum PaymentStatusEnum {
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  REFUNDED = 'refunded',
+  EXPIRED = 'expired',
+}
+
 export type PaymentStatusResponse = GenericResponse<PaymentStatus>;

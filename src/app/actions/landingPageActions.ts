@@ -5,7 +5,7 @@ import { ProductVariant } from "@/types/productType";
 
 export const actionGetProductVariants = async (): Promise<SuccessResponse<ProductVariant[]> | ErrorResponse> => {
   try {
-    const response = await apiGetProductVariants(1);
+    const response = await apiGetProductVariants('HOME_CLEANING');
     return buildSuccessResponse(response.message, response.data);
   } catch (error) {
     return buildErrorResponse(error as Error | AxiosError);

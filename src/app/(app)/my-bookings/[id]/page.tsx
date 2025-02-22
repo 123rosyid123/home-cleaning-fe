@@ -1,4 +1,4 @@
-import { DetailBookingPage } from './components/DetailBookingPage';
+import { DetailBookingPage } from './DetailBookingPage';
 import { apiGetBookingById } from '@/services/bookingService';
 
 export default async function BookingDetailPage({

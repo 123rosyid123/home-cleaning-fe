@@ -51,7 +51,7 @@ export const useBookings = () => {
     setLoading(true);
     try {
       const result = await actionListBooking({
-        from_date: selectedDays.from
+        start_date: selectedDays.from
           ? format(selectedDays.from, 'yyyy-MM-dd')
           : '',
         end_date: selectedDays.to ? format(selectedDays.to, 'yyyy-MM-dd') : '',

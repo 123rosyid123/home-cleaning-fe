@@ -17,7 +17,7 @@ export const useSelectService = () => {
     const fetchProductVariants = async () => {
       if (ref.productVariants.length === 0) {
         try {
-          const { data } = await axios.get<GetProductVariantsResponse>('/api/product/1');
+          const { data } = await axios.get<GetProductVariantsResponse>('/api/product/HOME_CLEANING');
           if (data) {
             setProductVariants(data.data);
           }
