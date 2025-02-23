@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { apiGetProducts } from '@/services/productService';
 import { buildErrorResponse, buildSuccessResponse } from '@/lib/apiResponse';
+import { apiGetProducts } from '@/services/productService';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {

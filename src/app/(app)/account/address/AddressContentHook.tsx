@@ -61,7 +61,7 @@ type AddressFormData = z.infer<typeof addressSchema>;
 export function useAddressContent() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -340,10 +340,10 @@ export function useAddressContent() {
     }
   }, [newAddressForm, addresses, setStoreAddresses, router, step]);
 
-  const handleDelete = useCallback(async (id: number) => {
+  const handleDelete = useCallback(async (id: string) => {
     try {
       setIsLoading(true);
-      const result = await actionDeleteAddress(id.toString()) as ApiResponse<void>;
+      const result = await actionDeleteAddress(id) as ApiResponse<void>;
 
       if (result.success) {
         const updatedAddresses = addresses.filter(a => a.id !== id);
@@ -364,10 +364,10 @@ export function useAddressContent() {
     }
   }, [addresses, setStoreAddresses]);
 
-  const handleSetPrimary = useCallback(async (id: number) => {
+  const handleSetPrimary = useCallback(async (id: string) => {
     try {
       setIsLoading(true);
-      const result = await actionSetPrimaryAddress(id.toString()) as ApiResponse<void>;
+      const result = await actionSetPrimaryAddress(id) as ApiResponse<void>;
 
       if (result.success) {
         const updatedAddresses = addresses.map(address => ({

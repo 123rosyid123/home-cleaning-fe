@@ -7,6 +7,9 @@ import HeroSection from './components/HeroSection';
 import ServiceInclusionsSection from './components/ServiceInclusionsSection';
 import ServicesSection from './components/ServicesSection';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Home() {
   let productVariants: ProductVariant[] = [];
   try {

@@ -13,7 +13,7 @@ export default function Logout() {
     resetMyBooking();
     resetBooking();
     actionLogout();
-  }, []);
+  }, [resetMyBooking, resetBooking]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-100">

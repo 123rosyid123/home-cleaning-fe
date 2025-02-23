@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { apiGetDurations } from '@/services/durationService';
 import { buildErrorResponse, buildSuccessResponse } from '@/lib/apiResponse';
+import { apiGetDurations } from '@/services/durationService';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
