@@ -42,7 +42,7 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/booking',
-    '/my-bookings',
+    '/my-bookings/:path*',
     '/auth/:path*',
     '/account/:path*',
     '/logout',
