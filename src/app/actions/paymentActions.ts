@@ -1,6 +1,7 @@
-import { apiGetPaymentStatus } from "@/services/paymentService";
+'use server';
 
 import { buildErrorResponse, buildSuccessResponse, ErrorResponse, SuccessResponse } from '@/lib/apiResponse';
+import { apiGetPaymentStatus } from "@/services/paymentService";
 import { PaymentStatus } from '@/types/paymentType';
 import { AxiosError } from 'axios';
 export const actionGetPaymentStatus = async (reference: string): Promise<SuccessResponse<PaymentStatus> | ErrorResponse> => {

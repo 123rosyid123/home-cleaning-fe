@@ -48,13 +48,11 @@ function LoginForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6 mt-6 sm:mt-8 text-left px-4 sm:px-0 w-full max-w-[320px] sm:max-w-md mx-auto"
       >
-        <motion.div variants={itemAnimation} className="form-control w-full">
+        <motion.div variants={itemAnimation} className="w-full">
           <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
             Email
           </label>
-          <motion.div
-            whileTap={{ scale: 0.995 }}
-          >
+          <motion.div>
             <input
               type="email"
               placeholder="your@email.com"
@@ -75,14 +73,11 @@ function LoginForm() {
           )}
         </motion.div>
 
-        <motion.div variants={itemAnimation} className="form-control w-full">
+        <motion.div variants={itemAnimation} className="w-full">
           <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
             Password
           </label>
-          <motion.div
-            whileTap={{ scale: 0.995 }}
-            className="relative"
-          >
+          <motion.div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"

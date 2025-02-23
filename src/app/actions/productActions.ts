@@ -1,7 +1,9 @@
-import { apiGetProductVariants } from "@/services/productService";
+'use server';
+
 import { buildErrorResponse, buildSuccessResponse, ErrorResponse, SuccessResponse } from '@/lib/apiResponse';
+import { apiGetProductVariants } from "@/services/productService";
+import { ProductVariant } from "@/types/productType";
 import { AxiosError } from 'axios';
-import { ProductVariant } from "@/types/productType";   
 
 export const actionGetProductVariants = async (productIdOrCode: string): Promise<SuccessResponse<ProductVariant[]> | ErrorResponse> => {
   try {
