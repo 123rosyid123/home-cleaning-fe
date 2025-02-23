@@ -1,5 +1,5 @@
 import { ProductVariant } from '@/types/productType';
-import { actionGetProductVariants } from './actions/landingPageActions';
+import { actionGetProductVariants } from './actions/productActions';
 import CTASection from './components/CTASection';
 import FAQ from './components/FAQ';
 import FeaturesSection from './components/FeaturesSection';
@@ -10,7 +10,7 @@ import ServicesSection from './components/ServicesSection';
 export default async function Home() {
   let productVariants: ProductVariant[] = [];
   try {
-    const productVariantsResponse = await actionGetProductVariants();
+    const productVariantsResponse = await actionGetProductVariants('HOME_CLEANING');
     if ('data' in productVariantsResponse) {
       productVariants = productVariantsResponse.data as ProductVariant[];
     } else {

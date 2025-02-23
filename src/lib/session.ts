@@ -1,19 +1,23 @@
+import { UserProfile } from '@/types/accountType';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { UserProfile } from '@/types/accountType';
 import 'server-only';
 
-// max age is 1 year
-const maxAge = 365 * 24 * 60 * 60;
+// max age is 1 week
+const maxAge = 7 * 24 * 60 * 60;
 
 interface CookieStore {
-  set: (name: string, value: string, options: {
-    httpOnly: boolean;
-    secure: boolean;
-    sameSite: 'lax' | 'strict' | 'none';
-    path: string;
-    maxAge: number;
-  }) => void;
+  set: (
+    name: string,
+    value: string,
+    options: {
+      httpOnly: boolean;
+      secure: boolean;
+      sameSite: 'lax' | 'strict' | 'none';
+      path: string;
+      maxAge: number;
+    }
+  ) => void;
   delete: (name: string) => void;
   get: (name: string) => { value: string } | undefined;
 }
@@ -23,7 +27,13 @@ interface SessionData {
   user: string | undefined;
 }
 
-const setCookie = (cookieStore: CookieStore, name: string, value: string, maxAge: number, httpOnly = true) => {
+const setCookie = (
+  cookieStore: CookieStore,
+  name: string,
+  value: string,
+  maxAge: number,
+  httpOnly = true
+) => {
   cookieStore.set(name, value, {
     httpOnly,
     secure: process.env.NODE_ENV === 'production',
@@ -32,6 +42,18 @@ const setCookie = (cookieStore: CookieStore, name: string, value: string, maxAge
     maxAge,
   });
 };
+
+export async function renewCookiesFromStore(cookieStore: CookieStore) {
+  const { authenticated, user } = await getSession();
+
+  if (authenticated) {
+    setCookie(cookieStore, 'authenticated', authenticated, maxAge);
+  }
+
+  if (user) {
+    setCookie(cookieStore, 'user', user, maxAge, false);
+  }
+}
 
 export async function createSession(token: string) {
   const cookieStore = await cookies();
@@ -67,5 +89,5 @@ interface TokenResponse {
 
 export function setTokens(response: NextResponse, { access_token }: TokenResponse) {
   setCookie(response.cookies, 'authenticated', access_token, maxAge);
-  return response;  
+  return response;
 }

@@ -1,14 +1,15 @@
 'use client';
 
+import { BookingStatus, DetailBooking } from '@/types/bookingType';
+import { PaymentStatusEnum } from '@/types/paymentType';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { BookingStatus, DetailBooking } from '@/types/bookingType';
-import SectionServiceDetail from './components/SectionServiceDetail';
-import SectionScheduleDetail from './components/SectionScheduleDetail';
-import SectionLocation from './components/SectionLocation';
-import SectionCleanerInfo from './components/SectionCleanerInfo';
 import SectionAdditionalInformation from './components/SectionAdditionalInformation';
+import SectionCleanerInfo from './components/SectionCleanerInfo';
+import SectionLocation from './components/SectionLocation';
 import SectionPayment from './components/SectionPayment';
+import SectionScheduleDetail from './components/SectionScheduleDetail';
+import SectionServiceDetail from './components/SectionServiceDetail';
 
 export function DetailBookingPage({ booking }: { booking: DetailBooking }) {
   const router = useRouter();
@@ -28,8 +29,10 @@ export function DetailBookingPage({ booking }: { booking: DetailBooking }) {
     }
   };
 
+  const hasPaymentSection = booking.payments && booking.payments.length > 0 && booking.payments[0].status === PaymentStatusEnum.PENDING;
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className={`mx-auto px-4 py-8 ${hasPaymentSection ? 'max-w-7xl' : 'max-w-4xl'}`}>
       <div className="mb-8 flex flex-row justify-between items-start">
         <div className="flex-1 text-left">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Booking Details</h1>
@@ -57,14 +60,28 @@ export function DetailBookingPage({ booking }: { booking: DetailBooking }) {
         </span>
       </div>
 
-      <div className="grid gap-6">
-        <SectionServiceDetail booking={booking} />
-        <SectionScheduleDetail booking={booking} />
-        <SectionLocation booking={booking} />
-        <SectionCleanerInfo booking={booking} />
-        <SectionAdditionalInformation booking={booking} />
-        <SectionPayment booking={booking} />
-      </div>
+      {hasPaymentSection ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 grid gap-6">
+            <SectionServiceDetail booking={booking} />
+            <SectionScheduleDetail booking={booking} />
+            <SectionLocation booking={booking} />
+            <SectionCleanerInfo booking={booking} />
+            <SectionAdditionalInformation booking={booking} />
+          </div>
+          <div className="lg:sticky lg:top-4 h-fit">
+            <SectionPayment booking={booking} />
+          </div>
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          <SectionServiceDetail booking={booking} />
+          <SectionScheduleDetail booking={booking} />
+          <SectionLocation booking={booking} />
+          <SectionCleanerInfo booking={booking} />
+          <SectionAdditionalInformation booking={booking} />
+        </div>
+      )}
     </div>
   );
-} 
+}

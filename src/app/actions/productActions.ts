@@ -3,9 +3,9 @@ import { buildErrorResponse, buildSuccessResponse, ErrorResponse, SuccessRespons
 import { AxiosError } from 'axios';
 import { ProductVariant } from "@/types/productType";   
 
-export const actionGetProductVariants = async (): Promise<SuccessResponse<ProductVariant[]> | ErrorResponse> => {
+export const actionGetProductVariants = async (productIdOrCode: string): Promise<SuccessResponse<ProductVariant[]> | ErrorResponse> => {
   try {
-    const response = await apiGetProductVariants('HOME_CLEANING');
+    const response = await apiGetProductVariants(productIdOrCode);
     return buildSuccessResponse(response.message, response.data);
   } catch (error) {
     return buildErrorResponse(error as Error | AxiosError);
