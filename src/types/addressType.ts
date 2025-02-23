@@ -1,10 +1,10 @@
 import { GenericResponse } from './genericResponse';
 
 export interface Address {
-  id: number;
+  id: string;
   label: string;
   is_primary: boolean;
-  user_id: number;
+  user_id: string;
   address: string;
   postal_code: string;
   latitude: number | null;

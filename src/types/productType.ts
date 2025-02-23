@@ -15,8 +15,8 @@ export interface ProductVariantMetadata {
 }
 
 export interface ProductVariant {
-  id: number;
-  product_id: number;
+  id: string;
+  product_id: string;
   name: string;
   peak_price: number;
   offpeak_price: number;
@@ -29,7 +29,7 @@ export interface ProductVariant {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string;
   is_active: boolean;

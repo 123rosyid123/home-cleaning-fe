@@ -2,11 +2,17 @@
 
 import { useEffect } from "react";
 import { actionLogout } from "@/app/actions/authActions";
+import { useMyBookingStore } from '@/store/myBookingStore';
+import { useBookingStore } from '@/store/bookingStore';
 
 export default function Logout() {
+  const resetMyBooking = useMyBookingStore((state) => state.reset);
+  const resetBooking = useBookingStore((state) => state.resetBooking);
 
   useEffect(() => {
-    actionLogout()
+    resetMyBooking();
+    resetBooking();
+    actionLogout();
   }, []);
 
   return (

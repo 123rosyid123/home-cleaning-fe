@@ -12,28 +12,28 @@ export interface AvailableTime {
   end_time: string;
   price: number;
   price_gst: number;
-  cleaner_id: number;
+  cleaner_id: string;
 }
 
 export interface AvailableTimeRequest {
   selected_date: string;
-  address_id: number;
-  product_variant_id: number;
-  duration_id: number;
+  address_id: string;
+  product_variant_id: string;
+  duration_id: string;
 }
 
 export interface CreateBookingRequest {
-  product_variant_id: number;
-  address_id: number;
+  product_variant_id: string;
+  address_id: string;
   start_time: string;
   end_time: string;
   selected_date: string;
-  cleaner_id: number;
+  cleaner_id: string;
   additional_notes?: string;
 }
 
 export interface CreateBooking {
-  booking_id: number;
+  booking_id: string;
   date: string;
   start_time: string;
   end_time: string;
@@ -83,7 +83,7 @@ export interface DetailBooking {
   id: string;
   user_id: string;
   cleaner_id: string;
-  master_product_id: number;
+  master_product_id: string;
   product_variant_id: string;
   address: string;
   postal_code: string;

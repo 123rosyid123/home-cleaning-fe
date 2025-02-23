@@ -66,12 +66,12 @@ export const useSelectService = () => {
       : undefined
   }));
 
-  const handleFrequencySelect = (selectedProductVariantId: number) => {
+  const handleFrequencySelect = (selectedProductVariantId: string) => {
     const selectedVariant = ref.productVariants.find(variant => variant.id === selectedProductVariantId);
     updateStepService({ productVariantId: selectedProductVariantId, frequency: selectedVariant?.name });
   };
 
-  const handleDurationSelect = (selectedDurationId: number) => {
+  const handleDurationSelect = (selectedDurationId: string) => {
     const selectedDuration = ref.durations.find(dur => dur.id === selectedDurationId);
     updateStepService({ durationId: selectedDurationId, duration: selectedDuration?.name });
   };

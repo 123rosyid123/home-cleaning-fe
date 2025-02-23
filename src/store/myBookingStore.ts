@@ -18,6 +18,7 @@ type MyBookingState = {
   setTotalPages: (total: number) => void;
   setTotal: (total: number) => void;
   setPerPage: (perPage: number) => void;
+  reset: () => void;
 };
 
 export const useMyBookingStore = create<MyBookingState>()((set) => ({
@@ -37,4 +38,14 @@ export const useMyBookingStore = create<MyBookingState>()((set) => ({
   setTotalPages: (total) => set({ totalPages: total }),
   setTotal: (total) => set({ total }),
   setPerPage: (perPage) => set({ perPage }),
+  reset: () => set({
+    bookings: [],
+    loading: true,
+    selectedDays: {},
+    statusFilter: undefined,
+    currentPage: 1,
+    totalPages: 1,
+    total: 0,
+    perPage: 10,
+  }),
 }));

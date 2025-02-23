@@ -1,7 +1,7 @@
 import { GenericResponse } from "./genericResponse";
 
 export type Duration = {
-    id: number;
+    id: string;
     name: string;
     duration: number;
 };

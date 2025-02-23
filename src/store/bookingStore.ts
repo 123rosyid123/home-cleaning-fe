@@ -5,8 +5,8 @@ import { ProductVariant } from '@/types/productType';
 import { create } from 'zustand';
 
 type StepService = {
-  durationId: number;
-  productVariantId: number;
+  durationId: string;
+  productVariantId: string;
   frequency: string;
   duration: string;
 };
@@ -17,11 +17,11 @@ type StepSlot = {
   endTime: string;
   price_gst: number;
   price: number;
-  cleanerId: number;
+  cleanerId: string;
 };
 
 type StepAddress = {
-  addressId: number;
+  addressId: string;
   contactName: string;
   phoneNumber: string;
   email: string;
@@ -30,7 +30,7 @@ type StepAddress = {
   additionalNotes: string;
   latitude: number | null;
   longitude: number | null;
-  selectedAddressId: number | null;
+  selectedAddressId: string | null;
 };
 
 type BookingState = {
@@ -54,29 +54,29 @@ type BookingState = {
   updateStepAddress: (data: Partial<StepAddress>) => void;
   resetBooking: () => void;
   setAddresses: (addresses: Address[]) => void;
-  selectAddress: (addressId: number) => void;
+  selectAddress: (addressId: string) => void;
   setProductVariants: (variants: ProductVariant[]) => void;
   setDurations: (durations: Duration[]) => void;
   setAvailableTimes: (
     date: string,
-    addressId: number,
-    productVariantId: number,
-    durationId: number,
+    addressId: string,
+    productVariantId: string,
+    durationId: string,
     times: AvailableTime[]
   ) => void;
   getAvailableTimes: (
     date: string,
-    addressId: number,
-    productVariantId: number,
-    durationId: number
+    addressId: string,
+    productVariantId: string,
+    durationId: string
   ) => AvailableTime[] | null;
 };
 
 const initialState = {
   step: 1,
   stepService: {
-    durationId: 0,
-    productVariantId: 0,
+    durationId: '',
+    productVariantId: '',
     frequency: '',
     duration: '',
   },
@@ -86,10 +86,10 @@ const initialState = {
     endTime: '',
     price_gst: 0,
     price: 0,
-    cleanerId: 0,
+    cleanerId: '',
   },
   stepAddress: {
-    addressId: 0,
+    addressId: '',
     contactName: '',
     phoneNumber: '',
     email: '',
