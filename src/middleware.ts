@@ -27,7 +27,7 @@ export default async function middleware(request: NextRequest) {
     try {
       const account = await apiGetAccount();
       if (account.success) {
-        createUserSession(account.data);
+        await createUserSession(account.data);
       }
     } catch (error) {
       console.error('Error getting account:', error);
@@ -35,7 +35,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  renewCookiesFromStore(response.cookies);
+  await renewCookiesFromStore(response.cookies);
   return response;
 }
 

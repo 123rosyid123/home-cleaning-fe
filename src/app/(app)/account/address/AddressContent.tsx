@@ -68,32 +68,32 @@ export default function AddressContent() {
     </div>
   );
 
-  const CoordinatesDisplay = ({ lat, lng }: { lat: number | null, lng: number | null }) => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label className="label">
-          <span className="label-text">Latitude</span>
-        </label>
-        <input
-          type="text"
-          className="input input-bordered w-full"
-          value={lat?.toFixed(6) || 'Not set'}
-          readOnly
-        />
-      </div>
-      <div>
-        <label className="label">
-          <span className="label-text">Longitude</span>
-        </label>
-        <input
-          type="text"
-          className="input input-bordered w-full"
-          value={lng?.toFixed(6) || 'Not set'}
-          readOnly
-        />
-      </div>
-    </div>
-  );
+  // const CoordinatesDisplay = ({ lat, lng }: { lat: number | null, lng: number | null }) => (
+  //   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  //     <div>
+  //       <label className="label">
+  //         <span className="label-text">Latitude</span>
+  //       </label>
+  //       <input
+  //         type="text"
+  //         className="input input-bordered w-full"
+  //         value={lat?.toFixed(6) || 'Not set'}
+  //         readOnly
+  //       />
+  //     </div>
+  //     <div>
+  //       <label className="label">
+  //         <span className="label-text">Longitude</span>
+  //       </label>
+  //       <input
+  //         type="text"
+  //         className="input input-bordered w-full"
+  //         value={lng?.toFixed(6) || 'Not set'}
+  //         readOnly
+  //       />
+  //     </div>
+  //   </div>
+  // );
 
   const MapControls = () => (
     <div className="space-y-4">
@@ -214,7 +214,7 @@ export default function AddressContent() {
               </div>
 
               <LocationButtons />
-              <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} />
+              {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
 
               {showMap && (
                 <div className="space-y-4">
@@ -375,7 +375,7 @@ export default function AddressContent() {
                     </div>
 
                     <LocationButtons />
-                    <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} />
+                    {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
 
                     {showMap && (
                       <div className="space-y-4">
