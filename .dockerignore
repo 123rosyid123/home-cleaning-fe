@@ -2,6 +2,7 @@
 .git
 .gitignore
 .gitattributes
+.idea
 
 # Dependencies
 node_modules

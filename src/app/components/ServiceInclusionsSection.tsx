@@ -81,7 +81,7 @@ export default function ServiceInclusionsSection() {
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
-                className={`flex-shrink-0 w-16 sm:w-20 h-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ${activeService === index
+                className={`flex-shrink-0 cursor-pointer w-16 sm:w-20 h-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ${activeService === index
                     ? 'bg-primary text-white shadow-lg scale-110'
                     : 'bg-white text-primary shadow hover:scale-105'
                   }`}
