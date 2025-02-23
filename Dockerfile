@@ -43,7 +43,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 RUN chmod -R 755 ./public
 
 # Install only production dependencies
-RUN npm install --production
+RUN npm install --omit=dev
 
 # Set proper permissions
 USER nextjs
