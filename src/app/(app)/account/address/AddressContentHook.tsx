@@ -35,9 +35,10 @@ export const libraries: Libraries = ['places'];
 const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   label: '',
   address: '',
+  address_unit_number: null,
   postal_code: '',
-  latitude: null,
-  longitude: null,
+  latitude: 0,
+  longitude: 0,
   phone: '',
   is_primary: false,
   name: '',
@@ -46,12 +47,21 @@ const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
 const addressSchema = z.object({
   label: z.string().min(1, 'Label is required'),
   address: z.string().min(1, 'Address is required'),
+  address_unit_number: z.string().nullable(),
   postal_code: z.string().or(z.number())
     .transform(val => val.toString())
     .pipe(z.string().min(1, 'Postal code is required')),
   phone: z.string().min(1, 'Phone number is required'),
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
+  latitude: z.number()
+    .min(-90, 'Latitude must be between -90 and 90 degrees')
+    .max(90, 'Latitude must be between -90 and 90 degrees')
+    .refine((val) => val !== null, 'Latitude is required')
+    .refine((val) => val !== 0, 'Please select a location from map or use GPS'),
+  longitude: z.number()
+    .min(-180, 'Longitude must be between -180 and 180 degrees')
+    .max(180, 'Longitude must be between -180 and 180 degrees')
+    .refine((val) => val !== null, 'Longitude is required')
+    .refine((val) => val !== 0, 'Please select a location from map or use GPS'),
   is_primary: z.boolean(),
   name: z.string().min(1, 'Name is required'),
 });
@@ -66,6 +76,7 @@ export function useAddressContent() {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const setStoreAddresses = useBookingStore(state => state.setAddresses);
@@ -189,6 +200,7 @@ export function useAddressContent() {
 
         const addressData = {
           address: place.formatted_address || '',
+          address_unit_number: null,
           postal_code: postalCode,
           latitude: lat,
           longitude: lng,
@@ -196,11 +208,13 @@ export function useAddressContent() {
 
         if (editingId !== null) {
           editAddressForm.setValue('address', addressData.address);
+          editAddressForm.setValue('address_unit_number', addressData.address_unit_number);
           editAddressForm.setValue('postal_code', addressData.postal_code);
           editAddressForm.setValue('latitude', addressData.latitude);
           editAddressForm.setValue('longitude', addressData.longitude);
         } else {
           newAddressForm.setValue('address', addressData.address);
+          newAddressForm.setValue('address_unit_number', addressData.address_unit_number);
           newAddressForm.setValue('postal_code', addressData.postal_code);
           newAddressForm.setValue('latitude', addressData.latitude);
           newAddressForm.setValue('longitude', addressData.longitude);
@@ -251,6 +265,7 @@ export function useAddressContent() {
     editAddressForm.reset({
       label: address.label,
       address: address.address,
+      address_unit_number: address.address_unit_number,
       postal_code: address.postal_code,
       latitude: address.latitude,
       longitude: address.longitude,
@@ -349,6 +364,7 @@ export function useAddressContent() {
         const updatedAddresses = addresses.filter(a => a.id !== id);
         setAddresses(updatedAddresses);
         setStoreAddresses(updatedAddresses);
+        setAddressToDelete(null);
 
         toast.success(result.message);
       } else {
@@ -412,10 +428,12 @@ export function useAddressContent() {
     selectedLocation,
     error,
     isLoading,
+    addressToDelete,
     newAddressForm,
     editAddressForm,
     setIsAddingNew,
     setShowMap,
+    setAddressToDelete,
     handleMapLoad,
     handleSearchBoxLoad,
     handlePlacesChanged,

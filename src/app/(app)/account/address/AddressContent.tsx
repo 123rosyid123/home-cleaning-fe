@@ -32,10 +32,12 @@ export default function AddressContent() {
     showMap,
     selectedLocation,
     isLoading,
+    addressToDelete,
     newAddressForm,
     editAddressForm,
     setIsAddingNew,
     setShowMap,
+    setAddressToDelete,
     handleMapLoad,
     handleSearchBoxLoad,
     handlePlacesChanged,
@@ -50,22 +52,25 @@ export default function AddressContent() {
   } = useAddressContent();
 
   const LocationButtons = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <button
-        type='button'
-        className="btn btn-secondary"
-        onClick={() => setShowMap(true)}
-      >
-        <MapPin className="w-4 h-4 mr-2" /> Select from Map
-      </button>
-      <button
-        type='button'
-        className="btn btn-secondary"
-        onClick={handleGetCurrentLocation}
-      >
-        <Navigation2 className="w-4 h-4 mr-2" /> Use GPS Location
-      </button>
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          type='button'
+          className="btn btn-secondary"
+          onClick={() => setShowMap(true)}
+        >
+          <MapPin className="w-4 h-4 mr-2" /> Select from Map
+        </button>
+        <button
+          type='button'
+          className="btn btn-secondary"
+          onClick={handleGetCurrentLocation}
+        >
+          <Navigation2 className="w-4 h-4 mr-2" /> Use GPS Location
+        </button>
+      </div>
+      <p className="text-sm text-gray-500">Please select a location from map or use GPS location</p>
+    </>
   );
 
   // const CoordinatesDisplay = ({ lat, lng }: { lat: number | null, lng: number | null }) => (
@@ -176,46 +181,20 @@ export default function AddressContent() {
               </div>
 
               <div>
-                <textarea
-                  placeholder="Address"
-                  className={`textarea textarea-bordered w-full ${newAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
-                  {...newAddressForm.register('address')}
-                />
-                {newAddressForm.formState.errors.address && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div>
                 <input
                   type="text"
-                  placeholder="Postal Code"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
-                  {...newAddressForm.register('postal_code')}
+                  placeholder="Address Unit Number"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
+                  {...newAddressForm.register('address_unit_number')}
                 />
-                {newAddressForm.formState.errors.postal_code && (
+                {newAddressForm.formState.errors.address_unit_number && (
                   <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address_unit_number.message}</span>
                   </label>
                 )}
-              </div>
-              
-              <div className="form-control">
-                <label className="label cursor-pointer">
-                  <span className="label-text">Set as primary address</span>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    {...newAddressForm.register('is_primary')}
-                  />
-                </label>
               </div>
 
               <LocationButtons />
-              {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
-
               {showMap && (
                 <div className="space-y-4">
                   <MapControls />
@@ -245,6 +224,46 @@ export default function AddressContent() {
                 </div>
               )}
 
+              <div>
+                <textarea
+                  placeholder="The address will be auto-filled upon selection from the map. However, you will still have the option to manually update it if needed"
+                  className={`textarea textarea-bordered w-full ${newAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
+                  {...newAddressForm.register('address')}
+                />
+                {newAddressForm.formState.errors.address && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  placeholder="Postal Code"
+                  className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
+                  {...newAddressForm.register('postal_code')}
+                />
+                {newAddressForm.formState.errors.postal_code && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
+                  </label>
+                )}
+              </div>
+
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">Set as primary address</span>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    {...newAddressForm.register('is_primary')}
+                  />
+                </label>
+              </div>
+
+              {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
+
               <div className="flex flex-col sm:flex-row justify-end gap-2">
                 <button
                   type="button"
@@ -258,9 +277,9 @@ export default function AddressContent() {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   type="submit"
-                  className="btn btn-primary w-full sm:w-auto" 
+                  className="btn btn-primary w-full sm:w-auto"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -313,7 +332,7 @@ export default function AddressContent() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Contact Name"
+                        placeholder="Enter contact name..."
                         className={`input input-bordered w-full ${editAddressForm.formState.errors.name ? 'input-error' : ''}`}
                         {...editAddressForm.register('name')}
                       />
@@ -330,7 +349,7 @@ export default function AddressContent() {
                       </label>
                       <input
                         type="tel"
-                        placeholder="Phone Number"
+                        placeholder="Enter phone number..."
                         className={`input input-bordered w-full ${editAddressForm.formState.errors.phone ? 'input-error' : ''}`}
                         {...editAddressForm.register('phone')}
                       />
@@ -343,40 +362,22 @@ export default function AddressContent() {
 
                     <div>
                       <label className="label">
-                        <span className="label-text">Address</span>
-                      </label>
-                      <textarea
-                        placeholder="Address"
-                        className={`textarea textarea-bordered w-full ${editAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
-                        {...editAddressForm.register('address')}
-                      />
-                      {editAddressForm.formState.errors.address && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Postal Code</span>
+                        <span className="label-text">Address Unit Number</span>
                       </label>
                       <input
                         type="text"
-                        placeholder="Postal Code"
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
-                        {...editAddressForm.register('postal_code')}
+                        placeholder="Enter address unit number..."
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
+                        {...editAddressForm.register('address_unit_number')}
                       />
-                      {editAddressForm.formState.errors.postal_code && (
+                      {editAddressForm.formState.errors.address_unit_number && (
                         <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.postal_code.message}</span>
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address_unit_number.message}</span>
                         </label>
                       )}
                     </div>
 
                     <LocationButtons />
-                    {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
-
                     {showMap && (
                       <div className="space-y-4">
                         <MapControls />
@@ -406,6 +407,41 @@ export default function AddressContent() {
                       </div>
                     )}
 
+                    <div>
+                      <label className="label">
+                        <span className="label-text">Address</span>
+                      </label>
+                      <textarea
+                        placeholder="The address will be auto-filled upon selection from the map. However, you will still have the option to manually update it if needed"
+                        className={`textarea textarea-bordered w-full ${editAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
+                        {...editAddressForm.register('address')}
+                      />
+                      {editAddressForm.formState.errors.address && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address.message}</span>
+                        </label>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="label">
+                        <span className="label-text">Postal Code</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Postal Code"
+                        className={`input input-bordered w-full ${editAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
+                        {...editAddressForm.register('postal_code')}
+                      />
+                      {editAddressForm.formState.errors.postal_code && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.postal_code.message}</span>
+                        </label>
+                      )}
+                    </div>
+
+                    {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
+
                     <div className="flex flex-col sm:flex-row justify-end gap-2">
                       <button
                         type="button"
@@ -418,9 +454,9 @@ export default function AddressContent() {
                       >
                         Cancel
                       </button>
-                      <button 
+                      <button
                         type="submit"
-                        className="btn btn-primary" 
+                        className="btn btn-primary"
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -465,7 +501,7 @@ export default function AddressContent() {
                         </button>
                       )}
                       <div className="flex gap-2 w-full sm:w-auto justify-end">
-                        <button 
+                        <button
                           className="btn btn-ghost btn-sm"
                           onClick={() => handleStartEdit(address)}
                           disabled={isLoading}
@@ -474,7 +510,7 @@ export default function AddressContent() {
                         </button>
                         <button
                           className="btn btn-ghost btn-sm text-error"
-                          onClick={() => handleDelete(address.id)}
+                          onClick={() => setAddressToDelete(address.id)}
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -492,6 +528,39 @@ export default function AddressContent() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {addressToDelete && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-base-200 border border-base-300 rounded-lg shadow-lg">
+            <h2 className="font-bold text-lg">Delete Address</h2>
+            <p className="mt-2">Are you sure you want to delete this address?</p>
+            <div className="modal-action">
+              <button 
+                className="btn" 
+                onClick={() => setAddressToDelete(null)}
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  if (addressToDelete) {
+                    handleDelete(addressToDelete);
+                  }
+                }}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner loading-sm mr-2"></span>
+                ) : null}
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

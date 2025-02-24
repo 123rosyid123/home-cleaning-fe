@@ -6,9 +6,10 @@ export interface Address {
   is_primary: boolean;
   user_id: string;
   address: string;
+  address_unit_number: string | null;
   postal_code: string;
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
   name: string;
   phone: string;
 }
