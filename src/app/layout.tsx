@@ -1,7 +1,9 @@
 import { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
+import 'react-datepicker/dist/react-datepicker.css';
 import { Toaster } from 'sonner';
-import './globals.css';
+import './styles/DatePickerStyles.css';
+import './styles/globals.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
