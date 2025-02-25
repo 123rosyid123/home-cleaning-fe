@@ -5,6 +5,8 @@ import 'server-only';
 
 // max age is 1 week
 const maxAge = 7 * 24 * 60 * 60;
+// max age for user is 10 minutes
+const maxAgeForUser = 10 * 60; 
 
 interface CookieStore {
   set: (
@@ -51,7 +53,7 @@ export async function renewCookiesFromStore(cookieStore: CookieStore) {
   }
 
   if (user) {
-    setCookie(cookieStore, 'user', user, maxAge, false);
+    setCookie(cookieStore, 'user', user, maxAgeForUser, false);
   }
 }
 
@@ -62,11 +64,13 @@ export async function createSession(token: string) {
 
 export async function createUserSession(payload: UserProfile) {
   const cookieStore = await cookies();
-  setCookie(cookieStore, 'user', JSON.stringify(payload), maxAge, false);
+  setCookie(cookieStore, 'user', JSON.stringify(payload), maxAgeForUser, false);
 }
 
-export async function clearSession() {
-  const cookieStore = await cookies();
+export async function clearSession(cookieStore: CookieStore | null = null) {
+  if (!cookieStore) {
+    cookieStore = await cookies();
+  }
   cookieStore.delete('authenticated');
   cookieStore.delete('user');
 }

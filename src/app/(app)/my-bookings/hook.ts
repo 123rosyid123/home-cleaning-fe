@@ -2,6 +2,7 @@ import {
   actionCancelBooking,
   actionListBooking,
 } from '@/app/actions/bookingActions';
+import { toastError } from '@/lib/toastFe';
 import { useMyBookingStore } from '@/store/myBookingStore';
 import { BookingStatus } from '@/types/bookingType';
 import { format } from 'date-fns';
@@ -71,10 +72,10 @@ export const useBookings = () => {
         setTotal(total);
         setPerPage(per_page);
       } else {
-        console.error('Failed to fetch bookings:', result);
+        toastError(new Error(result.message));
       }
     } catch (error) {
-      console.error('Error fetching bookings:', error);
+      toastError(error as Error);
     } finally {
       setLoading(false);
     }
@@ -124,10 +125,10 @@ export const useBookings = () => {
         const result = await actionCancelBooking(bookingId);
         if (result.success) {
           setBookings(bookings.filter((booking) => booking.id !== bookingId));
-          fetchBookings(); // Refresh the list
+          fetchBookings();
         }
       } catch (error) {
-        console.error('Error canceling booking:', error);
+        toastError(error as Error);
       }
     },
     [bookings, setBookings, fetchBookings]

@@ -7,6 +7,7 @@ import {
   actionSetPrimaryAddress,
   actionUpdateAddress
 } from '@/app/actions/addressActions';
+import { toastError } from '@/lib/toastFe';
 import { useBookingStore } from '@/store/bookingStore';
 import { Address } from '@/types/addressType';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -102,13 +103,12 @@ export function useAddressContent() {
         if (result.success) {
           const addressData = result.data || [];
           setAddresses(addressData);
-        } else {
-          toast.error(result.message);
+        } else {  
+          toastError(new Error(result.message));
           setError(result.message);
         }
       } catch (error: unknown) {
-        console.error('Failed to load addresses:', error);
-        toast.error('Failed to load addresses');
+        toastError(error as Error);
         setError('Failed to load addresses');
       } finally {
         setIsLoading(false);
@@ -140,7 +140,7 @@ export function useAddressContent() {
         };
       }
     } catch (error) {
-      console.error('Geocoder failed:', error);
+      toastError(error as Error);
       setError('Failed to get address from location');
     }
     return { address: '', postal_code: '' };
@@ -303,12 +303,11 @@ export function useAddressContent() {
         setSelectedLocation(null);
         setShowMap(false);
       } else {
-        toast.error(result.message);
+        toastError(new Error(result.message));
         setError(result.message);
       }
     } catch (error: unknown) {
-      console.error('Failed to update address:', error);
-      toast.error('Failed to update address');
+      toastError(error as Error);
       setError('Failed to update address');
     } finally {
       setIsLoading(false);
@@ -343,12 +342,11 @@ export function useAddressContent() {
           router.push('/booking');
         }
       } else {
-        toast.error(result.message);
+        toastError(new Error(result.message));
         setError(result.message);
       }
     } catch (error: unknown) {
-      console.error('Failed to add address:', error);
-      toast.error('Failed to add address');
+      toastError(error as Error);
       setError('Failed to add address');
     } finally {
       setIsLoading(false);
@@ -368,12 +366,11 @@ export function useAddressContent() {
 
         toast.success(result.message);
       } else {
-        toast.error(result.message);
+        toastError(new Error(result.message));
         setError(result.message);
       }
     } catch (error: unknown) {
-      console.error('Failed to delete address:', error);
-      toast.error('Failed to delete address');
+      toastError(error as Error);
       setError('Failed to delete address');
     } finally {
       setIsLoading(false);
@@ -394,12 +391,11 @@ export function useAddressContent() {
 
         toast.success(result.message);
       } else {
-        toast.error(result.message);
+        toastError(new Error(result.message));
         setError(result.message);
       }
     } catch (error: unknown) {
-      console.error('Failed to set primary address:', error);
-      toast.error('Failed to set primary address');
+      toastError(error as Error);
       setError('Failed to set primary address');
     } finally {
       setIsLoading(false);
