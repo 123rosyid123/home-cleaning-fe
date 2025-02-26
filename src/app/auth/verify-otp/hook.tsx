@@ -118,11 +118,10 @@ export const useVerifyOtpForm = () => {
         toastError(new Error(JSON.stringify(response)));
       }
 
+      // if success, reset the register store and redirect to login page
       if (response.success) {
         toast.success(response.message);
-        reset(); // Reset the register store
-
-        // redirect to login page
+        reset(); 
         router.push('/auth/login');
       }
     } catch (error) {
