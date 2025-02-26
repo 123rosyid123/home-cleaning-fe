@@ -12,14 +12,18 @@ import {
   apiLogin,
   apiLogout,
   apiRegister,
+  apiResendOtp,
   apiResetPassword,
+  apiVerifyOtp,
 } from '@/services/authService';
 import { AuthData, User } from '@/types/authType';
 import { AxiosError } from 'axios';
 import { LoginFormData } from '../auth/login/hook';
 import { RegisterFormData } from '../auth/register/hook';
 
-export async function actionForgotPassword(email: string): Promise<SuccessResponse<null> | ErrorResponse> {
+export async function actionForgotPassword(
+  email: string
+): Promise<SuccessResponse<null> | ErrorResponse> {
   try {
     const response = await apiForgotPassword(email);
     return buildSuccessResponse(response.message, response.data);
@@ -34,10 +38,7 @@ export const actionLogin = async (
   try {
     const response = await apiLogin(formData.email, formData.password);
 
-    await Promise.all([
-      createSession(response.data.token),
-      createUserSession(response.data.user),
-    ]);
+    await Promise.all([createSession(response.data.token), createUserSession(response.data.user)]);
 
     return buildSuccessResponse(response.message, response.data.user);
   } catch (error) {
@@ -49,11 +50,7 @@ export const actionRegister = async (
   formData: RegisterFormData
 ): Promise<SuccessResponse<AuthData> | ErrorResponse> => {
   try {
-    const response = await apiRegister(
-      formData.email,
-      formData.password,
-      formData.confirmPassword
-    );
+    const response = await apiRegister(formData.email, formData.password, formData.confirmPassword, formData.phone);
 
     await createSession(response.data.token);
 
@@ -70,12 +67,7 @@ export async function actionResetPassword(
   passwordConfirmation: string
 ): Promise<SuccessResponse<null> | ErrorResponse> {
   try {
-    const response = await apiResetPassword(
-      token,
-      email,
-      password,
-      passwordConfirmation
-    );
+    const response = await apiResetPassword(token, email, password, passwordConfirmation);
     return buildSuccessResponse(response.message, response.data);
   } catch (error) {
     return buildErrorResponse(error as Error | AxiosError);
@@ -89,5 +81,25 @@ export async function actionLogout(): Promise<ErrorResponse | void> {
     return buildErrorResponse(error as Error | AxiosError);
   } finally {
     await clearSession();
+  }
+}
+
+export async function actionVerifyOtp(email: string, otp: string): Promise<SuccessResponse<null> | ErrorResponse> {
+  try {
+    const response = await apiVerifyOtp(email, otp);
+    return buildSuccessResponse(response.message, response.data);
+  } catch (error) {
+    return buildErrorResponse(error as Error | AxiosError);
+  }
+}
+
+export async function actionResendOtp(
+  email: string
+): Promise<SuccessResponse<null> | ErrorResponse> {
+  try {
+    const response = await apiResendOtp(email);
+    return buildSuccessResponse(response.message, response.data);
+  } catch (error) {
+    return buildErrorResponse(error as Error | AxiosError);
   }
 }

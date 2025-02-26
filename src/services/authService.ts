@@ -4,7 +4,9 @@ import {
   LoginResponse,
   LogoutResponse,
   RegisterResponse,
+  ResendOtpResponse,
   ResetPasswordResponse,
+  VerifyOtpResponse,
 } from '@/types/authType';
 
 export const apiLogin = async (
@@ -18,12 +20,14 @@ export const apiLogin = async (
 export const apiRegister = async (
   email: string,
   password: string,
-  passwordConfirmation: string
+  passwordConfirmation: string,
+  mobile_number: string,
 ): Promise<RegisterResponse> => {
   const response = await httpClient.post('/v1/auth/register', {
     email,
     password,
     password_confirmation: passwordConfirmation,
+    mobile_number,
   });
   return response.data;
 };
@@ -55,3 +59,12 @@ export const apiLogout = async (): Promise<LogoutResponse> => {
   return response.data;
 };
   
+export const apiVerifyOtp = async (email: string, otp: string): Promise<VerifyOtpResponse> => {
+  const response = await httpClient.post('/v1/auth/verify-otp', { email, otp });
+  return response.data;
+};
+
+export const apiResendOtp = async (email: string): Promise<ResendOtpResponse> => {
+  const response = await httpClient.post('/v1/auth/resend-otp', { email });
+  return response.data;
+};

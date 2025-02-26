@@ -55,6 +55,7 @@ export default function RegisterPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 sm:space-y-6 mt-6 sm:mt-8 text-left px-4 sm:px-0 w-full max-w-[320px] sm:max-w-md mx-auto"
       >
+        {/* Email field */}
         <motion.div variants={itemAnimation} className="form-control w-full">
           <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
             Email
@@ -81,6 +82,34 @@ export default function RegisterPage() {
           )}
         </motion.div>
 
+        {/* Phone Number field */}
+        <motion.div variants={itemAnimation} className="form-control w-full">
+          <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
+            Phone Number
+          </label>
+          <motion.div whileTap={{ scale: 0.995 }}>
+            <input
+              type="tel"
+              placeholder="+1234567890"
+              autoComplete="tel"
+              className={`input input-bordered w-full transition-all duration-200 ${
+                errors.phone ? 'input-error' : ''
+              } focus:ring-2 focus:ring-primary/20`}
+              {...register('phone')}
+            />
+          </motion.div>
+          {errors.phone && (
+            <motion.span
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-error text-sm mt-1 block"
+            >
+              {errors.phone.message}
+            </motion.span>
+          )}
+        </motion.div>
+
+        {/* Password field */}
         <motion.div variants={itemAnimation} className="form-control w-full">
           <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
             Password
@@ -123,6 +152,7 @@ export default function RegisterPage() {
           )}
         </motion.div>
 
+        {/* Confirm Password field */}
         <motion.div variants={itemAnimation} className="form-control w-full">
           <label className="text-xs sm:text-sm font-medium text-base-content/80 mb-1.5 sm:mb-2">
             Confirm Password
