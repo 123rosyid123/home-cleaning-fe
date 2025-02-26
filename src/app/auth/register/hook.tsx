@@ -1,8 +1,6 @@
 'use client';
 
 import { actionRegister } from '@/app/actions/authActions';
-// Commented out since we're not using it for now
-// import { actionRegister } from '@/app/actions/authActions';
 import { APIError, toastError } from '@/lib/toastFe';
 import { useRegisterStore } from '@/store/registerStore';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -87,7 +85,7 @@ export const useRegisterForm = () => {
       const response = await actionRegister(data);
 
       if (!response.success) {
-        return toastError(new Error(response.message));
+        return toastError(new Error(JSON.stringify(response)));
       }
 
       router.push('/auth/verify-otp');
