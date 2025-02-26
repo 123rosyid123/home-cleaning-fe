@@ -24,7 +24,7 @@ export const useVerifyOtpForm = () => {
   const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
   const otpRefs = useRef<HTMLInputElement[]>([]);
   const router = useRouter();
-  const { phone, email } = useRegisterStore();
+  const { phone, email, reset } = useRegisterStore();
 
   const formAnimation = {
     hidden: { opacity: 0 },
@@ -113,18 +113,17 @@ export const useVerifyOtpForm = () => {
   const onSubmit = async (data: OtpFormData) => {
     try {
       setIsLoading(true);
-      console.log('Verifying OTP:', data.otp);
-      console.log('Registration data:', { phone, email });
-
       const response = await actionVerifyOtp(email, data.otp);
-      console.log('Response:', response);
       if (!response.success) {
-        toastError(new Error(response.message));
+        toastError(new Error(JSON.stringify(response)));
       }
 
       if (response.success) {
         toast.success(response.message);
-        router.push('/booking');
+        reset(); // Reset the register store
+
+        // redirect to login page
+        router.push('/auth/login');
       }
     } catch (error) {
       toastError(error as APIError);
@@ -139,7 +138,7 @@ export const useVerifyOtpForm = () => {
       if (!response.success) {
         return toastError(new Error(JSON.stringify(response)));
       }
-      
+
       toast.success(response.message);
     } catch (error) {
       toastError(error as APIError);
