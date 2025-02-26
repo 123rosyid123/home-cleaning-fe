@@ -121,8 +121,8 @@ export const useVerifyOtpForm = () => {
       // if success, reset the register store and redirect to login page
       if (response.success) {
         toast.success(response.message);
-        reset(); 
         router.push('/auth/login');
+        setTimeout(() => reset(), 500);
       }
     } catch (error) {
       toastError(error as APIError);
