@@ -9,7 +9,7 @@ export const useConfirmation = () => {
 
   const {
     stepService: { frequency, duration, productVariantId },
-    stepSlot: { date, price_gst, startTime, endTime, cleanerId },
+    stepSlot: { date, price_gst, startTime, endTime, cleanerId, total_price_gst },
     stepAddress: {
       addressId,
       contactName,
@@ -59,7 +59,8 @@ export const useConfirmation = () => {
       address,
       postalCode,
       additionalNotes,
-      price_gst,
+      price_gst,      
+      total_price_gst,
     },
     handleSubmit,
   };

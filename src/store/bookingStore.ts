@@ -18,6 +18,7 @@ type StepSlot = {
   price_gst: number;
   price: number;
   cleanerId: string;
+  total_price_gst: number;
 };
 
 type StepAddress = {
@@ -85,6 +86,7 @@ const initialState = {
     startTime: '',
     endTime: '',
     price_gst: 0,
+    total_price_gst: 0,
     price: 0,
     cleanerId: '',
   },

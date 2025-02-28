@@ -1,4 +1,4 @@
-import { addDays, addWeeks, endOfWeek, format, startOfWeek } from 'date-fns';
+import { addDays, endOfWeek, format, startOfWeek } from 'date-fns';
 import React from 'react';
 import DatePicker from 'react-datepicker';
 
@@ -9,7 +9,7 @@ interface DateFiltersProps {
 
 const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays }) => {
   const today = new Date();
-  const maxDate = addWeeks(today, 2);
+  // const maxDate = addWeeks(today, 2);
 
   // Format the display value for the input
   const formatDateRange = () => {
@@ -83,7 +83,7 @@ const DateFilters: React.FC<DateFiltersProps> = ({ selectedDays, setSelectedDays
             startDate={selectedDays.from}
             endDate={selectedDays.to}
             onChange={handleDateRangeChange}
-            maxDate={maxDate}
+            // maxDate={maxDate}
             dateFormat="MMM d, yyyy"
             placeholderText="Select date range"
             className="date-picker-input"

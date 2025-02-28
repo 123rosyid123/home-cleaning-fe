@@ -13,6 +13,7 @@ export interface AvailableTime {
   price: number;
   price_gst: number;
   cleaner_id: string;
+  total_price_gst: number;
 }
 
 export interface AvailableTimeRequest {

@@ -79,7 +79,7 @@ export default function Confirmation() {
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Price (GST Inclusive)</p>
                   <p className="text-sm sm:text-base font-medium">
-                    ${bookingData.price_gst}
+                    ${bookingData.total_price_gst}
                   </p>
                 </div>
               </div>

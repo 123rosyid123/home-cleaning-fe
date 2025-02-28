@@ -93,7 +93,8 @@ export const useSelectSlot = () => {
       endTime: slot.end_time,
       price: slot.price,
       price_gst: slot.price_gst,
-      cleanerId: slot.cleaner_id
+      cleanerId: slot.cleaner_id,
+      total_price_gst: slot.total_price_gst
     }));
   }, [availableTimes]);
 
@@ -111,7 +112,8 @@ export const useSelectSlot = () => {
         endTime: selectedSlot.endTime,
         price_gst: selectedSlot.price_gst,
         price: selectedSlot.price,
-        cleanerId: selectedSlot.cleanerId
+        cleanerId: selectedSlot.cleanerId,
+        total_price_gst: selectedSlot.total_price_gst
       });
     }
   };
