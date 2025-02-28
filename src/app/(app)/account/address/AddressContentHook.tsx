@@ -18,51 +18,41 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-type ApiSuccessResponse<T> = {
-  success: true;
-  message: string;
-  data: T;
-};
-
-type ApiErrorResponse = {
-  success: false;
-  message: string;
-};
-
-type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
+// We only need geocoding, not places anymore
 export const libraries: Libraries = ['places'];
 
 const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   label: '',
   address: '',
   address_unit_number: null,
+  address_floor: null,
   postal_code: '',
   latitude: 0,
   longitude: 0,
-  phone: '',
   is_primary: false,
   name: '',
+  phone: '',
 };
 
 const addressSchema = z.object({
   label: z.string().min(1, 'Label is required'),
   address: z.string().min(1, 'Address is required'),
   address_unit_number: z.string().nullable(),
+  address_floor: z.string().nullable(),
+  phone: z.string().min(1, 'Phone is required'),
   postal_code: z.string().or(z.number())
     .transform(val => val.toString())
     .pipe(z.string().min(1, 'Postal code is required')),
-  phone: z.string().min(1, 'Phone number is required'),
   latitude: z.number()
     .min(-90, 'Latitude must be between -90 and 90 degrees')
     .max(90, 'Latitude must be between -90 and 90 degrees')
     .refine((val) => val !== null, 'Latitude is required')
-    .refine((val) => val !== 0, 'Please select a location from map or use GPS'),
+    .refine((val) => val !== 0, 'Please enter a postal code to set location'),
   longitude: z.number()
     .min(-180, 'Longitude must be between -180 and 180 degrees')
     .max(180, 'Longitude must be between -180 and 180 degrees')
     .refine((val) => val !== null, 'Longitude is required')
-    .refine((val) => val !== 0, 'Please select a location from map or use GPS'),
+    .refine((val) => val !== 0, 'Please enter a postal code to set location'),
   is_primary: z.boolean(),
   name: z.string().min(1, 'Name is required'),
 });
@@ -78,7 +68,6 @@ export function useAddressContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
-  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const setStoreAddresses = useBookingStore(state => state.setAddresses);
   const step = useBookingStore(state => state.step);
@@ -102,8 +91,13 @@ export function useAddressContent() {
         const result = await actionGetAddresses();
         if (result.success) {
           const addressData = result.data || [];
-          setAddresses(addressData);
-        } else {  
+          // Add floor property if it doesn't exist (for backward compatibility)
+          const updatedAddresses = addressData.map(address => ({
+            ...address,
+            address_floor: address.address_floor || null
+          }));
+          setAddresses(updatedAddresses);
+        } else {
           toastError(new Error(result.message));
           setError(result.message);
         }
@@ -169,107 +163,17 @@ export function useAddressContent() {
     mapRef.current = map;
   }, []);
 
-  const handleSearchBoxLoad = useCallback((ref: google.maps.places.SearchBox) => {
-    searchBoxRef.current = ref;
-  }, []);
-
-  const handlePlacesChanged = useCallback(() => {
-    if (!searchBoxRef.current || !mapRef.current) return;
-
-    const places = searchBoxRef.current.getPlaces();
-    if (places && places.length > 0) {
-      const place = places[0];
-      const location = place.geometry?.location;
-
-      if (location) {
-        const lat = location.lat();
-        const lng = location.lng();
-        const position = { lat, lng };
-
-        setSelectedLocation(position);
-        mapRef.current.panTo(position);
-        mapRef.current.setZoom(15);
-
-        let postalCode = '';
-        // Extract postal code from address components
-        place.address_components?.forEach((component) => {
-          if (component.types.includes('postal_code')) {
-            postalCode = component.long_name;
-          }
-        });
-
-        const addressData = {
-          address: place.formatted_address || '',
-          address_unit_number: null,
-          postal_code: postalCode,
-          latitude: lat,
-          longitude: lng,
-        };
-
-        if (editingId !== null) {
-          editAddressForm.setValue('address', addressData.address);
-          editAddressForm.setValue('address_unit_number', addressData.address_unit_number);
-          editAddressForm.setValue('postal_code', addressData.postal_code);
-          editAddressForm.setValue('latitude', addressData.latitude);
-          editAddressForm.setValue('longitude', addressData.longitude);
-        } else {
-          newAddressForm.setValue('address', addressData.address);
-          newAddressForm.setValue('address_unit_number', addressData.address_unit_number);
-          newAddressForm.setValue('postal_code', addressData.postal_code);
-          newAddressForm.setValue('latitude', addressData.latitude);
-          newAddressForm.setValue('longitude', addressData.longitude);
-        }
-      }
-    }
-  }, [editingId, editAddressForm, newAddressForm]);
-
-  const handleGetCurrentLocation = useCallback(() => {
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude: lat, longitude: lng } = position.coords;
-        const userLocation = { lat, lng };
-
-        setSelectedLocation(userLocation);
-        if (mapRef.current) {
-          mapRef.current.panTo(userLocation);
-          mapRef.current.setZoom(15);
-        }
-
-        const { address, postal_code } = await getAddressFromLatLng(lat, lng);
-
-        if (editingId !== null) {
-          editAddressForm.setValue('address', address);
-          editAddressForm.setValue('postal_code', postal_code);
-          editAddressForm.setValue('latitude', lat);
-          editAddressForm.setValue('longitude', lng);
-        } else {
-          newAddressForm.setValue('address', address);
-          newAddressForm.setValue('postal_code', postal_code);
-          newAddressForm.setValue('latitude', lat);
-          newAddressForm.setValue('longitude', lng);
-        }
-      },
-      (error) => {
-        setError('Error getting location: ' + error.message);
-      }
-    );
-  }, [editingId, editAddressForm, newAddressForm]);
-
   const handleStartEdit = useCallback((address: Address) => {
     setEditingId(address.id);
     editAddressForm.reset({
       label: address.label,
       address: address.address,
+      phone: address.phone,
       address_unit_number: address.address_unit_number,
+      address_floor: address.address_floor,
       postal_code: address.postal_code,
       latitude: address.latitude,
       longitude: address.longitude,
-      phone: address.phone,
       is_primary: address.is_primary,
       name: address.name,
     });
@@ -283,29 +187,37 @@ export function useAddressContent() {
 
     try {
       setIsLoading(true);
-      const result = await actionUpdateAddress({
+      // Add phone as empty string for backend compatibility
+      const requestData = {
         id: editingId,
-        ...data
-      }) as ApiResponse<Address>;
-
-      if (result.success) {
-        const updatedAddresses = addresses.map(address =>
-          address.id === editingId
-            ? result.data
-            : address
-        );
-        setAddresses(updatedAddresses);
-        setStoreAddresses(updatedAddresses);
-
-        toast.success(result.message);
-        setEditingId(null);
-        editAddressForm.reset(emptyAddress);
-        setSelectedLocation(null);
-        setShowMap(false);
-      } else {
-        toastError(new Error(result.message));
-        setError(result.message);
+        ...data,
+      };
+      
+      const result = await actionUpdateAddress(requestData);
+      if (!result.success) {
+        throw new Error(JSON.stringify(result));
       }
+
+
+      // Add floor property for display consistency
+      const addressWithFloor = {
+        ...result.data,
+        address_floor: result.data?.address_floor || null
+      };
+      const updatedAddresses = addresses.map(address =>
+        address.id === editingId
+          ? addressWithFloor
+          : address
+      );
+      setAddresses(updatedAddresses as Address[]);
+      setStoreAddresses(updatedAddresses as Address[]);
+
+      toast.success(result.message);
+      setEditingId(null);
+      editAddressForm.reset(emptyAddress);
+      setSelectedLocation(null);
+      setShowMap(false);
+
     } catch (error: unknown) {
       toastError(error as Error);
       setError('Failed to update address');
@@ -324,12 +236,19 @@ export function useAddressContent() {
   const handleAddNew = useCallback(async (data: AddressFormData) => {
     try {
       setIsLoading(true);
-      const result = await actionCreateAddress(data) as ApiResponse<Address>;
+      // Add phone as empty string for backend compatibility
+      const requestData = { ...data };
+      const result = await actionCreateAddress(requestData);
 
       if (result.success) {
-        const updatedAddresses = [...addresses, result.data];
-        setAddresses(updatedAddresses);
-        setStoreAddresses(updatedAddresses);
+        // Add floor property for display consistency
+        const addressWithFloor = {
+          ...result.data,
+          address_floor: result.data?.address_floor || null
+        };
+        const updatedAddresses = [...addresses, addressWithFloor];
+        setAddresses(updatedAddresses as Address[]);
+        setStoreAddresses(updatedAddresses as Address[]);
 
         toast.success(result.message);
         setIsAddingNew(false);
@@ -342,7 +261,7 @@ export function useAddressContent() {
           router.push('/booking');
         }
       } else {
-        toastError(new Error(result.message));
+        toastError(new Error(JSON.stringify(result)));
         setError(result.message);
       }
     } catch (error: unknown) {
@@ -356,17 +275,17 @@ export function useAddressContent() {
   const handleDelete = useCallback(async (id: string) => {
     try {
       setIsLoading(true);
-      const result = await actionDeleteAddress(id) as ApiResponse<void>;
+      const result = await actionDeleteAddress(id);
 
       if (result.success) {
         const updatedAddresses = addresses.filter(a => a.id !== id);
         setAddresses(updatedAddresses);
-        setStoreAddresses(updatedAddresses);
+        setStoreAddresses(updatedAddresses as Address[]);
         setAddressToDelete(null);
 
         toast.success(result.message);
       } else {
-        toastError(new Error(result.message));
+        toastError(new Error(JSON.stringify(result)));
         setError(result.message);
       }
     } catch (error: unknown) {
@@ -380,7 +299,7 @@ export function useAddressContent() {
   const handleSetPrimary = useCallback(async (id: string) => {
     try {
       setIsLoading(true);
-      const result = await actionSetPrimaryAddress(id) as ApiResponse<void>;
+      const result = await actionSetPrimaryAddress(id);
 
       if (result.success) {
         const updatedAddresses = addresses.map(address => ({
@@ -391,7 +310,7 @@ export function useAddressContent() {
 
         toast.success(result.message);
       } else {
-        toastError(new Error(result.message));
+        toastError(new Error(JSON.stringify(result)));
         setError(result.message);
       }
     } catch (error: unknown) {
@@ -416,6 +335,119 @@ export function useAddressContent() {
     }
   }, [selectedLocation, editingId, editAddressForm, newAddressForm]);
 
+  // New function to lookup coordinates from postal code
+  const getCoordinatesFromPostalCode = useCallback(async (postalCode: string) => {
+    if (!postalCode) return null;
+
+    const geocoder = new google.maps.Geocoder();
+    try {
+      const response = await geocoder.geocode({
+        address: `${postalCode}, Singapore`
+      });
+
+      if (response.results[0]?.geometry?.location) {
+        const location = response.results[0].geometry.location;
+        const lat = location.lat();
+        const lng = location.lng();
+        const fullAddress = response.results[0].formatted_address || '';
+
+        return {
+          lat,
+          lng,
+          address: fullAddress
+        };
+      }
+    } catch (error) {
+      toastError(error as Error);
+      setError('Failed to get location from postal code');
+    }
+    return null;
+  }, []);
+
+  // Handle postal code change to update map
+  const handlePostalCodeChange = useCallback(async (postalCode: string) => {
+    if (postalCode && postalCode.length >= 4) {
+      try {
+        const locationData = await getCoordinatesFromPostalCode(postalCode);
+        if (locationData) {
+          const { lat, lng, address } = locationData;
+          setSelectedLocation({ lat, lng });
+          if (mapRef.current) {
+            mapRef.current.panTo({ lat, lng });
+            mapRef.current.setZoom(15);
+          }
+
+          if (editingId !== null) {
+            editAddressForm.setValue('address', address);
+            editAddressForm.setValue('latitude', lat);
+            editAddressForm.setValue('longitude', lng);
+          } else {
+            newAddressForm.setValue('address', address);
+            newAddressForm.setValue('latitude', lat);
+            newAddressForm.setValue('longitude', lng);
+          }
+        }
+      } catch (error) {
+        console.error('Error updating map from postal code:', error);
+      }
+    }
+  }, [editingId, editAddressForm, newAddressForm, getCoordinatesFromPostalCode]);
+
+  // Watch for postal code changes in both forms with debounce
+  useEffect(() => {
+    let debounceTimer: NodeJS.Timeout;
+
+    const subscription = newAddressForm.watch((value, { name }) => {
+      if (name === 'postal_code' && value.postal_code) {
+        // Clear existing timer
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+        }
+
+        // Set new timer to delay API call
+        debounceTimer = setTimeout(() => {
+          if (value.postal_code) {
+            handlePostalCodeChange(value.postal_code);
+          }
+        }, 500); // 500ms debounce
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [newAddressForm, handlePostalCodeChange]);
+
+  useEffect(() => {
+    let debounceTimer: NodeJS.Timeout;
+
+    const subscription = editAddressForm.watch((value, { name }) => {
+      if (name === 'postal_code' && value.postal_code) {
+        // Clear existing timer
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+        }
+
+        // Set new timer to delay API call
+        debounceTimer = setTimeout(() => {
+          if (value.postal_code) {
+            handlePostalCodeChange(value.postal_code);
+          }
+        }, 500); // 500ms debounce
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [editAddressForm, handlePostalCodeChange]);
+
   return {
     addresses,
     isAddingNew,
@@ -431,9 +463,6 @@ export function useAddressContent() {
     setShowMap,
     setAddressToDelete,
     handleMapLoad,
-    handleSearchBoxLoad,
-    handlePlacesChanged,
-    handleGetCurrentLocation,
     handleStartEdit,
     handleSaveEdit,
     handleCancelEdit,
@@ -441,5 +470,6 @@ export function useAddressContent() {
     handleDelete,
     handleSetPrimary,
     handleMapClick,
+    handlePostalCodeChange,
   };
 } 

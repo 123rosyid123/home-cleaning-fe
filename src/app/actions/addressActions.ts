@@ -25,7 +25,7 @@ export async function actionGetAddresses(): Promise<SuccessResponse<Address[]> |
   }
 }
 
-export async function actionCreateAddress(address: CreateAddressRequest) {
+export async function actionCreateAddress(address: CreateAddressRequest): Promise<SuccessResponse<Address> | ErrorResponse> {
   try {
     const response = await apiCreateAddress(address);
     revalidatePath('/account/profile');
@@ -35,8 +35,9 @@ export async function actionCreateAddress(address: CreateAddressRequest) {
   }
 }
 
-export async function actionUpdateAddress(address: UpdateAddressRequest) {
+export async function actionUpdateAddress(address: UpdateAddressRequest): Promise<SuccessResponse<Address> | ErrorResponse> {
   try {
+    console.log(address);
     const response = await apiUpdateAddress(address);
     revalidatePath('/account/profile');
     return buildSuccessResponse(response.message, response.data);
@@ -45,7 +46,7 @@ export async function actionUpdateAddress(address: UpdateAddressRequest) {
   }
 }
 
-export async function actionDeleteAddress(id: string) {
+export async function actionDeleteAddress(id: string): Promise<SuccessResponse<void> | ErrorResponse> {
   try {
     await apiDeleteAddress(id);
     revalidatePath('/account/profile');
@@ -55,7 +56,7 @@ export async function actionDeleteAddress(id: string) {
   }
 }
 
-export async function actionSetPrimaryAddress(id: string) {
+export async function actionSetPrimaryAddress(id: string): Promise<SuccessResponse<void> | ErrorResponse> {
   try {
     await apiSetPrimaryAddress(id);
     revalidatePath('/account/profile');

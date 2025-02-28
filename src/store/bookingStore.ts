@@ -152,7 +152,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
             addressId: primaryAddress.id,
             selectedAddressId: primaryAddress.id,
             address: primaryAddress.address,
-            postalCode: primaryAddress.postal_code.toString(),
+            postalCode: primaryAddress.postal_code?.toString() || '',
             phoneNumber: primaryAddress.phone,
             contactName: primaryAddress.name,
             latitude: primaryAddress.latitude,

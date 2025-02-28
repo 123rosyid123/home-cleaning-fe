@@ -1,23 +1,10 @@
 'use client';
 
-import { Plus, Pencil, Trash2, Check, MapPin, Navigation2 } from 'lucide-react';
-import {
-  GoogleMap,
-  StandaloneSearchBox,
-  useLoadScript,
-  Marker,
-} from '@react-google-maps/api';
-import { useAddressContent, libraries } from './AddressContentHook';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '400px',
-};
-
-const defaultCenter = {
-  lat: 1.280293,
-  lng: 103.849296,
-};
+import { useLoadScript } from '@react-google-maps/api';
+import { Check, Pencil, Plus, Trash2 } from 'lucide-react';
+import { libraries, useAddressContent } from './AddressContentHook';
+import EditAddressForm from './EditAddressForm';
+import NewAddressForm from './NewAddressForm';
 
 export default function AddressContent() {
   const { isLoaded } = useLoadScript({
@@ -29,19 +16,14 @@ export default function AddressContent() {
     addresses,
     isAddingNew,
     editingId,
-    showMap,
     selectedLocation,
     isLoading,
     addressToDelete,
     newAddressForm,
     editAddressForm,
     setIsAddingNew,
-    setShowMap,
     setAddressToDelete,
     handleMapLoad,
-    handleSearchBoxLoad,
-    handlePlacesChanged,
-    handleGetCurrentLocation,
     handleStartEdit,
     handleSaveEdit,
     handleCancelEdit,
@@ -50,72 +32,6 @@ export default function AddressContent() {
     handleSetPrimary,
     handleMapClick,
   } = useAddressContent();
-
-  const LocationButtons = () => (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button
-          type='button'
-          className="btn btn-secondary"
-          onClick={() => setShowMap(true)}
-        >
-          <MapPin className="w-4 h-4 mr-2" /> Select from Map
-        </button>
-        <button
-          type='button'
-          className="btn btn-secondary"
-          onClick={handleGetCurrentLocation}
-        >
-          <Navigation2 className="w-4 h-4 mr-2" /> Use GPS Location
-        </button>
-      </div>
-      <p className="text-sm text-gray-500">Please select a location from map or use GPS location</p>
-    </>
-  );
-
-  // const CoordinatesDisplay = ({ lat, lng }: { lat: number | null, lng: number | null }) => (
-  //   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  //     <div>
-  //       <label className="label">
-  //         <span className="label-text">Latitude</span>
-  //       </label>
-  //       <input
-  //         type="text"
-  //         className="input input-bordered w-full"
-  //         value={lat?.toFixed(6) || 'Not set'}
-  //         readOnly
-  //       />
-  //     </div>
-  //     <div>
-  //       <label className="label">
-  //         <span className="label-text">Longitude</span>
-  //       </label>
-  //       <input
-  //         type="text"
-  //         className="input input-bordered w-full"
-  //         value={lng?.toFixed(6) || 'Not set'}
-  //         readOnly
-  //       />
-  //     </div>
-  //   </div>
-  // );
-
-  const MapControls = () => (
-    <div className="space-y-4">
-      {isLoaded && (
-        <StandaloneSearchBox
-          onLoad={handleSearchBoxLoad}
-          onPlacesChanged={handlePlacesChanged}
-        >
-          <input
-            type="text"
-            placeholder="Search for a location, then click on the map to select"
-            className="input input-bordered w-full"
-          />
-        </StandaloneSearchBox>
-      )}
-    </div>
-  );
 
   return (
     <div className="card bg-base-100 shadow-xl">
@@ -136,160 +52,16 @@ export default function AddressContent() {
         </div>
 
         {isAddingNew && (
-          <div className="card bg-base-200 p-4 mb-4">
-            <form onSubmit={newAddressForm.handleSubmit(handleAddNew)} className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Label (e.g., Home, Office)"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.label ? 'input-error' : ''}`}
-                  {...newAddressForm.register('label')}
-                />
-                {newAddressForm.formState.errors.label && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.label.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder="Contact Name"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.name ? 'input-error' : ''}`}
-                  {...newAddressForm.register('name')}
-                />
-                {newAddressForm.formState.errors.name && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.name.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}
-                  {...newAddressForm.register('phone')}
-                />
-                {newAddressForm.formState.errors.phone && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.phone.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder="Address Unit Number"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
-                  {...newAddressForm.register('address_unit_number')}
-                />
-                {newAddressForm.formState.errors.address_unit_number && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address_unit_number.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <LocationButtons />
-              {showMap && (
-                <div className="space-y-4">
-                  <MapControls />
-                  {isLoaded && (
-                    <div className="h-[400px] w-full rounded-lg overflow-hidden">
-                      <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        zoom={13}
-                        center={selectedLocation || defaultCenter}
-                        onLoad={handleMapLoad}
-                        onClick={(e) => {
-                          if (e.latLng) {
-                            const lat = e.latLng.lat();
-                            const lng = e.latLng.lng();
-                            handleMapClick({ lat, lng });
-                          }
-                        }}
-                      >
-                        {selectedLocation && (
-                          <Marker
-                            position={selectedLocation}
-                          />
-                        )}
-                      </GoogleMap>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div>
-                <textarea
-                  placeholder="The address will be auto-filled upon selection from the map. However, you will still have the option to manually update it if needed"
-                  className={`textarea textarea-bordered w-full ${newAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
-                  {...newAddressForm.register('address')}
-                />
-                {newAddressForm.formState.errors.address && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.address.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder="Postal Code"
-                  className={`input input-bordered w-full ${newAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
-                  {...newAddressForm.register('postal_code')}
-                />
-                {newAddressForm.formState.errors.postal_code && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">{newAddressForm.formState.errors.postal_code.message}</span>
-                  </label>
-                )}
-              </div>
-
-              <div className="form-control">
-                <label className="label cursor-pointer">
-                  <span className="label-text">Set as primary address</span>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    {...newAddressForm.register('is_primary')}
-                  />
-                </label>
-              </div>
-
-              {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
-
-              <div className="flex flex-col sm:flex-row justify-end gap-2">
-                <button
-                  type="button"
-                  className="btn btn-ghost w-full sm:w-auto"
-                  onClick={() => {
-                    setIsAddingNew(false);
-                    setShowMap(false);
-                    newAddressForm.reset();
-                  }}
-                  disabled={isLoading}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary w-full sm:w-auto"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <span className="loading loading-spinner loading-sm mr-2"></span>
-                  ) : null}
-                  Save Address
-                </button>
-              </div>
-            </form>
-          </div>
+          <NewAddressForm
+            newAddressForm={newAddressForm}
+            isLoading={isLoading}
+            selectedLocation={selectedLocation}
+            isLoaded={isLoaded}
+            handleMapLoad={handleMapLoad}
+            handleMapClick={handleMapClick}
+            handleAddNew={handleAddNew}
+            setIsAddingNew={setIsAddingNew}
+          />
         )}
 
         <div className="space-y-4">
@@ -308,178 +80,29 @@ export default function AddressContent() {
                 className="card bg-base-200 p-4 hover:bg-base-300 transition-colors"
               >
                 {editingId === address.id ? (
-                  <form onSubmit={editAddressForm.handleSubmit(handleSaveEdit)} className="space-y-4">
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Label</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Label (e.g., Home, Office)"
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.label ? 'input-error' : ''}`}
-                        {...editAddressForm.register('label')}
-                      />
-                      {editAddressForm.formState.errors.label && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.label.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Contact Name</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter contact name..."
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.name ? 'input-error' : ''}`}
-                        {...editAddressForm.register('name')}
-                      />
-                      {editAddressForm.formState.errors.name && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.name.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Phone Number</span>
-                      </label>
-                      <input
-                        type="tel"
-                        placeholder="Enter phone number..."
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.phone ? 'input-error' : ''}`}
-                        {...editAddressForm.register('phone')}
-                      />
-                      {editAddressForm.formState.errors.phone && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.phone.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Address Unit Number</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter address unit number..."
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
-                        {...editAddressForm.register('address_unit_number')}
-                      />
-                      {editAddressForm.formState.errors.address_unit_number && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address_unit_number.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <LocationButtons />
-                    {showMap && (
-                      <div className="space-y-4">
-                        <MapControls />
-                        {isLoaded && (
-                          <div className="h-[400px] w-full rounded-lg overflow-hidden">
-                            <GoogleMap
-                              mapContainerStyle={mapContainerStyle}
-                              zoom={13}
-                              center={selectedLocation || defaultCenter}
-                              onLoad={handleMapLoad}
-                              onClick={(e) => {
-                                if (e.latLng) {
-                                  const lat = e.latLng.lat();
-                                  const lng = e.latLng.lng();
-                                  handleMapClick({ lat, lng });
-                                }
-                              }}
-                            >
-                              {selectedLocation && (
-                                <Marker
-                                  position={selectedLocation}
-                                />
-                              )}
-                            </GoogleMap>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Address</span>
-                      </label>
-                      <textarea
-                        placeholder="The address will be auto-filled upon selection from the map. However, you will still have the option to manually update it if needed"
-                        className={`textarea textarea-bordered w-full ${editAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
-                        {...editAddressForm.register('address')}
-                      />
-                      {editAddressForm.formState.errors.address && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.address.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="label">
-                        <span className="label-text">Postal Code</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Postal Code"
-                        className={`input input-bordered w-full ${editAddressForm.formState.errors.postal_code ? 'input-error' : ''}`}
-                        {...editAddressForm.register('postal_code')}
-                      />
-                      {editAddressForm.formState.errors.postal_code && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">{editAddressForm.formState.errors.postal_code.message}</span>
-                        </label>
-                      )}
-                    </div>
-
-                    {/* <CoordinatesDisplay lat={selectedLocation?.lat || null} lng={selectedLocation?.lng || null} /> */}
-
-                    <div className="flex flex-col sm:flex-row justify-end gap-2">
-                      <button
-                        type="button"
-                        className="btn btn-ghost"
-                        onClick={() => {
-                          handleCancelEdit();
-                          setShowMap(false);
-                        }}
-                        disabled={isLoading}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <span className="loading loading-spinner loading-sm mr-2"></span>
-                        ) : null}
-                        Save Changes
-                      </button>
-                    </div>
-                  </form>
+                  <EditAddressForm
+                    address={address}
+                    editAddressForm={editAddressForm}
+                    isLoading={isLoading}
+                    selectedLocation={selectedLocation}
+                    isLoaded={isLoaded}
+                    handleMapLoad={handleMapLoad}
+                    handleMapClick={handleMapClick}
+                    handleSaveEdit={handleSaveEdit}
+                    handleCancelEdit={handleCancelEdit}
+                  />
                 ) : (
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-lg">{address.label}</h3>
                       <p className="text-base-content/70">Contact: {address.name}</p>
-                      <p className="text-base-content/70">{address.address}</p>
+                      {address.address_unit_number && address.address_floor && (
+                        <p className="text-base-content/70">
+                          Unit: {address.address_unit_number}, Floor: {address.address_floor}
+                        </p>
+                      )}
                       <p className="text-base-content/70">
                         Postal Code: {address.postal_code}
-                      </p>
-                      <p className="text-base-content/70">
-                        Phone: {address.phone}
-                      </p>
-                      <p className="text-base-content/70">
-                        Coordinates: {address.latitude?.toFixed(6)}, {address.longitude?.toFixed(6)}
                       </p>
                       {address.is_primary && (
                         <span className="badge badge-primary mt-2">Primary</span>
@@ -536,8 +159,8 @@ export default function AddressContent() {
             <h2 className="font-bold text-lg">Delete Address</h2>
             <p className="mt-2">Are you sure you want to delete this address?</p>
             <div className="modal-action">
-              <button 
-                className="btn" 
+              <button
+                className="btn"
                 onClick={() => setAddressToDelete(null)}
                 disabled={isLoading}
               >

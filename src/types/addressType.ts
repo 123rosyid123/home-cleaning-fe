@@ -7,6 +7,7 @@ export interface Address {
   user_id: string;
   address: string;
   address_unit_number: string | null;
+  address_floor: string | null;
   postal_code: string;
   latitude: number;
   longitude: number;
@@ -18,10 +19,7 @@ export interface Address {
 export type GetAddressesResponse = GenericResponse<Address[]>;
 
 // Type for create address request
-export type CreateAddressRequest = Omit<
-  Address,
-  'id' | 'user_id' | 'is_primary'
->;
+export type CreateAddressRequest = Omit<Address, 'id' | 'user_id' | 'is_primary'>;
 export type CreateAddressResponse = GenericResponse<Address>;
 
 // Type for update address request
