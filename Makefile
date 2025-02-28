@@ -40,3 +40,17 @@ define build_and_push
 		.
 	@docker push $(IMAGE_NAME):$1-$2
 endef
+
+# Updated command: make buildx-push VERSION="latest,v1.0.0"
+buildx-push:
+	@echo "Building and pushing multi-arch image with buildx..."
+	@TAGS=""; \
+	for tag in $$(echo $(VERSION) | tr "," " "); do \
+		TAGS="$$TAGS --tag $(IMAGE_NAME):$$tag"; \
+	done; \
+	docker buildx build \
+		$$TAGS \
+		--platform linux/amd64,linux/arm64 \
+		--push \
+		-f $(DOCKERFILE) \
+		.
