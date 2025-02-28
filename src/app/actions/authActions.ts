@@ -16,11 +16,11 @@ import {
   apiResetPassword,
   apiVerifyOtp,
 } from '@/services/authService';
-import { AuthData, User } from '@/types/authType';
+import { UserProfile } from '@/types/accountType';
+import { AuthData } from '@/types/authType';
 import { AxiosError } from 'axios';
 import { LoginFormData } from '../auth/login/hook';
 import { RegisterFormData } from '../auth/register/hook';
-
 export async function actionForgotPassword(
   email: string
 ): Promise<SuccessResponse<null> | ErrorResponse> {
@@ -34,11 +34,14 @@ export async function actionForgotPassword(
 
 export const actionLogin = async (
   formData: LoginFormData
-): Promise<SuccessResponse<User> | ErrorResponse> => {
+): Promise<SuccessResponse<UserProfile> | ErrorResponse> => {
   try {
     const response = await apiLogin(formData.email, formData.password);
 
-    await Promise.all([createSession(response.data.token), createUserSession(response.data.user)]);
+    await Promise.all([
+      createSession(response.data.token),
+      createUserSession(response.data.user as UserProfile),
+    ]);
 
     return buildSuccessResponse(response.message, response.data.user);
   } catch (error) {
@@ -50,7 +53,12 @@ export const actionRegister = async (
   formData: RegisterFormData
 ): Promise<SuccessResponse<AuthData> | ErrorResponse> => {
   try {
-    const response = await apiRegister(formData.email, formData.password, formData.confirmPassword, formData.phone);
+    const response = await apiRegister(
+      formData.email,
+      formData.password,
+      formData.confirmPassword,
+      formData.phone
+    );
 
     await createSession(response.data.token);
 
@@ -84,7 +92,10 @@ export async function actionLogout(): Promise<ErrorResponse | void> {
   }
 }
 
-export async function actionVerifyOtp(email: string, otp: string): Promise<SuccessResponse<null> | ErrorResponse> {
+export async function actionVerifyOtp(
+  email: string,
+  otp: string
+): Promise<SuccessResponse<null> | ErrorResponse> {
   try {
     const response = await apiVerifyOtp(email, otp);
     return buildSuccessResponse(response.message, response.data);
