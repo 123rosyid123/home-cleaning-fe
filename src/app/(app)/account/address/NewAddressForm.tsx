@@ -103,7 +103,7 @@ export default function NewAddressForm({
         </div>
 
         <div>
-          <p className="text-sm text-gray-500 mb-2">Map will be updated automatically based on postal code</p>
+          <p className="text-sm text-gray-500 mb-2">Map will be updated automatically based on postal code after several seconds</p>
           {isLoaded ? (
             <div className="h-[400px] w-full rounded-lg overflow-hidden">
               <GoogleMap

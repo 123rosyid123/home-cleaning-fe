@@ -31,7 +31,7 @@ const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   longitude: 0,
   is_primary: false,
   name: '',
-  phone: '',
+  phone: '+65',
 };
 
 const addressSchema = z.object({
