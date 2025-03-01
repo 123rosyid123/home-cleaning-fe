@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Toaster } from 'sonner';
 import './styles/DatePickerStyles.css';
 import './styles/globals.css';
+import 'react-phone-number-input/style.css';
 
 const poppins = Poppins({
   subsets: ['latin'],

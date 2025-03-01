@@ -18,6 +18,21 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+// Format phone number to E.164 format
+export const formatPhoneToE164 = (phone: string): string => {
+  if (!phone) return '';
+  
+  // Remove all non-digit characters except the leading +
+  let formattedPhone = phone.replace(/[^\d+]/g, '').replace(/\s+/g, '');
+  
+  // Add + at the beginning if it doesn't exist
+  if (!formattedPhone.startsWith('+')) {
+    formattedPhone = '+' + formattedPhone;
+  }
+  
+  return formattedPhone;
+};
+
 // We only need geocoding, not places anymore
 export const libraries: Libraries = ['places'];
 
@@ -31,7 +46,7 @@ const emptyAddress: Omit<Address, 'id' | 'user_id'> = {
   longitude: 0,
   is_primary: false,
   name: '',
-  phone: '+65',
+  phone: '',
 };
 
 const addressSchema = z.object({
@@ -39,7 +54,9 @@ const addressSchema = z.object({
   address: z.string().min(1, 'Address is required'),
   address_unit_number: z.string().nullable(),
   address_floor: z.string().nullable(),
-  phone: z.string().min(1, 'Phone is required'),
+  phone: z.string()
+    .min(1, 'Phone number is required')
+    .regex(/^\+[1-9]\d{1,14}$/, 'Please enter a valid international phone number'),
   postal_code: z.string().or(z.number())
     .transform(val => val.toString())
     .pipe(z.string().min(1, 'Postal code is required')),
@@ -163,7 +180,7 @@ export function useAddressContent() {
     editAddressForm.reset({
       label: address.label,
       address: address.address,
-      phone: address.phone,
+      phone: formatPhoneToE164(address.phone),
       address_unit_number: address.address_unit_number,
       address_floor: address.address_floor,
       postal_code: address.postal_code,
@@ -182,17 +199,17 @@ export function useAddressContent() {
 
     try {
       setIsLoading(true);
-      // Add phone as empty string for backend compatibility
+      // Ensure phone is in E.164 format
       const requestData = {
         id: editingId,
         ...data,
+        phone: formatPhoneToE164(data.phone)
       };
 
       const result = await actionUpdateAddress(requestData);
       if (!result.success) {
         throw new Error(JSON.stringify(result));
       }
-
 
       // Add floor property for display consistency
       const addressWithFloor = {
@@ -231,8 +248,11 @@ export function useAddressContent() {
   const handleAddNew = useCallback(async (data: AddressFormData) => {
     try {
       setIsLoading(true);
-      // Add phone as empty string for backend compatibility
-      const requestData = { ...data };
+      // Ensure phone is in E.164 format
+      const requestData = { 
+        ...data,
+        phone: formatPhoneToE164(data.phone)
+      };
       const result = await actionCreateAddress(requestData);
 
       if (result.success) {

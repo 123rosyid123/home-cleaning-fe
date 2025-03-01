@@ -3,6 +3,8 @@
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { UseFormReturn } from 'react-hook-form';
 import { AddressFormData } from './EditAddressForm';
+import PhoneInput from 'react-phone-number-input';
+import { formatPhoneToE164 } from './AddressContentHook';
 
 const mapContainerStyle = {
   width: '100%',
@@ -71,12 +73,19 @@ export default function NewAddressForm({
         </div>
 
         <div>
-          <input
-            type="text"
-            placeholder="Phone Number"
-            className={`input input-bordered w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}
-            {...newAddressForm.register('phone')}
-          />
+          <div className={`input input-bordered flex items-center w-full ${newAddressForm.formState.errors.phone ? 'input-error' : ''}`}>
+            <PhoneInput
+              placeholder="Enter phone number with country code"
+              international
+              defaultCountry="SG"
+              value={newAddressForm.watch('phone')}
+              onChange={(value) => {
+                const formattedValue = value ? formatPhoneToE164(value) : '';
+                newAddressForm.setValue('phone', formattedValue, { shouldValidate: true });
+              }}
+              className="w-full bg-transparent"
+            />
+          </div>
           {newAddressForm.formState.errors.phone && (
             <label className="label">
               <span className="label-text-alt text-error">
