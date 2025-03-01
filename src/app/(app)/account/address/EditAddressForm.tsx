@@ -1,8 +1,8 @@
 'use client';
 
 import { Address } from '@/types/addressType';
-import { UseFormReturn } from 'react-hook-form';
 import { GoogleMap, Marker } from '@react-google-maps/api';
+import { UseFormReturn } from 'react-hook-form';
 
 const mapContainerStyle = {
   width: '100%',
@@ -46,7 +46,7 @@ export default function EditAddressForm({
   selectedLocation,
   isLoaded,
   handleMapLoad,
-  handleMapClick,
+  // handleMapClick,
   handleSaveEdit,
   handleCancelEdit
 }: EditAddressFormProps) {
@@ -89,7 +89,7 @@ export default function EditAddressForm({
           </label>
         )}
       </div>
-      
+
       <div>
         <label className="label">
           <span className="label-text">Phone</span>
@@ -137,13 +137,13 @@ export default function EditAddressForm({
               zoom={13}
               center={selectedLocation || defaultCenter}
               onLoad={handleMapLoad}
-              onClick={(e) => {
-                if (e.latLng) {
-                  const lat = e.latLng.lat();
-                  const lng = e.latLng.lng();
-                  handleMapClick({ lat, lng });
-                }
-              }}
+              // onClick={(e) => {
+              // if (e.latLng) {
+              // const lat = e.latLng.lat();
+              // const lng = e.latLng.lng();
+              // handleMapClick({ lat, lng });
+              // }
+              // }}
               options={{
                 fullscreenControl: false,
                 mapTypeControl: false,
@@ -207,10 +207,10 @@ export default function EditAddressForm({
           )}
         </div>
       </div>
-      
-      {/* Hidden address field to ensure it's included in form submission */}
-      <input 
-        type="hidden" 
+
+      <textarea
+        placeholder="Address"
+        className={`textarea textarea-bordered w-full ${editAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
         {...editAddressForm.register('address')}
       />
       {editAddressForm.formState.errors.address && (

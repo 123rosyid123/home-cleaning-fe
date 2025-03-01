@@ -91,12 +91,7 @@ export function useAddressContent() {
         const result = await actionGetAddresses();
         if (result.success) {
           const addressData = result.data || [];
-          // Add floor property if it doesn't exist (for backward compatibility)
-          const updatedAddresses = addressData.map(address => ({
-            ...address,
-            address_floor: address.address_floor || null
-          }));
-          setAddresses(updatedAddresses);
+          setAddresses(addressData);
         } else {
           toastError(new Error(result.message));
           setError(result.message);
@@ -192,7 +187,7 @@ export function useAddressContent() {
         id: editingId,
         ...data,
       };
-      
+
       const result = await actionUpdateAddress(requestData);
       if (!result.success) {
         throw new Error(JSON.stringify(result));
@@ -349,12 +344,14 @@ export function useAddressContent() {
         const location = response.results[0].geometry.location;
         const lat = location.lat();
         const lng = location.lng();
-        const fullAddress = response.results[0].formatted_address || '';
+
+        // get real address from full address
+        const { address: fullAddress } = await getAddressFromLatLng(lat, lng);
 
         return {
           lat,
           lng,
-          address: fullAddress
+          address: fullAddress,
         };
       }
     } catch (error) {

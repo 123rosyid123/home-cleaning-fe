@@ -1,7 +1,7 @@
 'use client';
 
-import { UseFormReturn } from 'react-hook-form';
 import { GoogleMap, Marker } from '@react-google-maps/api';
+import { UseFormReturn } from 'react-hook-form';
 import { AddressFormData } from './EditAddressForm';
 
 const mapContainerStyle = {
@@ -31,7 +31,7 @@ export default function NewAddressForm({
   selectedLocation,
   isLoaded,
   handleMapLoad,
-  handleMapClick,
+  // handleMapClick,
   handleAddNew,
   setIsAddingNew
 }: NewAddressFormProps) {
@@ -111,13 +111,13 @@ export default function NewAddressForm({
                 zoom={13}
                 center={selectedLocation || defaultCenter}
                 onLoad={handleMapLoad}
-                onClick={(e) => {
-                  if (e.latLng) {
-                    const lat = e.latLng.lat();
-                    const lng = e.latLng.lng();
-                    handleMapClick({ lat, lng });
-                  }
-                }}
+                // onClick={(e) => {
+                //   if (e.latLng) {
+                //     const lat = e.latLng.lat();
+                //     const lng = e.latLng.lng();
+                //     handleMapClick({ lat, lng });
+                //   }
+                // }}
                 options={{
                   fullscreenControl: false,
                   mapTypeControl: false,
@@ -180,10 +180,10 @@ export default function NewAddressForm({
             )}
           </div>
         </div>
-        
-        {/* Hidden address field to ensure it's included in form submission */}
-        <input 
-          type="hidden" 
+
+        <textarea
+          placeholder="Address"
+          className={`textarea textarea-bordered w-full ${newAddressForm.formState.errors.address ? 'textarea-error' : ''}`}
           {...newAddressForm.register('address')}
         />
         {newAddressForm.formState.errors.address && (
