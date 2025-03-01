@@ -94,7 +94,9 @@ export const useSelectSlot = () => {
       price: slot.price,
       price_gst: slot.price_gst,
       cleanerId: slot.cleaner_id,
-      total_price_gst: slot.total_price_gst
+      total_price_gst: slot.total_price_gst,
+      cleanerName: slot.cleanerName, 
+      cleanerEmail: slot.cleanerEmail
     }));
   }, [availableTimes]);
 
@@ -113,7 +115,9 @@ export const useSelectSlot = () => {
         price_gst: selectedSlot.price_gst,
         price: selectedSlot.price,
         cleanerId: selectedSlot.cleanerId,
-        total_price_gst: selectedSlot.total_price_gst
+        total_price_gst: selectedSlot.total_price_gst,
+        cleanerName: selectedSlot.cleanerName, 
+        cleanerEmail: selectedSlot.cleanerEmail
       });
     }
   };

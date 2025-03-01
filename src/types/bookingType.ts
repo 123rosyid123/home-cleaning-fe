@@ -14,6 +14,8 @@ export interface AvailableTime {
   price_gst: number;
   cleaner_id: string;
   total_price_gst: number;
+  cleanerName:string;
+  cleanerEmail:string;
 }
 
 export interface AvailableTimeRequest {
