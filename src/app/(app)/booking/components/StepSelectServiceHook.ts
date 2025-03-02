@@ -15,7 +15,7 @@ export const useSelectService = () => {
 
   useEffect(() => {
     const fetchProductVariants = async () => {
-      if (ref.productVariants.length === 0) {
+      if (!ref.productVariants || ref.productVariants.length === 0) {
         try {
           const { data } = await axios.get<GetProductVariantsResponse>('/api/product/HOME_CLEANING');
           if (data) {
@@ -28,11 +28,11 @@ export const useSelectService = () => {
     };
 
     fetchProductVariants();
-  }, [ref.productVariants.length, setProductVariants]);
+  }, [ref?.productVariants?.length, setProductVariants]);
 
   useEffect(() => {
     const fetchDurations = async () => {
-      if (ref.durations.length === 0) {
+      if (!ref.durations || ref.durations.length === 0) {
         try {
           const { data } = await axios.get<DurationResponse>('/api/duration');
           if (data) {
@@ -44,17 +44,17 @@ export const useSelectService = () => {
       }
     };
     fetchDurations();
-  }, [ref.durations.length, setDurations]);
+  }, [ref?.durations?.length, setDurations]);
 
-  const frequencies = ref.productVariants.map(variant => ({
+  const frequencies = ref.productVariants?.map(variant => ({
     id: variant.id,
     name: variant.name,
     basePrice: variant.price_label,
     gstPrice: variant.price_after_gst_label,
     badge: variant.is_recurring ? "*Same Cleaner" : undefined
-  }));
+  })) || [];
 
-  const durations = ref.durations.map(dur => ({
+  const durations = ref.durations?.map(dur => ({
     id: dur.id,
     name: `${dur.duration} Hours`,
     badge: dur.duration === 4
@@ -64,15 +64,15 @@ export const useSelectService = () => {
       : dur.duration === 2
       ? 'Fast'
       : undefined
-  }));
+  })) || [];
 
   const handleFrequencySelect = (selectedProductVariantId: string) => {
-    const selectedVariant = ref.productVariants.find(variant => variant.id === selectedProductVariantId);
+    const selectedVariant = ref.productVariants?.find(variant => variant.id === selectedProductVariantId);
     updateStepService({ productVariantId: selectedProductVariantId, frequency: selectedVariant?.name });
   };
 
   const handleDurationSelect = (selectedDurationId: string) => {
-    const selectedDuration = ref.durations.find(dur => dur.id === selectedDurationId);
+    const selectedDuration = ref.durations?.find(dur => dur.id === selectedDurationId);
     updateStepService({ durationId: selectedDurationId, duration: selectedDuration?.name });
   };
 

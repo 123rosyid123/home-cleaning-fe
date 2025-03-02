@@ -21,7 +21,7 @@ type StepSlot = {
   total_price_gst: number;
   cleanerName:string;
   cleanerEmail:string;
-  
+  currentWeekStart: Date | null;
 };
 
 type StepAddress = {
@@ -93,7 +93,8 @@ const initialState = {
     price: 0,
     cleanerId: '',
     cleanerName: '',
-    cleanerEmail: ''
+    cleanerEmail: '',
+    currentWeekStart: null,
   },
   stepAddress: {
     addressId: '',
