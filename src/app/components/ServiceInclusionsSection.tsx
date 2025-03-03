@@ -1,70 +1,80 @@
 'use client';
 
+import { ServiceInclusion } from '@/types/landingPageType';
 import Image from 'next/image';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { IconType } from 'react-icons';
 import { FaCheck } from 'react-icons/fa';
 import { GiBed, GiKitchenTap, GiShower, GiVacuumCleaner } from 'react-icons/gi';
 
-const services = [
-  {
-    id: 0,
-    title: "Kitchen Cleaning",
-    icon: <GiKitchenTap className="w-8 h-8" />,
-    features: [
-      "Washing dishes and cutlery",
-      "Dusting and wiping all surfaces",
-      "Vacuuming and mopping of floor",
-      "Scrubbing stove and counter tops",
-      "Cleaning inside microwave and exterior of appliances",
-      "Sanitizing sink and faucets"
-    ],
-    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 1,
-    title: "Bathroom Cleaning",
-    icon: <GiShower className="w-8 h-8" />,
-    features: [
-      "Scrubbing toilets, showers, tubs and sinks",
-      "Dusting of all accessible surfaces",
-      "Wiping down mirrors and glass",
-      "Mopping and scrubbing floors",
-      "Sanitizing high-touch areas",
-      "Cleaning shower screens and tiles"
-    ],
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 2,
-    title: "Bedroom & Living Areas",
-    icon: <GiBed className="w-8 h-8" />,
-    features: [
-      "Dusting all surfaces and furniture",
-      "Vacuuming carpets and mopping floors",
-      "Making beds and changing linens",
-      "Cleaning mirrors and windows",
-      "Organizing and tidying spaces",
-      "Wiping door handles and light switches"
-    ],
-    image: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 3,
-    title: "Extra Services",
-    icon: <GiVacuumCleaner className="w-8 h-8" />,
-    features: [
-      "Deep carpet cleaning",
-      "Window washing (interior/exterior)",
-      "Balcony cleaning",
-      "Cabinet organization",
-      "Appliance deep cleaning",
-      "Wall washing and spot cleaning"
-    ],
-    image: "https://images.unsplash.com/photo-1527515545081-5db817172677?auto=format&fit=crop&q=80"
-  }
-];
+const iconComponents: { [key: string]: IconType } = {
+  GiKitchenTap,
+  GiShower,
+  GiBed,
+  GiVacuumCleaner
+};
 
-export default function ServiceInclusionsSection() {
+// Example dummy data
+// const services: Service[] = [
+//   {
+//     id: 0,
+//     title: "Kitchen Cleaning",
+//     icon: "GiKitchenTap",
+//     features: [
+//       "Washing dishes and cutlery",
+//       "Dusting and wiping all surfaces",
+//       "Vacuuming and mopping of floor",
+//       "Scrubbing stove and counter tops",
+//       "Cleaning inside microwave and exterior of appliances",
+//       "Sanitizing sink and faucets"
+//     ],
+//     image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80"
+//   },
+//   {
+//     id: 1,
+//     title: "Bathroom Cleaning",
+//     icon: "GiShower",
+//     features: [
+//       "Scrubbing toilets, showers, tubs and sinks",
+//       "Dusting of all accessible surfaces",
+//       "Wiping down mirrors and glass",
+//       "Mopping and scrubbing floors",
+//       "Sanitizing high-touch areas",
+//       "Cleaning shower screens and tiles"
+//     ],
+//     image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80"
+//   },
+//   {
+//     id: 2,
+//     title: "Bedroom & Living Areas",
+//     icon: "GiBed",
+//     features: [
+//       "Dusting all surfaces and furniture",
+//       "Vacuuming carpets and mopping floors",
+//       "Making beds and changing linens",
+//       "Cleaning mirrors and windows",
+//       "Organizing and tidying spaces",
+//       "Wiping door handles and light switches"
+//     ],
+//     image: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?auto=format&fit=crop&q=80"
+//   },
+//   {
+//     id: 3,
+//     title: "Extra Services",
+//     icon: "GiVacuumCleaner",
+//     features: [
+//       "Deep carpet cleaning",
+//       "Window washing (interior/exterior)",
+//       "Balcony cleaning",
+//       "Cabinet organization",
+//       "Appliance deep cleaning",
+//       "Wall washing and spot cleaning"
+//     ],
+//     image: "https://images.unsplash.com/photo-1527515545081-5db817172677?auto=format&fit=crop&q=80"
+//   }
+// ];
+
+export default function ServiceInclusionsSection({ serviceInclusions }: { serviceInclusions: ServiceInclusion[] }) {
   const [activeService, setActiveService] = useState(0);
 
   return (
@@ -77,7 +87,7 @@ export default function ServiceInclusionsSection() {
         <div className="flex flex-col gap-6 sm:gap-12">
           {/* Service Navigation Icons */}
           <div className="flex pb-4 sm:pb-0 sm:justify-start space-x-4 hide-scrollbar">
-            {services.map((service, index) => (
+            {serviceInclusions.map((service, index) => (
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
@@ -86,7 +96,7 @@ export default function ServiceInclusionsSection() {
                     : 'bg-white text-primary shadow hover:scale-105'
                   }`}
               >
-                {service.icon}
+                {iconComponents[service.icon] && React.createElement(iconComponents[service.icon], { className: "w-8 h-8" })}
                 <span className="text-[10px] sm:text-xs font-medium text-center">
                   {service.title.split(' ')[0]}
                 </span>
@@ -102,7 +112,7 @@ export default function ServiceInclusionsSection() {
                 transform: `translateX(-${activeService * 100}%)`
               }}
             >
-              {services.map((service, index) => (
+              {serviceInclusions.map((service, index) => (
                 <div
                   key={index}
                   className="w-full flex-shrink-0 flex flex-col lg:flex-row gap-4 sm:gap-8"
@@ -143,13 +153,13 @@ export default function ServiceInclusionsSection() {
 
           {/* Navigation Dots */}
           <div className="flex justify-center space-x-2 pt-4 sm:pt-0">
-            {services.map((_, index) => (
+            {serviceInclusions.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setActiveService(index)}
                 className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full transition-all duration-300 ${activeService === index
-                    ? 'bg-primary w-6 sm:w-8'
-                    : 'bg-primary/30'
+                  ? 'bg-primary w-6 sm:w-8'
+                  : 'bg-primary/30'
                   }`}
               />
             ))}

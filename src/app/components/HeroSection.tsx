@@ -5,6 +5,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+// Content object containing all text
+const content = {
+  location: "Singapore's Most Trusted Cleaning Service",
+  title: {
+    desktop: "Home Cleaning Singapore",
+    mobile: "Home Cleaning SG"
+  },
+  description: `Experience Singapore's premium home cleaning service. From HDBs to condos,
+  our expert team delivers spotless results with local understanding and international standards.`,
+  cta: {
+    primary: "Book Now",
+    secondary: "Explore Services"
+  },
+  stats: [
+    { value: '10k+', label: 'Homes Cleaned' },
+    { value: '4.9/5', label: 'Google Rating' },
+    { value: '5k+', label: 'Regular Clients' },
+    { value: '100%', label: 'Satisfaction' }
+  ]
+};
+
 export default function HeroSection() {
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -47,7 +68,7 @@ export default function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <FaMapMarkerAlt className="text-white" />
-              <span className="text-white font-semibold">Singapore&apos;s Most Trusted Cleaning Service</span>
+              <span className="text-white font-semibold">{content.location}</span>
             </div>
           </motion.div>
 
@@ -67,10 +88,10 @@ export default function HeroSection() {
               <div className="absolute -bottom-2 w-full h-4 bg-gradient-to-t from-white/20 to-transparent blur-sm"></div>
             </div>
             <span className="drop-shadow-lg text-center hidden md:block">
-              Home Cleaning Singapore
+              {content.title.desktop}
             </span>
             <span className="drop-shadow-lg text-center md:hidden">
-              Home Cleaning SG
+              {content.title.mobile}
             </span>
           </motion.h1>
 
@@ -79,8 +100,7 @@ export default function HeroSection() {
             variants={slideUp}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Experience Singapore&apos;s premium home cleaning service. From HDBs to condos,
-            our expert team delivers spotless results with local understanding and international standards.
+            {content.description}
           </motion.p>
 
           <motion.div
@@ -92,14 +112,14 @@ export default function HeroSection() {
               href="/booking"
               className="btn btn-primary sm:btn-lg hover:scale-105 transition-transform duration-300 px-4 sm:px-8 group"
             >
-              Book Now
+              {content.cta.primary}
               <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
             </Link>
             <Link
               href="#service-inclusions"
               className="btn btn-ghost sm:btn-lg border-2 border-white hover:bg-white hover:text-black transition-colors duration-300 px-4 sm:px-8"
             >
-              Explore Services
+              {content.cta.secondary}
             </Link>
           </motion.div>
 
@@ -108,12 +128,7 @@ export default function HeroSection() {
             variants={fadeIn}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            {[
-              { value: '10k+', label: 'Homes Cleaned' },
-              { value: '4.9/5', label: 'Google Rating' },
-              { value: '5k+', label: 'Regular Clients' },
-              { value: '100%', label: 'Satisfaction' }
-            ].map((stat, index) => (
+            {content.stats.map((stat, index) => (
               <motion.div
                 key={index}
                 className="text-center"
