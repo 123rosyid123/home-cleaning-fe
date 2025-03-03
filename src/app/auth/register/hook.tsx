@@ -49,7 +49,8 @@ export const useRegisterForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    watch
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -106,5 +107,7 @@ export const useRegisterForm = () => {
     setShowPassword,
     showConfirmPassword,
     setShowConfirmPassword,
+    setValue,
+    watch
   };
 };

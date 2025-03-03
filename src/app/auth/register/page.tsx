@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRegisterForm } from './hook';
+import PhoneInput from 'react-phone-number-input';
+import { formatPhoneToE164 } from '@/lib/utils';
 
 export default function RegisterPage() {
   const { 
@@ -14,7 +16,9 @@ export default function RegisterPage() {
     showPassword,
     setShowPassword,
     showConfirmPassword,
-    setShowConfirmPassword
+    setShowConfirmPassword,
+    setValue,
+    watch
   } = useRegisterForm();
 
   const formAnimation = {
@@ -88,15 +92,21 @@ export default function RegisterPage() {
             Phone Number
           </label>
           <motion.div whileTap={{ scale: 0.995 }}>
-            <input
-              type="tel"
-              placeholder="+1234567890"
-              autoComplete="tel"
-              className={`input input-bordered w-full transition-all duration-200 ${
-                errors.phone ? 'input-error' : ''
-              } focus:ring-2 focus:ring-primary/20`}
-              {...register('phone')}
-            />
+            <div className={`input input-bordered w-full transition-all duration-200 flex items-center ${
+              errors.phone ? 'input-error' : ''
+            } focus-within:ring-2 focus-within:ring-primary/20`}>
+              <PhoneInput
+                placeholder="+1234567890"
+                international
+                defaultCountry="SG"
+                value={watch('phone')}
+                onChange={(value) => {
+                  const formattedValue = value ? formatPhoneToE164(value) : '';
+                  setValue('phone', formattedValue, { shouldValidate: true });
+                }}
+                className="w-full bg-transparent"
+              />
+            </div>
           </motion.div>
           {errors.phone && (
             <motion.span
