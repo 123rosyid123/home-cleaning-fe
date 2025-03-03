@@ -20,8 +20,8 @@ const content = {
 
 export default function CTASection() {
   return (
-    <section className="relative py-20 overflow-hidden">
-      <div className="absolute inset-0 bg-blue-800"></div>
+    <section className="relative py-20 overflow-hidden bg-gradient-to-b from-blue-800 to-blue-900">
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-800/80 to-blue-900/90"></div>
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?q=80&w=3540&auto=format')] bg-cover bg-center opacity-10"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center text-white">
@@ -48,4 +48,4 @@ export default function CTASection() {
       </div>
     </section>
   );
-} 
+}

@@ -8,6 +8,7 @@ import FeaturesSection from './components/FeaturesSection';
 import HeroSection from './components/HeroSection';
 import ServiceInclusionsSection from './components/ServiceInclusionsSection';
 import ServicesSection from './components/ServicesSection';
+import Footer from './components/Footer';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -49,6 +50,7 @@ export default async function Home() {
       <ServicesSection productVariants={productVariants} />
       <FAQ faq={faq} />
       <CTASection />
+      <Footer/>
     </div>
   );
 }
