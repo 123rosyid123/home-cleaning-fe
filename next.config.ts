@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     domains: [
       'cdn.prod.website-files.com',
       'images.unsplash.com',
+      'i0.wp.com',
     ],
   },
 };
