@@ -1,10 +1,10 @@
 'use client';
 
+import { formatPhoneToE164 } from '@/lib/utils';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { UseFormReturn } from 'react-hook-form';
-import { AddressFormData } from './EditAddressForm';
 import PhoneInput from 'react-phone-number-input';
-import { formatPhoneToE164 } from './AddressContentHook';
+import { AddressFormData } from './EditAddressForm';
 
 const mapContainerStyle = {
   width: '100%',

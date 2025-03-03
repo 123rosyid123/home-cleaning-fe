@@ -22,6 +22,7 @@ export default function AddressContent() {
     newAddressForm,
     editAddressForm,
     setIsAddingNew,
+    handleAddNewClick,
     setAddressToDelete,
     handleMapLoad,
     handleStartEdit,
@@ -39,7 +40,7 @@ export default function AddressContent() {
         <div className="flex flex-col sm:flex-row-reverse items-start sm:items-center gap-4 mb-6">
           <button
             className="btn btn-primary w-full sm:w-auto"
-            onClick={() => setIsAddingNew(true)}
+            onClick={handleAddNewClick} // Use the new handler instead of directly setting isAddingNew
             disabled={isLoading}
           >
             {isLoading ? (
@@ -186,4 +187,4 @@ export default function AddressContent() {
       )}
     </div>
   );
-} 
+}

@@ -8,6 +8,8 @@ import {
   actionUpdateAddress
 } from '@/app/actions/addressActions';
 import { toastError } from '@/lib/toastFe';
+import { formatPhoneToE164 } from '@/lib/utils';
+import { useAccountStore } from '@/store/accountStore';
 import { useBookingStore } from '@/store/bookingStore';
 import { Address } from '@/types/addressType';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,21 +19,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-// Format phone number to E.164 format
-export const formatPhoneToE164 = (phone: string): string => {
-  if (!phone) return '';
-  
-  // Remove all non-digit characters except the leading +
-  let formattedPhone = phone.replace(/[^\d+]/g, '').replace(/\s+/g, '');
-  
-  // Add + at the beginning if it doesn't exist
-  if (!formattedPhone.startsWith('+')) {
-    formattedPhone = '+' + formattedPhone;
-  }
-  
-  return formattedPhone;
-};
 
 // We only need geocoding, not places anymore
 export const libraries: Libraries = ['places'];
@@ -89,6 +76,7 @@ export function useAddressContent() {
   const setStoreAddresses = useBookingStore(state => state.setAddresses);
   const step = useBookingStore(state => state.step);
   const router = useRouter();
+  const account = useAccountStore(state => state.account);
 
   const newAddressForm = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -99,6 +87,23 @@ export function useAddressContent() {
     resolver: zodResolver(addressSchema),
     defaultValues: emptyAddress,
   });
+
+  // Update phone number when account data becomes available
+  useEffect(() => {
+    if (account?.mobile_number && !newAddressForm.getValues('phone')) {
+      const formattedPhone = formatPhoneToE164(account.mobile_number);
+      newAddressForm.setValue('phone', formattedPhone);
+    }
+  }, [account, newAddressForm]);
+
+  // Handle new address form reset with account phone number
+  const handleAddNewClick = useCallback(() => {
+    setIsAddingNew(true);
+    // Set default phone number when adding new address
+    if (account?.mobile_number) {
+      newAddressForm.setValue('phone', formatPhoneToE164(account.mobile_number));
+    }
+  }, [account, newAddressForm]);
 
   // Fetch addresses on component mount
   useEffect(() => {
@@ -249,7 +254,7 @@ export function useAddressContent() {
     try {
       setIsLoading(true);
       // Ensure phone is in E.164 format
-      const requestData = { 
+      const requestData = {
         ...data,
         phone: formatPhoneToE164(data.phone)
       };
@@ -488,5 +493,6 @@ export function useAddressContent() {
     handleSetPrimary,
     handleMapClick,
     handlePostalCodeChange,
+    handleAddNewClick, // Add this new handler
   };
-} 
+}
