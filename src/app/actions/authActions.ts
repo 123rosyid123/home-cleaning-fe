@@ -95,9 +95,15 @@ export async function actionLogout(): Promise<ErrorResponse | void> {
 export async function actionVerifyOtp(
   email: string,
   otp: string
-): Promise<SuccessResponse<null> | ErrorResponse> {
+): Promise<SuccessResponse<AuthData> | ErrorResponse> {
   try {
     const response = await apiVerifyOtp(email, otp);
+
+    await Promise.all([
+      createSession(response.data.token),
+      createUserSession(response.data.user as UserProfile),
+    ]);
+    
     return buildSuccessResponse(response.message, response.data);
   } catch (error) {
     return buildErrorResponse(error as Error | AxiosError);

@@ -11,5 +11,5 @@ export type LoginResponse = GenericResponse<AuthData>;
 export type ForgotPasswordResponse = GenericResponse<null>;
 export type ResetPasswordResponse = GenericResponse<null>;
 export type LogoutResponse = GenericResponse<null>;
-export type VerifyOtpResponse = GenericResponse<null>;
+export type VerifyOtpResponse = GenericResponse<AuthData>;
 export type ResendOtpResponse = GenericResponse<null>;
