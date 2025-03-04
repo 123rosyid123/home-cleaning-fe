@@ -1,5 +1,4 @@
 import { toast } from 'sonner';
-
 export type APIError = {
   message?: string;
   error?: Record<string, string | string[]>;
@@ -19,7 +18,7 @@ export const toastError = (error: Error | APIError) => {
 
     toast.error(Array.isArray(firstError) ? firstError[0] : 'Something went wrong');
   } catch {
-    const errorMessage = (error as Error).message || 'Something went wrong';
+    const errorMessage = (error as Error).message || (error as APIError).error || 'Something went wrong';
 
     // Check if error message is "Unauthenticated"
     if (errorMessage === UNAUTHENTICATED_ERROR) {
@@ -27,6 +26,6 @@ export const toastError = (error: Error | APIError) => {
       return;
     }
 
-    toast.error(errorMessage);
+    toast.error(errorMessage as string, { duration: 5000 });
   }
 };

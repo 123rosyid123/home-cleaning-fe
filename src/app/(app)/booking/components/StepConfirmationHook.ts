@@ -1,15 +1,25 @@
+import { toastError } from '@/lib/toastFe';
 import { useBookingStore } from '@/store/bookingStore';
 import { CreateBookingRequest } from '@/types/bookingType';
-import axios from 'axios';
-import { useState } from 'react';
+import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
+import { useState } from 'react';
 
 export const useConfirmation = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const {
     stepService: { frequency, duration, productVariantId },
-    stepSlot: { date, price_gst, startTime, endTime, cleanerId, total_price_gst, cleanerName, cleanerEmail },
+    stepSlot: {
+      date,
+      price_gst,
+      startTime,
+      endTime,
+      cleanerId,
+      total_price_gst,
+      cleanerName,
+      cleanerEmail,
+    },
     stepAddress: {
       addressId,
       contactName,
@@ -38,8 +48,11 @@ export const useConfirmation = () => {
 
       window.location.href = data.data.payment_url;
     } catch (error) {
-      console.error('Payment error:', error);
-      alert('Failed to process payment. Please try again.');
+      if (error instanceof AxiosError) {
+        toastError(error.response?.data);
+      } else {
+        toastError(error as Error);
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -59,10 +72,10 @@ export const useConfirmation = () => {
       address,
       postalCode,
       additionalNotes,
-      price_gst,      
+      price_gst,
       total_price_gst,
       cleanerName,
-      cleanerEmail
+      cleanerEmail,
     },
     handleSubmit,
   };
