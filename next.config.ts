@@ -4,10 +4,19 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
   images: {
-    domains: [
-      'cdn.prod.website-files.com',
-      'images.unsplash.com',
-      'i0.wp.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.prod.website-files.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i0.wp.com',
+      },
     ],
   },
 };

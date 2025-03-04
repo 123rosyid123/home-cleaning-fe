@@ -36,26 +36,26 @@ const iconComponents: { [key: string]: IconType } = {
 
 export default function FeaturesSection({ whyChooseUs }: { whyChooseUs: WhyChooseUs }) {
   return (
-    <section className="py-12 md:py-24 bg-gradient-to-b from-base-100 to-base-200">
-      <div className="container mx-auto px-4">
-        <h1 className="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 text-blue-800">
+    <section className="py-8 sm:py-12 md:py-16 bg-gradient-to-b from-base-100 to-base-200">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 md:mb-12 text-blue-800">
           {whyChooseUs.title}
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {whyChooseUs.cards.map((card, index) => (
-            <div key={index} className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 p-6 md:p-8 hover:-translate-y-2">
-              <div className="flex items-center space-x-4 md:space-x-6 mb-4 md:mb-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                  {iconComponents[card.icon] && React.createElement(iconComponents[card.icon], { className: "w-6 h-6 md:w-7 md:h-7 text-primary" })}
+            <div key={index} className="group bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 p-4 sm:p-6 md:p-8 hover:-translate-y-2">
+              <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-5 mb-3 sm:mb-4 md:mb-5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                  {iconComponents[card.icon] && React.createElement(iconComponents[card.icon], { className: "w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-primary" })}
                 </div>
-                <div className="border-l-2 border-primary/20 pl-4 md:pl-6">
-                  <h2 className="text-xl md:text-2xl font-bold text-gray-800 whitespace-pre-line">
+                <div className="border-l-2 border-primary/20 pl-3 sm:pl-4 md:pl-5">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 whitespace-pre-line">
                     {card.title}
                   </h2>
                 </div>
               </div>
-              <div className="h-px w-full bg-gradient-to-r from-primary/5 via-primary/20 to-primary/5 my-4 md:my-6"></div>
-              <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+              <div className="h-px w-full bg-gradient-to-r from-primary/5 via-primary/20 to-primary/5 my-3 sm:my-4 md:my-5"></div>
+              <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
                 {card.highlight ? 
                   card.description.split(card.highlight).map((part, i) => (
                     <React.Fragment key={i}>

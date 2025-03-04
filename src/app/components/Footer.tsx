@@ -1,5 +1,74 @@
+'use client';
+
 import Link from 'next/link';
 import { FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+
+// Add this new component before the Footer component
+const BubbleStarsAnimation = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
+  return (
+    <>
+      {/* Bubbles */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={`bubble-${i}`}
+            className="absolute bg-white/20 rounded-full"
+            style={{
+              width: `${4 + Math.random() * 4}px`,
+              height: `${4 + Math.random() * 4}px`,
+              left: `${Math.random() * 100}%`,
+              bottom: '-10%',
+              animation: `bubbleAnimation ${3 + Math.random() * 7}s linear infinite`,
+              animationDelay: `${Math.random() * 3}s`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Animation styles */}
+      <style jsx>{`
+        @keyframes bubbleAnimation {
+          0% {
+            transform: translateY(0) scale(1);
+            opacity: 0.2;
+          }
+          50% {
+            transform: translateY(-50vh) scale(1.2);
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100vh) scale(0.8);
+            opacity: 0;
+          }
+        }
+
+        @keyframes starTwinkle {
+          0% {
+            transform: scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0.3;
+          }
+        }
+      `}</style>
+    </>
+  );
+};
 
 const footerContent = {
   company: {
@@ -26,39 +95,35 @@ const footerContent = {
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-primary-content relative">
-      {/* Top wave decoration */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden -translate-y-[98%] h-16">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative h-16 w-full">
-          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C75.69,52,158,76,244.73,100.07Z" fill="currentColor" className="opacity-20"></path>
-        </svg>
-      </div>
+    <footer className="bg-primary text-primary-content relative overflow-hidden">
+      {/* Add the animation component */}
+      <BubbleStarsAnimation />
 
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+      <div className="container mx-auto px-6 md:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-8">
           {/* Company Info */}
-          <div className="md:col-span-4 space-y-5 transform transition-all duration-300">
-            <h4 className="text-xl font-bold flex items-center">
-              <span className="w-1.5 h-8 bg-white rounded-full mr-3 inline-block"></span>
+          <div className="md:col-span-1 lg:col-span-4 space-y-4">
+            <h4 className="text-lg md:text-xl font-bold flex items-center">
+              <span className="w-1.5 h-6 md:h-8 bg-white rounded-full mr-3 inline-block"></span>
               {footerContent.company.name}
             </h4>
-            <p className="text-sm opacity-90 leading-relaxed">
+            <p className="text-xs md:text-sm opacity-90 leading-relaxed">
               {footerContent.company.description}
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="md:col-span-2 space-y-5 transform transition-all duration-300">
-            <h4 className="text-xl font-bold flex items-center">
-              <span className="w-1.5 h-8 bg-white rounded-full mr-3 inline-block"></span>
+          <div className="md:col-span-1 lg:col-span-2 space-y-4">
+            <h4 className="text-lg md:text-xl font-bold flex items-center">
+              <span className="w-1.5 h-6 md:h-8 bg-white rounded-full mr-3 inline-block"></span>
               Quick Links
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 md:space-y-3">
               {footerContent.links.map((link, index) => (
                 <li key={index} className="transition-transform duration-300 hover:translate-x-1">
                   <Link href={link.href} className="hover:text-white flex items-center">
                     <FaArrowRight className="mr-2 text-xs opacity-70" />
-                    <span>{link.label}</span>
+                    <span className="text-sm md:text-base">{link.label}</span>
                   </Link>
                 </li>
               ))}
@@ -66,12 +131,12 @@ export default function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div className="md:col-span-3 space-y-5 transform transition-all duration-300">
-            <h4 className="text-xl font-bold flex items-center">
-              <span className="w-1.5 h-8 bg-white rounded-full mr-3 inline-block"></span>
+          <div className="md:col-span-1 lg:col-span-3 space-y-4">
+            <h4 className="text-lg md:text-xl font-bold flex items-center">
+              <span className="w-1.5 h-6 md:h-8 bg-white rounded-full mr-3 inline-block"></span>
               Contact Us
             </h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
                 <FaEnvelope className="mt-1 mr-3 flex-shrink-0" />
                 <a href={`mailto:${footerContent.contact.email}`} className="hover:text-white">{footerContent.contact.email}</a>
@@ -87,9 +152,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-3 space-y-5 transform transition-all duration-300">
-            <h4 className="text-xl font-bold flex items-center">
-              <span className="w-1.5 h-8 bg-white rounded-full mr-3 inline-block"></span>
+          <div className="md:col-span-1 lg:col-span-3 space-y-5">
+            <h4 className="text-xl md:text-2xl font-bold flex items-center">
+              <span className="w-1.5 h-8 md:h-10 bg-white rounded-full mr-3 inline-block"></span>
               Stay Updated
             </h4>
             <div className="flex space-x-4">
