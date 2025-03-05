@@ -17,11 +17,11 @@ const BubbleStarsAnimation = () => {
   return (
     <>
       {/* Bubbles */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(20)].map((_, i) => (
           <div
             key={`bubble-${i}`}
-            className="absolute bg-white/20 rounded-full"
+            className="absolute bg-white/20 rounded-full pointer-events-none"
             style={{
               width: `${4 + Math.random() * 4}px`,
               height: `${4 + Math.random() * 4}px`,
@@ -121,7 +121,8 @@ export default function Footer() {
             <ul className="space-y-2 md:space-y-3">
               {footerContent.links.map((link, index) => (
                 <li key={index} className="transition-transform duration-300 hover:translate-x-1">
-                  <Link href={link.href} className="hover:text-white flex items-center">
+                  <Link href={link.href} 
+                        className="hover:text-white flex items-center relative z-10 transition-colors duration-300">
                     <FaArrowRight className="mr-2 text-xs opacity-70" />
                     <span className="text-sm md:text-base">{link.label}</span>
                   </Link>
@@ -139,11 +140,17 @@ export default function Footer() {
             <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
                 <FaEnvelope className="mt-1 mr-3 flex-shrink-0" />
-                <a href={`mailto:${footerContent.contact.email}`} className="hover:text-white">{footerContent.contact.email}</a>
+                <a href={`mailto:${footerContent.contact.email}`} 
+                   className="hover:text-white transition-colors duration-300">
+                   {footerContent.contact.email}
+                </a>
               </li>
               <li className="flex items-start">
                 <FaPhone className="mt-1 mr-3 flex-shrink-0" />
-                <a href={`tel:${footerContent.contact.phone}`} className="hover:text-white">{footerContent.contact.phone}</a>
+                <a href={`tel:${footerContent.contact.phone}`} 
+                   className="hover:text-white transition-colors duration-300">
+                   {footerContent.contact.phone}
+                </a>
               </li>
               <li className="flex items-start">
                 <FaMapMarkerAlt className="mt-1 mr-3 flex-shrink-0" />
@@ -160,12 +167,16 @@ export default function Footer() {
             <div className="flex space-x-4">
               <a href={footerContent.social.facebook} 
                  className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110" 
-                 aria-label="Facebook">
+                 aria-label="Facebook"
+                 target="_blank"
+                 rel="noopener noreferrer">
                 <FaFacebook size={20} />
               </a>
               <a href={footerContent.social.instagram} 
                  className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110"
-                 aria-label="Instagram">
+                 aria-label="Instagram"
+                 target="_blank"
+                 rel="noopener noreferrer">
                 <FaInstagram size={20} />
               </a>
             </div>
