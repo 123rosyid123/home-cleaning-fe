@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import { Footer as FooterType } from '@/types/landingPageType';
 
 // Add this new component before the Footer component
 const BubbleStarsAnimation = () => {
@@ -70,30 +71,31 @@ const BubbleStarsAnimation = () => {
   );
 };
 
-const footerContent = {
-  company: {
-    name: "Home Cleaning SG",
-    description: "Our cleaners safety is of utmost priority to us. If there are unanticipated situations that compromise their safety, we reserve the right to decline service. We sincerely regret if we are unable to serve you under these circumstances."
-  },
-  links: [
-    { label: "Home", href: "/" },
-    { label: "Services", href: "#service-inclusions" },
-    { label: "Book Now", href: "/booking" }
-  ],
-  contact: {
-    email: "admin@homecleaningsg.com",
-    phone: "+65 3158 1508",
-    address: ["71 Ubi Rd 1, #10-42", "Singapore 408732"]
-  },
-  social: {
-    facebook: "https://www.facebook.com/homecleaningspore/",
-    instagram: "https://www.instagram.com/homecleaningsg/",
-    followText: "Follow us on social media for promotions and cleaning tips."
-  },
-  copyright: "Home Cleaning SG. All rights reserved."
-};
+// Dummy data
+// const footerContent = {
+//   company: {
+//     name: "Home Cleaning SG",
+//     description: "Our cleaners safety is of utmost priority to us. If there are unanticipated situations that compromise their safety, we reserve the right to decline service. We sincerely regret if we are unable to serve you under these circumstances."
+//   },
+//   links: [
+//     { label: "Home", href: "/" },
+//     { label: "Services", href: "#service-inclusions" },
+//     { label: "Book Now", href: "/booking" }
+//   ],
+//   contact: {
+//     email: "admin@homecleaningsg.com",
+//     phone: "+65 3158 1508",
+//     address: ["71 Ubi Rd 1, #10-42", "Singapore 408732"]
+//   },
+//   social: {
+//     facebook: "https://www.facebook.com/homecleaningspore/",
+//     instagram: "https://www.instagram.com/homecleaningsg/",
+//     followText: "Follow us on social media for promotions and cleaning tips."
+//   },
+//   copyright: "Home Cleaning SG. All rights reserved."
+// };
 
-export default function Footer() {
+export default function Footer({ footer }: { footer: FooterType }) {
   return (
     <footer className="bg-primary text-primary-content relative overflow-hidden">
       {/* Add the animation component */}
@@ -105,10 +107,10 @@ export default function Footer() {
           <div className="md:col-span-1 lg:col-span-4 space-y-4">
             <h4 className="text-lg md:text-xl font-bold flex items-center">
               <span className="w-1.5 h-6 md:h-8 bg-white rounded-full mr-3 inline-block"></span>
-              {footerContent.company.name}
+              {footer.company.name}
             </h4>
             <p className="text-xs md:text-sm opacity-90 leading-relaxed">
-              {footerContent.company.description}
+              {footer.company.description}
             </p>
           </div>
 
@@ -119,7 +121,7 @@ export default function Footer() {
               Quick Links
             </h4>
             <ul className="space-y-2 md:space-y-3">
-              {footerContent.links.map((link, index) => (
+              {footer.links.map((link, index) => (
                 <li key={index} className="transition-transform duration-300 hover:translate-x-1">
                   <Link href={link.href} 
                         className="hover:text-white flex items-center relative z-10 transition-colors duration-300">
@@ -140,39 +142,39 @@ export default function Footer() {
             <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
               <li className="flex items-start">
                 <FaEnvelope className="mt-1 mr-3 flex-shrink-0" />
-                <a href={`mailto:${footerContent.contact.email}`} 
+                <a href={`mailto:${footer.contact.email}`} 
                    className="hover:text-white transition-colors duration-300">
-                   {footerContent.contact.email}
+                   {footer.contact.email}
                 </a>
               </li>
               <li className="flex items-start">
                 <FaPhone className="mt-1 mr-3 flex-shrink-0" />
-                <a href={`tel:${footerContent.contact.phone}`} 
+                <a href={`tel:${footer.contact.phone}`} 
                    className="hover:text-white transition-colors duration-300">
-                   {footerContent.contact.phone}
+                   {footer.contact.phone}
                 </a>
               </li>
               <li className="flex items-start">
                 <FaMapMarkerAlt className="mt-1 mr-3 flex-shrink-0" />
-                <span style={{ whiteSpace: 'pre-line' }}>{footerContent.contact.address.join('\n')}</span>
+                <span style={{ whiteSpace: 'pre-line' }}>{footer.contact.address.join('\n')}</span>
               </li>
             </ul>
           </div>
 
-          <div className="md:col-span-1 lg:col-span-3 space-y-5">
-            <h4 className="text-xl md:text-2xl font-bold flex items-center">
-              <span className="w-1.5 h-8 md:h-10 bg-white rounded-full mr-3 inline-block"></span>
+          <div className="md:col-span-1 lg:col-span-3 space-y-4">
+            <h4 className="text-lg md:text-xl font-bold flex items-center">
+              <span className="w-1.5 h-6 md:h-8 bg-white rounded-full mr-3 inline-block"></span>
               Stay Updated
             </h4>
             <div className="flex space-x-4">
-              <a href={footerContent.social.facebook} 
+              <a href={footer.social.facebook} 
                  className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110" 
                  aria-label="Facebook"
                  target="_blank"
                  rel="noopener noreferrer">
                 <FaFacebook size={20} />
               </a>
-              <a href={footerContent.social.instagram} 
+              <a href={footer.social.instagram} 
                  className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110"
                  aria-label="Instagram"
                  target="_blank"
@@ -180,13 +182,13 @@ export default function Footer() {
                 <FaInstagram size={20} />
               </a>
             </div>
-            <p className="text-sm opacity-90">{footerContent.social.followText}</p>
+            <p className="text-sm opacity-90">{footer.social.followText}</p>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="mt-14 pt-8 border-t border-primary-content/20 text-center text-sm opacity-80">
-          <p>© {new Date().getFullYear()} {footerContent.copyright}</p>
+          <p>© {new Date().getFullYear()} {footer.copyright}</p>
         </div>
       </div>
       

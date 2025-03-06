@@ -1,5 +1,5 @@
 import httpClient from '@/lib/httpClient';
-import { FAQ, ServiceInclusion, WhyChooseUs } from '@/types/landingPageType';
+import { FAQ, ServiceInclusion, WhyChooseUs, Footer } from '@/types/landingPageType';
 
 export const apiGetServiceInclusions = async (): Promise<ServiceInclusion[]> => {
   const response = await httpClient.get('/v1/landing-page/service-inclusions');
@@ -13,5 +13,10 @@ export const apiGetWhyChooseUs = async (): Promise<WhyChooseUs> => {
 
 export const apiGetFAQ = async (): Promise<FAQ> => {
   const response = await httpClient.get('/v1/landing-page/faq');
+  return response.data;
+};
+
+export const apiGetFooter = async (): Promise<Footer> => {
+  const response = await httpClient.get('/v1/landing-page/footer');
   return response.data;
 };

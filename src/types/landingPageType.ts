@@ -24,3 +24,25 @@ export interface FAQ {
     answer: string;
   }[];
 }
+
+export interface Footer {
+  company: {
+    name: string;
+    description: string;
+  };
+  links: {
+    label: string;
+    href: string;
+  }[];
+  contact: {
+    email: string;
+    phone: string;
+    address: string[];
+  };
+  social: {
+    facebook: string;
+    instagram: string;
+    followText: string;
+  };
+  copyright: string;
+}
