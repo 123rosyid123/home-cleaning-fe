@@ -162,7 +162,7 @@ export default function ServiceInfo() {
           </label>
           <textarea
             className="textarea textarea-primary w-full"
-            value={`${address}\n${address_floor ? `Floor ${address_floor}` : ''}${address_unit_number ? `, Unit ${address_unit_number}` : ''}` || ''}
+            value={`${address}\n${address_floor ? `#${address_floor}` : ''}${address_unit_number ? ` - ${address_unit_number}` : ''}` || ''}
             readOnly
             placeholder="Enter full address"
           />
