@@ -28,6 +28,8 @@ export const useConfirmation = () => {
       address,
       postalCode,
       additionalNotes,
+      address_floor,
+      address_unit_number,
     },
   } = useBookingStore();
 
@@ -70,6 +72,8 @@ export const useConfirmation = () => {
       phoneNumber,
       email,
       address,
+      address_floor,
+      address_unit_number,
       postalCode,
       additionalNotes,
       price_gst,

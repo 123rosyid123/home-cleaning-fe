@@ -97,7 +97,7 @@ export default function Confirmation() {
           </div>
 
           {/* Cleaners Section */}
-          <div className="bg-gray-50 rounded-xl p-6 space-y-4">
+          {/* <div className="bg-gray-50 rounded-xl p-6 space-y-4">
             <h4 className="font-semibold text-base sm:text-lg text-gray-700 mb-4">Cleaners</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
@@ -120,7 +120,7 @@ export default function Confirmation() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Contact Information Section */}
           <div className="bg-gray-50 rounded-xl p-6 space-y-4">
@@ -168,6 +168,7 @@ export default function Confirmation() {
                 <p className="text-xs sm:text-sm text-gray-500">Service Location</p>
                 <p className="text-sm sm:text-base font-medium mt-1">{bookingData.address}</p>
                 <p className="text-sm sm:text-base font-medium">Postal Code: {bookingData.postalCode}</p>
+                <p className="text-sm sm:text-base font-medium">#{bookingData.address_floor}-{bookingData.address_unit_number}</p>
               </div>
             </div>
           </div>

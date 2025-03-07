@@ -30,6 +30,8 @@ type StepAddress = {
   phoneNumber: string;
   email: string;
   address: string;
+  address_floor: string | null;
+  address_unit_number: string | null;
   postalCode: string;
   additionalNotes: string;
   latitude: number | null;
@@ -102,6 +104,8 @@ const initialState = {
     phoneNumber: '',
     email: '',
     address: '',
+    address_floor: null,
+    address_unit_number: null,
     postalCode: '',
     additionalNotes: '',
     selectedAddressId: null,
@@ -165,6 +169,8 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
             contactName: primaryAddress.name,
             latitude: primaryAddress.latitude,
             longitude: primaryAddress.longitude,
+            address_floor: primaryAddress.address_floor,
+            address_unit_number: primaryAddress.address_unit_number,
           },
         }),
       };
@@ -189,6 +195,8 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
             contactName: selectedAddress.name,
             latitude: selectedAddress.latitude,
             longitude: selectedAddress.longitude,
+            address_floor: selectedAddress.address_floor,
+            address_unit_number: selectedAddress.address_unit_number,
           },
         };
       }

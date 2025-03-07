@@ -20,6 +20,8 @@ export default function ServiceInfo() {
     phoneNumber,
     email,
     address,
+    address_floor,
+    address_unit_number,
     additionalNotes,
     addresses,
     selectedAddressId,
@@ -67,6 +69,7 @@ export default function ServiceInfo() {
               )}
             </div>
             <p className="text-gray-600 text-sm mb-2">{addr.address}</p>
+            <p className="text-gray-500 text-sm">#{addr.address_floor}-{addr.address_unit_number}</p>
             <p className="text-gray-500 text-sm">{addr.phone}</p>
           </motion.div>
         ))}
@@ -159,7 +162,7 @@ export default function ServiceInfo() {
           </label>
           <textarea
             className="textarea textarea-primary w-full"
-            value={address || ''}
+            value={`${address}\n${address_floor ? `Floor ${address_floor}` : ''}${address_unit_number ? `, Unit ${address_unit_number}` : ''}` || ''}
             readOnly
             placeholder="Enter full address"
           />
