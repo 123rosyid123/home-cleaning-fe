@@ -161,21 +161,6 @@ export default function NewAddressForm({
           <div>
             <input
               type="text"
-              placeholder="Unit Number"
-              className={`input input-bordered w-full ${newAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
-              {...newAddressForm.register('address_unit_number')}
-            />
-            {newAddressForm.formState.errors.address_unit_number && (
-              <label className="label">
-                <span className="label-text-alt text-error">
-                  {String(newAddressForm.formState.errors.address_unit_number.message)}
-                </span>
-              </label>
-            )}
-          </div>
-          <div>
-            <input
-              type="text"
               placeholder="Floor"
               className={`input input-bordered w-full ${newAddressForm.formState.errors.address_floor ? 'input-error' : ''}`}
               {...newAddressForm.register('address_floor')}
@@ -189,6 +174,21 @@ export default function NewAddressForm({
             )}
           </div>
         </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Unit Number"
+              className={`input input-bordered w-full ${newAddressForm.formState.errors.address_unit_number ? 'input-error' : ''}`}
+              {...newAddressForm.register('address_unit_number')}
+            />
+            {newAddressForm.formState.errors.address_unit_number && (
+              <label className="label">
+                <span className="label-text-alt text-error">
+                  {String(newAddressForm.formState.errors.address_unit_number.message)}
+                </span>
+              </label>
+            )}
+          </div>
 
         <textarea
           placeholder="Address"
